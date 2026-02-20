@@ -1,0 +1,264 @@
+/* Landing Page Custom Styles */
+
+/* Additional styles for Simpintar Landing Page */
+
+/* Color Variables */
+:root {
+    --primary-color: #7AC64D;
+    --primary-dark: #5fa33a;
+    --primary-light: #8ED45E;
+    --secondary-color: #2C3E50;
+    --accent-color: #3498DB;
+    --text-dark: #2C3E50;
+    --text-light: #7F8C8D;
+    --bg-light: #F8F9FA;
+    --white: #FFFFFF;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Custom Button Styles */
+.btn-primary-custom {
+    background: var(--primary-color);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(122, 198, 77, 0.3);
+}
+
+.btn-primary-custom:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(122, 198, 77, 0.4);
+}
+
+.btn-outline-custom {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* Hero Section Enhancements */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Feature Card Enhancements */
+.feature-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* About Section Enhancements */
+.about-image {
+    position: relative;
+}
+
+.about-image::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(122, 198, 77, 0.1), transparent);
+    border-radius: 20px;
+    top: 0;
+    left: 0;
+}
+
+/* Stats Section Enhancements */
+.stats-section {
+    position: relative;
+}
+
+.stats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoMTAwdjEwMEgwVjB6IiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==');
+    opacity: 0.05;
+}
+
+/* CTA Box Enhancements */
+.cta-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-box::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Footer Enhancements */
+.footer-section {
+    position: relative;
+}
+
+.footer-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.hero-badge {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .hero-section {
+        padding-top: 120px;
+    }
+    
+    .feature-card {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 36px !important;
+    }
+    
+    .section-title h2 {
+        font-size: 28px !important;
+    }
+    
+    .cta-box {
+        padding: 30px 20px !important;
+    }
+    
+    .stat-number {
+        font-size: 36px !important;
+    }
+}
+
+/* Navbar Mobile */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background: var(--white);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 15px;
+    }
+    
+    .nav-link {
+        padding: 10px 0 !important;
+    }
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Selection Color */
+::selection {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* Focus Styles */
+.btn:focus,
+.btn-primary-custom:focus,
+.btn-outline-custom:focus {
+    box-shadow: 0 0 0 4px rgba(122, 198, 77, 0.2);
+}
+
+/* Link Hover */
+a {
+    transition: color 0.3s ease;
+}
+
+/* Image Loading */
+img {
+    loading: lazy;
+}
+
+/* Form Focus */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(122, 198, 77, 0.1);
+}
