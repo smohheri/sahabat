@@ -1,0 +1,12 @@
+# Prevent directory listing
+Options -Indexes
+
+# Allow access to images and documents
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf|doc|docx)$">
+    Allow from all
+</FilesMatch>
+
+# Deny access to other files
+<FilesMatch "\.(php|exe|bat|sh)$">
+    Deny from all
+</FilesMatch>

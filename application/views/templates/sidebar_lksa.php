@@ -2,9 +2,10 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 	<!-- Brand Logo -->
 	<a href="<?php echo site_url('admin'); ?>" class="brand-link">
-		<img src="<?php echo base_url('assets/img/AdminLTELogo.png'); ?>" alt="AdminLTE Logo"
-			class="brand-image img-circle elevation-3" style="opacity: .8">
-		<span class="brand-text font-weight-light">LKSA Harapan Bangsa</span>
+		<?php $settings = get_instance()->config->item('settings'); ?>
+		<img src="<?php echo base_url('assets/uploads/logos/' . ($settings->logo ?? 'AdminLTELogo.png')); ?>"
+			alt="Logo LKSA" class="brand-image img-circle elevation-3" style="opacity: .8">
+		<span class="brand-text font-weight-light">SAHABAT</span>
 	</a>
 
 	<!-- Sidebar -->
@@ -38,190 +39,111 @@
 
 				<!-- Anak -->
 				<li class="nav-item">
-					<a href="#" class="nav-link">
+					<a href="<?php echo site_url('admin/anak'); ?>"
+						class="nav-link <?php echo $this->uri->segment(2) == 'anak' ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-child"></i>
-						<p>
-							Data Anak
-							<i class="right fas fa-angle-left"></i>
-						</p>
+						<p>Data Anak</p>
 					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/anak'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Daftar Anak</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/anak/tambah'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Tambah Anak</p>
-							</a>
-						</li>
-					</ul>
 				</li>
 
-				<!-- Penduduk -->
+				<!-- Pengurus -->
 				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-users"></i>
-						<p>
-							Data Penduduk
-							<i class="right fas fa-angle-left"></i>
-						</p>
-					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/penduduk'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Daftar Penduduk</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/penduduk/tambah'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Tambah Penduduk</p>
-							</a>
-						</li>
-					</ul>
-				</li>
-
-				<!-- Kamar -->
-				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-bed"></i>
-						<p>
-							Kelola Kamar
-							<i class="right fas fa-angle-left"></i>
-						</p>
-					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/kamar'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Daftar Kamar</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/kamar/tambah'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Tambah Kamar</p>
-							</a>
-						</li>
-					</ul>
-				</li>
-
-				<!-- Staff/Pendidik -->
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+					<a href="<?php echo site_url('admin/pengurus'); ?>"
+						class="nav-link <?php echo $this->uri->segment(2) == 'pengurus' ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-user-tie"></i>
-						<p>
-							Data Pendidik/Pegawai
-							<i class="right fas fa-angle-left"></i>
-						</p>
+						<p>Data Pengurus</p>
 					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/staff'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Daftar Staff</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/staff/tambah'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Tambah Staff</p>
-							</a>
-						</li>
-					</ul>
 				</li>
 
-				<!-- Keuangan -->
-				<li class="nav-header">KEUANGAN</li>
 
-				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-money-bill-wave"></i>
-						<p>
-							Keuangan
-							<i class="right fas fa-angle-left"></i>
-						</p>
-					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/keuangan/pemasukan'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Pemasukan</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/keuangan/pengeluaran'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Pengeluaran</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('admin/keuangan/laporan'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Laporan Keuangan</p>
-							</a>
-						</li>
-					</ul>
-				</li>
 
 				<!-- Laporan -->
 				<li class="nav-header">LAPORAN</li>
 
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+				<li class="nav-item <?php echo $this->uri->segment(2) == 'laporan' ? 'menu-open' : ''; ?>">
+					<a href="#" class="nav-link <?php echo $this->uri->segment(2) == 'laporan' ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-file-alt"></i>
 						<p>
-							Laporan
+							Kelola Laporan
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview">
+					<ul class="nav nav-treeview"
+						style="<?php echo $this->uri->segment(2) == 'laporan' ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/laporan/anak'); ?>" class="nav-link">
+							<a href="<?php echo site_url('admin/laporan/data_anak'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'data_anak' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Laporan Anak</p>
+								<p>Data Anak</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/laporan/keuangan'); ?>" class="nav-link">
+							<a href="<?php echo site_url('admin/laporan/keuangan'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'keuangan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Laporan Keuangan</p>
+								<p>Keuangan</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/laporan/kepegawaian'); ?>" class="nav-link">
+							<a href="<?php echo site_url('admin/laporan/pengurus'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'pengurus' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Laporan Kepegawaian</p>
+								<p>Pengurus</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/laporan/dokumen'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'dokumen' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Dokumen</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/laporan/statistik'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'statistik' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Statistik</p>
 							</a>
 						</li>
 					</ul>
+				</li>
+
+				<!-- Dukung Kami -->
+				<li class="nav-header">DUKUNGAN</li>
+
+				<li class="nav-item">
+					<a href="<?php echo site_url('admin/dukung_kami'); ?>"
+						class="nav-link <?php echo $this->uri->segment(2) == 'dukung_kami' ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-heart"></i>
+						<p>Dukung Kami</p>
+					</a>
 				</li>
 
 				<!-- Pengaturan -->
 				<li class="nav-header">PENGATURAN</li>
 
-				<li class="nav-item">
-					<a href="#" class="nav-link">
+				<li
+					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'menu-open' : ''; ?>">
+					<a href="#"
+						class="nav-link <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-cogs"></i>
 						<p>
 							Pengaturan
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview">
+					<ul class="nav nav-treeview"
+						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/pengaturan/profile'); ?>" class="nav-link">
+							<a href="<?php echo site_url('admin/pengaturan'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'pengaturan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Profile</p>
+								<p>Profile LKSA</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/pengaturan/user'); ?>" class="nav-link">
+							<a href="<?php echo site_url('admin/user'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'user' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Kelola User</p>
 							</a>

@@ -7,6 +7,7 @@ class Auth extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('User_model');
+		$this->load->library('form_validation');
 	}
 
 	public function login()
@@ -20,8 +21,10 @@ class Auth extends CI_Controller
 		$this->form_validation->set_rules('password', 'Password', 'required');
 
 		if ($this->form_validation->run() == FALSE) {
+			$settings = $this->config->item('settings');
 			$data = array(
-				'title' => 'Login - LKSA Harapan Bangsa'
+				'title' => 'Login - ' . ($settings ? $settings->nama_lksa : 'LKSA Harapan Bangsa'),
+				'settings' => $settings
 			);
 			$this->load->view('auth/login', $data);
 		} else {

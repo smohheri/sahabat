@@ -1,0 +1,173 @@
+# SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
+![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelola data dan administrasi Lembaga Kesejahteraan Sosial Anak (LKSA). Aplikasi ini menyediakan solusi terintegrasi untuk pengelolaan data anak, pengurus, laporan, dan monitoring program kesejahteraan sosial anak.
+
+## 🎯 Fitur Utama
+
+### 📊 Dashboard Interaktif
+- Statistik real-time data anak dan pengurus
+- Visualisasi data dengan grafik dan chart
+- Ringkasan dokumen lengkap/kurang
+- Quick actions untuk akses cepat
+
+### 👶 Manajemen Data Anak
+- Data lengkap anak (profil, pendidikan, status)
+- Upload dan manajemen dokumen (KK, Akta, Pendukung)
+- Monitoring status tinggal (Sekolah, Asrama, Perawatan)
+- Tracking tanggal masuk dan status aktif/nonaktif
+
+### 👔 Manajemen Data Pengurus
+- Data lengkap pengurus dan jabatan
+- Upload dokumen KTP
+- Manajemen kontak dan informasi
+
+### 📑 Sistem Laporan
+- Laporan data anak (PDF & Excel)
+- Laporan pengurus
+- Laporan dokumen
+- Laporan statistik
+- Kop surat yang dapat dikustomisasi
+
+### ⚙️ Pengaturan Sistem
+- Profile LKSA (nama, alamat, kontak, logo)
+- Manajemen user dan hak akses
+- Upload dokumen legal
+- Kop surat untuk laporan
+
+### ❤️ Dukung Kami
+- Halaman informasi donasi sukarela
+- Informasi rekening untuk kontribusi pengembangan aplikasi
+
+## 🛠️ Teknologi
+
+- **Framework**: CodeIgniter 3.x
+- **Bahasa**: PHP 7.4+
+- **Database**: MySQL/MariaDB
+- **Frontend**: Bootstrap 4, AdminLTE 3, jQuery
+- **Library**: 
+  - DataTables untuk tabel interaktif
+  - TCPDF untuk export PDF
+  - PHPExcel/PhpSpreadsheet untuk export Excel
+  - AOS untuk animasi
+  - Font Awesome untuk icon
+
+## 📋 Prasyarat
+
+- PHP >= 7.4
+- MySQL >= 5.7 atau MariaDB >= 10.3
+- Web Server (Apache/Nginx)
+- Ekstensi PHP: mysqli, gd, mbstring, zip
+
+## 🚀 Instalasi
+
+1. **Clone atau download repository**
+   ```bash
+   git clone https://github.com/username/sahabat.git
+   cd sahabat
+   ```
+
+2. **Import database**
+   ```bash
+   mysql -u username -p database_name < database/db_lksa.sql
+   ```
+
+3. **Konfigurasi database**
+   - Buka `application/config/database.php`
+   - Sesuaikan pengaturan koneksi database
+
+4. **Konfigurasi base URL**
+   - Buka `application/config/config.php`
+   - Sesuaikan `$config['base_url']`
+
+5. **Atur permission folder**
+   ```bash
+   chmod 755 -R assets/uploads/
+   chmod 755 -R application/cache/
+   chmod 755 -R application/logs/
+   ```
+
+6. **Akses aplikasi**
+   - Buka browser dan akses URL instalasi
+   - Login default: admin/admin
+
+## 📁 Struktur Folder
+
+```
+sahabat/
+├── application/
+│   ├── config/         # Konfigurasi aplikasi
+│   ├── controllers/    # Controller (Admin, Auth, Landing)
+│   ├── models/         # Model (Anak_model, Pengurus_model, User_model)
+│   ├── views/          # View (admin/, templates/, landingpage/)
+│   └── helpers/        # Helper functions
+├── assets/
+│   ├── css/            # Stylesheet
+│   ├── js/             # JavaScript
+│   ├── img/            # Gambar default
+│   ├── uploads/        # Upload folder (logo, dokumen)
+│   ├── plugins/        # Third-party plugins
+│   └── landing/        # Landing page assets
+├── database/
+│   └── db_lksa.sql     # Database schema
+├── system/             # CodeIgniter system
+└── index.php          # Entry point
+```
+
+## 👤 Default Login
+
+- **Username**: admin
+- **Password**: admin
+
+> ⚠️ **Penting**: Ganti password default setelah login pertama kali!
+
+## 📱 Screenshot
+
+### Dashboard Admin
+![Dashboard](screenshots/dashboard.png)
+
+### Data Anak
+![Data Anak](screenshots/anak.png)
+
+### Laporan PDF
+![Laporan](screenshots/laporan.png)
+
+## 🤝 Kontribusi
+
+Kontribusi selalu diterima! Untuk berkontribusi:
+
+1. Fork repository
+2. Buat branch fitur (`git checkout -b fitur-baru`)
+3. Commit perubahan (`git commit -am 'Tambah fitur baru'`)
+4. Push ke branch (`git push origin fitur-baru`)
+5. Buat Pull Request
+
+## ❤️ Dukungan
+
+Jika Anda ingin mendukung pengembangan aplikasi SAHABAT, donasi dapat disalurkan melalui:
+
+**Bank BRI**: 057201014816537  
+**Atas Nama**: Moh. Heri Setiawan
+
+Setiap dukungan akan membantu peningkatan fitur dan keberlanjutan layanan.
+
+## 📝 Lisensi
+
+Aplikasi ini dilisensikan di bawah [MIT License](LICENSE).
+
+## 📧 Kontak
+
+- **Email**: info@sahabat-lksa.id
+- **Website**: https://sahabat-lksa.id
+- **Developer**: Moh. Heri Setiawan
+
+---
+
+<p align="center">
+  <strong>SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu</strong><br>
+  Dibuat dengan ❤️ untuk kesejahteraan anak Indonesia
+</p>

@@ -12,7 +12,9 @@
 	},
 	"require": {
 		"php": ">=5.3.7",
-		"almasaeed2010/adminlte": "*"
+		"almasaeed2010/adminlte": "*",
+		"mpdf/mpdf": "*",
+		"phpoffice/phpspreadsheet": "*"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

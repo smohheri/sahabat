@@ -11,6 +11,7 @@ class Landing extends CI_Controller
 
 	public function index()
 	{
-		$this->load->view('landingpage/home');
+		$data['settings'] = $this->config->item('settings');
+		$this->load->view('landingpage/home', $data);
 	}
 }

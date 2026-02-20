@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+// Load Composer autoload
+require_once FCPATH . 'vendor/autoload.php';
+
+
 /*
 | -------------------------------------------------------------------
 | AUTO-LOADER
