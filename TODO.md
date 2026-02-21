@@ -14,6 +14,7 @@
 - [x] Update APP_VERSION ke 1.5.0 di constants.php
 - [x] Tambah .gitignore untuk application/sessions
 - [x] Test implementasi pagination dan search (versi aplikasi updated, gitignore updated, siap untuk testing browser)
+- [x] Stage, commit, dan push perubahan ke repository
 
 ## Summary
 Implementasi DataTables server-side pagination telah selesai. Fitur yang ditambahkan:

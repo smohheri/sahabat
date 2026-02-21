@@ -47,7 +47,7 @@
 							</div>
 						<?php endif; ?>
 
-						<?php echo form_open('auth/login'); ?>
+						<?php echo form_open('login'); ?>
 						<div class="input-group mb-3">
 							<?php
 							$data = array(

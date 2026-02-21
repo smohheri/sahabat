@@ -1,75 +1,82 @@
-<!-- Kontak Pengembang Page -->
-<div class="kontak-page">
+<!-- Kontak Pengembang - Redesain Modern -->
+<div class="laporan-page">
 	<!-- Page Header -->
 	<div class="page-header">
-		<div class="header-icon">
-			<i class="fas fa-code"></i>
-		</div>
-		<div class="header-content">
-			<h1>Kontak Pengembang</h1>
-			<p>Hubungi pengembang aplikasi ini untuk pertanyaan, saran, atau laporan bug</p>
+		<div class="header-info">
+			<div class="header-icon bg-blue">
+				<i class="fas fa-code"></i>
+			</div>
+			<div>
+				<h2>Kontak Pengembang</h2>
+				<p>Hubungi pengembang aplikasi ini untuk pertanyaan, saran, atau laporan bug</p>
+			</div>
 		</div>
 	</div>
 
-	<!-- Two Column Layout: Developer & Komunitas -->
-	<div class="two-column-grid">
-		<!-- Developer Card -->
-		<div class="developer-card">
-			<div class="card-header">
-				<i class="fas fa-user-circle"></i>
-				<h3>Pengembang</h3>
-			</div>
-			<div class="card-body">
-				<div class="developer-avatar">
-					<i class="fas fa-user"></i>
-				</div>
-				<div class="developer-info">
-					<h4>Moh. Heri Setiawan</h4>
-					<span class="role">IT Manager | Educator</span>
-					<p class="description">Berpengalaman di IT, pendidikan, dan manajemen sekolah. Saat ini IT Manager
-						di LSP SMK Penerbangan Cakra Nusantara. Juga aktif sebagai IT di Yayasan AL Hikmah Gelogor
-						Denpasar.</p>
-					<div class="contact-links">
-						<a href="https://github.com/smohheri" target="_blank" class="contact-btn github">
-							<i class="fab fa-github"></i> GitHub
-						</a>
-						<a href="https://www.linkedin.com/in/moh-heri-setiawan-106a67118/" target="_blank"
-							class="contact-btn linkedin">
-							<i class="fab fa-linkedin"></i> LinkedIn
-						</a>
-						<a href="mailto:smohheri@gmail.com" class="contact-btn email">
-							<i class="fas fa-envelope"></i> Email
-						</a>
+	<!-- Developer Information -->
+	<div class="data-panel">
+		<div class="panel-header">
+			<h3><i class="fas fa-user-circle"></i> Pengembang</h3>
+		</div>
+		<div class="panel-body">
+			<div class="developer-section">
+				<div class="developer-profile">
+					<div class="developer-avatar">
+						<i class="fas fa-user"></i>
+					</div>
+					<div class="developer-details">
+						<h4>Moh. Heri Setiawan</h4>
+						<span class="role-badge">IT Manager | Educator</span>
+						<p class="description">Berpengalaman di IT, pendidikan, dan manajemen sekolah. Saat ini IT
+							Manager di LSP SMK Penerbangan Cakra Nusantara. Juga aktif sebagai IT di Yayasan AL Hikmah
+							Gelogor Denpasar.</p>
 					</div>
 				</div>
-			</div>
-		</div>
-
-		<!-- Komunitas Card -->
-		<div class="komunitas-card">
-			<div class="card-header wa-header">
-				<i class="fab fa-whatsapp"></i>
-				<h3>Komunitas SAHABAT</h3>
-			</div>
-			<div class="card-body">
-				<div class="komunitas-image">
-					<img src="<?php echo base_url('assets/img/wa_komunitas_sahabat.jpeg'); ?>" alt="Komunitas SAHABAT"
-						class="img-fluid">
-				</div>
-				<div class="komunitas-info">
-					<p class="komunitas-desc">Bergabung dengan komunitas pengguna SAHABAT untuk mendapatkan update
-						terbaru, diskusi, dan saling berbagi.</p>
-					<a href="https://chat.whatsapp.com/LNBtMziI9FYKmMM6Mh9H8V?mode=gi_t" target="_blank"
-						class="btn-komunitas">
-						<i class="fab fa-whatsapp"></i> Gabung Sekarang
+				<div class="contact-actions">
+					<a href="https://github.com/smohheri" target="_blank" class="contact-btn github">
+						<i class="fab fa-github"></i>
+						<span>GitHub</span>
+					</a>
+					<a href="https://www.linkedin.com/in/moh-heri-setiawan-106a67118/" target="_blank"
+						class="contact-btn linkedin">
+						<i class="fab fa-linkedin"></i>
+						<span>LinkedIn</span>
+					</a>
+					<a href="mailto:smohheri@gmail.com" class="contact-btn email">
+						<i class="fas fa-envelope"></i>
+						<span>Email</span>
 					</a>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Info Section -->
-	<div class="info-section">
+	<!-- Community Section -->
+	<div class="data-panel">
+		<div class="panel-header">
+			<h3><i class="fab fa-whatsapp"></i> Komunitas SAHABAT</h3>
+		</div>
+		<div class="panel-body">
+			<div class="community-section">
+				<div class="community-image">
+					<img src="<?php echo base_url('assets/img/wa_komunitas_sahabat.jpeg'); ?>" alt="Komunitas SAHABAT"
+						class="img-fluid">
+				</div>
+				<div class="community-content">
+					<p class="community-desc">Bergabung dengan komunitas pengguna SAHABAT untuk mendapatkan update
+						terbaru, diskusi, dan saling berbagi.</p>
+					<a href="https://chat.whatsapp.com/LNBtMziI9FYKmMM6Mh9H8V?mode=gi_t" target="_blank"
+						class="community-btn">
+						<i class="fab fa-whatsapp"></i>
+						<span>Gabung Komunitas</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Information Cards -->
+	<div class="info-grid">
 		<div class="info-card">
 			<div class="info-icon">
 				<i class="fas fa-clock"></i>
@@ -107,161 +114,161 @@
 
 <style>
 	/* Page Container */
-	.kontak-page {
+	.laporan-page {
 		padding: 10px;
 	}
 
 	/* Page Header */
 	.page-header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		border-radius: 20px;
-		padding: 30px;
-		display: flex;
-		align-items: center;
-		gap: 25px;
-		margin-bottom: 30px;
-		color: #fff;
-	}
-
-	.header-icon {
-		width: 80px;
-		height: 80px;
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 20px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 36px;
-		backdrop-filter: blur(10px);
-	}
-
-	.header-content h1 {
-		margin: 0 0 8px;
-		font-size: 28px;
-		font-weight: 700;
-	}
-
-	.header-content p {
-		margin: 0;
-		opacity: 0.9;
-		font-size: 15px;
-	}
-
-	/* Two Column Grid */
-	.two-column-grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 25px;
-		margin-bottom: 30px;
-	}
-
-	/* Card Base Styles */
-	.developer-card,
-	.komunitas-card {
 		background: #fff;
 		border-radius: 16px;
-		overflow: hidden;
+		padding: 25px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 25px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-		transition: all 0.3s ease;
 	}
 
-	.developer-card:hover,
-	.komunitas-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-	}
-
-	.card-header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		padding: 20px 25px;
+	.header-info {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		color: #fff;
-	}
-
-	.card-header i {
-		font-size: 24px;
-	}
-
-	.card-header h3 {
-		margin: 0;
-		font-size: 18px;
-		font-weight: 600;
-	}
-
-	.card-header.wa-header {
-		background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-	}
-
-	.card-body {
-		padding: 25px;
-	}
-
-	/* Developer Card Specific */
-	.developer-card .card-body {
-		display: flex;
 		gap: 20px;
 	}
 
+	.header-icon {
+		width: 60px;
+		height: 60px;
+		border-radius: 14px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 26px;
+	}
+
+	.bg-blue {
+		background: rgba(78, 115, 223, 0.1);
+		color: #4e73df;
+	}
+
+	.header-info h2 {
+		margin: 0 0 5px;
+		font-size: 22px;
+		font-weight: 600;
+		color: #2d3748;
+	}
+
+	.header-info p {
+		margin: 0;
+		color: #718096;
+		font-size: 14px;
+	}
+
+	/* Data Panel */
+	.data-panel {
+		background: #fff;
+		border-radius: 14px;
+		overflow: hidden;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+		margin-bottom: 25px;
+	}
+
+	.panel-header {
+		padding: 20px 25px;
+		border-bottom: 1px solid #edf2f7;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.panel-header h3 {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: #2d3748;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.panel-header i {
+		color: #4e73df;
+	}
+
+	.panel-body {
+		padding: 25px;
+	}
+
+	/* Developer Section */
+	.developer-section {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 25px;
+		align-items: start;
+	}
+
+	.developer-profile {
+		display: flex;
+		gap: 20px;
+		align-items: start;
+	}
+
 	.developer-avatar {
-		width: 70px;
-		height: 70px;
+		width: 80px;
+		height: 80px;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 28px;
+		font-size: 32px;
 		color: #fff;
 		flex-shrink: 0;
 	}
 
-	.developer-info {
-		flex: 1;
-	}
-
-	.developer-info h4 {
-		margin: 0 0 5px;
-		font-size: 18px;
+	.developer-details h4 {
+		margin: 0 0 8px;
+		font-size: 20px;
 		font-weight: 600;
 		color: #2d3748;
 	}
 
-	.developer-info .role {
+	.role-badge {
 		display: inline-block;
 		background: rgba(102, 126, 234, 0.1);
 		color: #667eea;
-		padding: 3px 10px;
-		border-radius: 15px;
-		font-size: 11px;
+		padding: 4px 12px;
+		border-radius: 20px;
+		font-size: 12px;
 		font-weight: 500;
-		margin-bottom: 10px;
-	}
-
-	.developer-info .description {
-		color: #718096;
-		font-size: 13px;
-		line-height: 1.5;
 		margin-bottom: 12px;
 	}
 
-	.contact-links {
+	.description {
+		color: #718096;
+		font-size: 14px;
+		line-height: 1.6;
+		margin: 0 0 15px;
+	}
+
+	.contact-actions {
 		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
+		flex-direction: column;
+		gap: 10px;
 	}
 
 	.contact-btn {
-		padding: 6px 12px;
-		border-radius: 6px;
-		font-size: 12px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 20px;
+		border-radius: 10px;
+		font-size: 14px;
 		font-weight: 500;
 		text-decoration: none;
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
 		transition: all 0.3s ease;
+		min-width: 140px;
+		justify-content: center;
 	}
 
 	.contact-btn.github {
@@ -271,6 +278,7 @@
 
 	.contact-btn.github:hover {
 		background: #000;
+		transform: translateY(-2px);
 	}
 
 	.contact-btn.linkedin {
@@ -280,6 +288,7 @@
 
 	.contact-btn.linkedin:hover {
 		background: #005885;
+		transform: translateY(-2px);
 	}
 
 	.contact-btn.email {
@@ -289,34 +298,44 @@
 
 	.contact-btn.email:hover {
 		background: #c5221f;
+		transform: translateY(-2px);
 	}
 
-	/* Komunitas Card Specific */
-	.komunitas-image {
-		margin-bottom: 15px;
-		text-align: center;
+	/* Community Section */
+	.community-section {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 25px;
+		align-items: center;
 	}
 
-	.komunitas-image img {
-		width: 70%;
-		max-width: 250px;
-		border-radius: 10px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	.community-image {
+		flex-shrink: 0;
 	}
 
-	.komunitas-info .komunitas-desc {
+	.community-image img {
+		width: 120px;
+		height: 120px;
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		object-fit: cover;
+	}
+
+	.community-content {
+		padding-left: 10px;
+	}
+
+	.community-desc {
 		color: #718096;
-		font-size: 13px;
-		line-height: 1.5;
-		margin-bottom: 15px;
+		font-size: 14px;
+		line-height: 1.6;
+		margin-bottom: 20px;
 	}
 
-	.btn-komunitas {
+	.community-btn {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
 		gap: 10px;
-		width: 100%;
 		padding: 12px 24px;
 		background: #25D366;
 		color: #fff;
@@ -327,14 +346,14 @@
 		transition: all 0.3s ease;
 	}
 
-	.btn-komunitas:hover {
+	.community-btn:hover {
 		background: #128C7E;
 		transform: translateY(-2px);
 		box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
 	}
 
-	/* Info Section */
-	.info-section {
+	/* Info Grid */
+	.info-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 20px;
@@ -347,23 +366,29 @@
 		display: flex;
 		gap: 18px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+		transition: all 0.3s ease;
+	}
+
+	.info-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 	}
 
 	.info-icon {
-		width: 50px;
-		height: 50px;
-		background: rgba(102, 126, 234, 0.1);
+		width: 55px;
+		height: 55px;
+		background: rgba(78, 115, 223, 0.1);
 		border-radius: 12px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 22px;
-		color: #667eea;
+		font-size: 24px;
+		color: #4e73df;
 		flex-shrink: 0;
 	}
 
 	.info-content h4 {
-		margin: 0 0 8px;
+		margin: 0 0 10px;
 		font-size: 16px;
 		font-weight: 600;
 		color: #2d3748;
@@ -377,63 +402,93 @@
 	}
 
 	/* Responsive */
-	@media (max-width: 992px) {
-		.two-column-grid {
-			grid-template-columns: 1fr;
+	@media (max-width: 1200px) {
+		.info-grid {
+			grid-template-columns: repeat(2, 1fr);
 		}
 
-		.info-section {
+		.developer-section {
 			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+
+		.community-section {
+			grid-template-columns: 1fr;
+			text-align: center;
+			gap: 20px;
 		}
 	}
 
 	@media (max-width: 768px) {
 		.page-header {
 			flex-direction: column;
+			gap: 20px;
 			text-align: center;
-			padding: 25px;
 		}
 
-		.developer-card .card-body {
+		.header-info {
+			flex-direction: column;
+		}
+
+		.info-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.developer-profile {
 			flex-direction: column;
 			text-align: center;
 		}
 
-		.contact-links {
-			justify-content: center;
+		.contact-actions {
+			align-items: center;
+		}
+
+		.panel-body {
+			padding: 20px;
 		}
 	}
 
 	/* Dark Mode Styles */
-	body.dark-mode .kontak-page {
+	body.dark-mode .laporan-page {
 		background-color: #1a1a2e;
 	}
 
 	body.dark-mode .page-header {
-		background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-		border: 1px solid #00d9ff;
-	}
-
-	body.dark-mode .header-content h1,
-	body.dark-mode .header-content p {
-		color: #e0e0e0;
-	}
-
-	body.dark-mode .developer-card,
-	body.dark-mode .komunitas-card {
 		background-color: #16213e;
 		border-color: #0f3460;
 	}
 
-	body.dark-mode .developer-info h4 {
+	body.dark-mode .header-info h2 {
 		color: #e0e0e0;
 	}
 
-	body.dark-mode .developer-info .description {
+	body.dark-mode .header-info p {
 		color: #a0a0a0;
 	}
 
-	body.dark-mode .komunitas-info .komunitas-desc {
+	body.dark-mode .data-panel {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .panel-header {
+		border-bottom-color: #0f3460;
+	}
+
+	body.dark-mode .panel-header h3 {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .panel-body {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .developer-details h4 {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .description,
+	body.dark-mode .community-desc {
 		color: #a0a0a0;
 	}
 
@@ -448,5 +503,9 @@
 
 	body.dark-mode .info-content p {
 		color: #a0a0a0;
+	}
+
+	body.dark-mode .text-muted {
+		color: #a0a0a0 !important;
 	}
 </style>

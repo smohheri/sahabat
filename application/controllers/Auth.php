@@ -23,6 +23,7 @@ class Auth extends CI_Controller
 		$this->form_validation->set_rules('password', 'Password', 'required');
 
 		if ($this->form_validation->run() == FALSE) {
+			$this->load->helper('form');
 			$settings = $this->config->item('settings');
 			$data = array(
 				'title' => 'Login - ' . ($settings ? $settings->nama_lksa : 'LKSA Harapan Bangsa'),
