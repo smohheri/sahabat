@@ -5,9 +5,47 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.4.0] - 2025-02-22
 
-## [1.3.0] - 2025-02-21
+### Added
+- 🖼️ **Dynamic Landing Page Images**
+  - Admin dapat upload gambar hero dan about untuk landing page
+  - Fallback otomatis ke gambar Unsplash jika belum ada gambar
+  - Menu "Landing Page" di admin sidebar (Pengaturan > Landing Page)
+  - Upload gambar dengan validasi (JPG, PNG, max 2MB)
+  - Preview gambar di halaman admin
+  - Folder upload: assets/uploads/landing/
+
+- 🔧 **Database Schema Update**
+  - Kolom hero_image dan about_image di tabel pengaturan
+  - File SQL: database/alter_table_add_landing_images.sql
+
+### Changed
+- 🔄 **Landing Page** (`application/views/landingpage/home.php`)
+  - Gambar hero dan about sekarang dinamis dari database
+  - Fallback ke Unsplash jika belum ada gambar upload
+
+- 🔄 **Admin Controller** (`application/controllers/Admin.php`)
+  - Method landing() - halaman kelola landing page
+  - Method upload_hero_image() - upload gambar hero
+  - Method upload_about_image() - upload gambar about
+
+- 🔄 **Admin Sidebar** (`application/views/templates/sidebar_lksa.php`)
+  - Menu "Landing Page" di bawah Pengaturan
+
+### Technical
+- 🔧 **View Baru**
+  - application/views/admin/landing.php - Halaman kelola gambar landing
+
+- 🔧 **File Database Baru**
+  - database/alter_table_add_landing_images.sql - Tambah kolom gambar landing
+
+- 🔧 **Direktori Upload Baru**
+  - assets/uploads/landing/ - Folder untuk gambar landing page
+
+---
+
+## [1.3.0] - 2025-02-22
 
 ### Added
 - ✨ **Export PDF Statistik dengan Chart sebagai Gambar**
@@ -31,6 +69,38 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Tombol dinonaktifkan saat PDF sedang dibuat
   - Kembali normal setelah selesai
 
+- ✨ **Modal View Data Anak**
+  - Tombol "View Data" (ikon mata) di kolom Aksi halaman anak
+  - Modal besar (modal-xl) menampilkan data lengkap anak
+  - Layout data terorganisir: Info Pribadi, Pendidikan & Status, Dokumen
+  - Link dokumen yang dapat diklik jika tersedia
+
+- 📸 **Fitur Upload Foto Anak**
+  - Kolom foto di tabel anak (database/alter_table_add_foto_anak.sql)
+  - Upload foto di modal edit anak
+  - Tampilan foto di modal view data
+  - Folder upload: assets/uploads/foto_anak/
+  - Validasi file gambar (JPG, PNG, max 2MB)
+
+- 📊 **Update Dashboard & Laporan**
+  - Statistik foto di dashboard (anak dengan foto)
+  - Kolom foto di laporan dokumen (tabel dan progress bar)
+  - Update counter dokumen: X/4 (termasuk foto)
+
+- 🔐 **Sistem Pencatatan Aktivitas Pengguna**
+  - Mencatat aktivitas penting pengguna untuk keamanan dan audit
+  - Halaman admin untuk melihat riwayat aktivitas
+  - Memudahkan monitoring penggunaan aplikasi
+
+- 📄 **Halaman Changelog**
+  - Halaman admin/changelog untuk melihat riwayat perubahan
+  - Parsing CHANGELOG.md ke HTML dengan styling GitHub-like
+  - Responsive design dengan dark mode support
+
+- 👤 **Role Operator**
+  - Role baru 'operator' di tabel users
+  - File SQL: database/alter_table_add_role_operator.sql
+
 ### Changed
 - 🔄 **Update `application/controllers/Admin.php`**
   - Menambahkan method `generate_pdf_statistik()` - generate PDF dengan gambar chart
@@ -48,8 +118,54 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - 🔄 **Update `application/config/routes.php`**
   - Menambahkan route `admin/delete_temp_file`
 
+- 🔄 **Update `application/controllers/Admin.php`**
+  - Method upload_foto() untuk upload foto anak
+  - Method logs() untuk halaman log aktivitas
+  - Method changelog() untuk halaman changelog
+
+- 🔄 **Update `application/models/Anak_model.php`**
+  - Handle field foto di CRUD operations
+
+- 🔄 **Update `application/views/admin/anak.php`**
+  - Tombol View Data dengan modal lengkap
+  - Upload foto di modal edit
+
+- 🔄 **Update `application/views/admin/dashboard.php`**
+  - Statistik foto anak
+
+- 🔄 **Update `application/views/admin/laporan/dokumen.php`**
+  - Kolom foto di tabel dan progress
+
+- 🔄 **Update `application/config/routes.php`**
+  - Route admin/logs dan admin/changelog
+
+- 🔄 **Update `application/config/constants.php`**
+  - Konstanta untuk path upload foto
+
+- 🔄 **Update `database/db_lksa.sql`**
+  - Struktur database terbaru dengan kolom foto dan tabel user_logs
+
 ### Technical
 - 🔧 **Direktori baru** - `assets/temp/` untuk menyimpan file PDF sementara
+
+- 🔧 **Helper Baru**
+  - application/helpers/logging_helper.php - Pencatatan aktivitas pengguna
+  - application/helpers/ip_helper.php - Mendapatkan alamat IP
+
+- 🔧 **Model Baru**
+  - application/models/User_log_model.php - Model untuk user logs
+
+- 🔧 **View Baru**
+  - application/views/admin/logs.php - Halaman log aktivitas
+  - application/views/admin/changelog.php - Halaman changelog
+
+- 🔧 **File Database Baru**
+  - database/alter_table_add_foto_anak.sql - Tambah kolom foto
+  - database/alter_table_add_role_operator.sql - Tambah role operator
+  - database/alter_table_add_user_logs.sql - Buat tabel user_logs
+
+- 🔧 **Direktori Upload Baru**
+  - assets/uploads/foto_anak/ - Folder untuk foto anak
 
 ---
 
@@ -248,11 +364,23 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## Catatan Rilis
 
+### Versi 1.4.0
+- Menambahkan fitur gambar landing page dinamis
+- Admin dapat upload gambar hero dan about section
+- Fallback otomatis ke gambar Unsplash
+- Menu baru di admin sidebar untuk mengelola gambar landing
+
 ### Versi 1.3.0
 - Menambahkan fitur Export PDF Statistik dengan chart sebagai gambar
 - Chart sekarang memiliki judul dan legend
 - File temporary PDF dihapus secara otomatis
 - Menambahkan indikator loading
+- Modal View Data untuk melihat data lengkap anak
+- Fitur upload foto anak dengan validasi
+- Update dashboard dan laporan dokumen dengan statistik foto
+- Sistem pencatatan aktivitas pengguna
+- Halaman changelog dan logs admin
+- Role operator baru
 
 ### Versi 1.2.0
 - Menambahkan halaman kontak pengembang

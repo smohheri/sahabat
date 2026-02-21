@@ -9,6 +9,8 @@ class Admin extends CI_Controller
 		if (!$this->session->userdata('is_logged_in')) {
 			redirect('auth/login');
 		}
+		$this->load->helper('ip');
+		$this->load->helper('logging');
 	}
 
 	public function index()
@@ -149,7 +151,16 @@ class Admin extends CI_Controller
 					'whatsapp' => $this->input->post('whatsapp')
 				);
 
+				$old_settings = $this->User_model->get_pengaturan();
 				$this->User_model->update_pengaturan($data_update);
+				$changes = [];
+				foreach ($data_update as $key => $value) {
+					if ($old_settings->$key != $value) {
+						$changes[] = $key . " dari '" . $old_settings->$key . "' ke '" . $value . "'";
+					}
+				}
+				$description = 'Memperbarui pengaturan LKSA: ' . implode(', ', $changes);
+				log_activity('update_settings', $description);
 				$this->session->set_flashdata('success', 'Pengaturan berhasil diperbarui!');
 				redirect('admin/pengaturan');
 			}
@@ -195,6 +206,8 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$logo_name = $data['file_name'];
 			$this->User_model->update_pengaturan(['logo' => $logo_name]);
+			$description = 'Mengupload logo LKSA: ' . $logo_name;
+			log_activity('upload_logo', $description);
 			$this->session->set_flashdata('success', 'Logo berhasil diupload!');
 		}
 
@@ -227,6 +240,8 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$dokumen_name = $data['file_name'];
 			$this->User_model->update_pengaturan(['dokumen_legal' => $dokumen_name]);
+			$description = 'Mengupload dokumen legal LKSA: ' . $dokumen_name;
+			log_activity('upload_dokumen', $description);
 			$this->session->set_flashdata('success', 'Dokumen legal berhasil diupload!');
 		}
 
@@ -266,25 +281,131 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$kop_name = $data['file_name'];
 			$this->User_model->update_pengaturan(['kop_surat' => $kop_name]);
+			$description = 'Mengupload kop surat LKSA: ' . $kop_name;
+			log_activity('upload_kop', $description);
 			$this->session->set_flashdata('success', 'Kop surat berhasil diupload!');
 		}
 
 		redirect('admin/pengaturan');
 	}
 
+	public function landing()
+	{
+		$this->load->model('User_model');
+		$data['pengaturan'] = $this->User_model->get_pengaturan();
+		$data['title'] = 'Kelola Landing Page - LKSA Harapan Bangsa';
+		$data['page_title'] = 'Kelola Landing Page';
+		$data['content'] = $this->load->view('admin/landing', $data, TRUE);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function upload_hero_image()
+	{
+		$this->load->model('User_model');
+		$this->load->library('upload');
+
+		$pengaturan = $this->User_model->get_pengaturan();
+		if (!empty($pengaturan->hero_image)) {
+			$old_image_path = FCPATH . 'assets/uploads/landing/' . $pengaturan->hero_image;
+			if (file_exists($old_image_path)) {
+				unlink($old_image_path);
+			}
+		}
+
+		$upload_path = FCPATH . 'assets/uploads/landing/';
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		$config['upload_path'] = $upload_path;
+		$config['allowed_types'] = 'jpg|jpeg|png';
+		$config['max_size'] = 2048;
+		$config['file_name'] = 'hero_' . time();
+		$config['detect_mime'] = TRUE;
+		$config['xss_clean'] = TRUE;
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('hero_image')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+		} else {
+			$data = $this->upload->data();
+			$image_name = $data['file_name'];
+			$this->User_model->update_pengaturan(['hero_image' => $image_name]);
+			$description = 'Mengupload gambar hero landing page: ' . $image_name;
+			log_activity('upload_hero_image', $description);
+			$this->session->set_flashdata('success', 'Gambar hero berhasil diupload!');
+		}
+
+		redirect('admin/landing');
+	}
+
+	public function upload_about_image()
+	{
+		$this->load->model('User_model');
+		$this->load->library('upload');
+
+		$pengaturan = $this->User_model->get_pengaturan();
+		if (!empty($pengaturan->about_image)) {
+			$old_image_path = FCPATH . 'assets/uploads/landing/' . $pengaturan->about_image;
+			if (file_exists($old_image_path)) {
+				unlink($old_image_path);
+			}
+		}
+
+		$upload_path = FCPATH . 'assets/uploads/landing/';
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		$config['upload_path'] = $upload_path;
+		$config['allowed_types'] = 'jpg|jpeg|png';
+		$config['max_size'] = 2048;
+		$config['file_name'] = 'about_' . time();
+		$config['detect_mime'] = TRUE;
+		$config['xss_clean'] = TRUE;
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('about_image')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+		} else {
+			$data = $this->upload->data();
+			$image_name = $data['file_name'];
+			$this->User_model->update_pengaturan(['about_image' => $image_name]);
+			$description = 'Mengupload gambar about landing page: ' . $image_name;
+			log_activity('upload_about_image', $description);
+			$this->session->set_flashdata('success', 'Gambar about berhasil diupload!');
+		}
+
+		redirect('admin/landing');
+	}
+
 	public function user()
 	{
 		$this->load->model('User_model');
+		$this->load->model('User_log_model');
 		$this->load->library('form_validation');
 
 		if ($this->input->get('delete')) {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus user!');
+				redirect('admin/user');
+			}
 			$id = $this->input->get('delete');
+			$user = $this->User_model->get_user_by_id($id);
 			$this->User_model->delete_user($id);
+			$description = 'Menghapus data user: nama \'' . $user->nama . '\'';
+			log_activity('delete_user', $description);
 			$this->session->set_flashdata('success', 'User berhasil dihapus!');
 			redirect('admin/user');
 		}
 
 		if ($this->input->post()) {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengelola user!');
+				redirect('admin/user');
+			}
 			$id = $this->input->post('id_user');
 
 			$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -295,6 +416,20 @@ class Admin extends CI_Controller
 				$this->session->set_flashdata('error', validation_errors());
 				redirect('admin/user');
 			} else {
+				if ($id) {
+					// Editing
+					if ($this->session->userdata('role') != 'admin' && $id != $this->session->userdata('id_user')) {
+						$this->session->set_flashdata('error', 'Anda hanya bisa mengedit data diri sendiri!');
+						redirect('admin/user');
+					}
+				} else {
+					// Adding
+					if ($this->session->userdata('role') != 'admin') {
+						$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menambah user!');
+						redirect('admin/user');
+					}
+				}
+
 				$data = array(
 					'nama' => $this->input->post('nama'),
 					'username' => $this->input->post('username'),
@@ -306,7 +441,16 @@ class Admin extends CI_Controller
 				}
 
 				if ($id) {
+					$old_user = $this->User_model->get_user_by_id($id);
 					$this->User_model->update_user($id, $data);
+					$changes = [];
+					foreach ($data as $key => $value) {
+						if ($old_user->$key != $value) {
+							$changes[] = $key . " dari '" . $old_user->$key . "' ke '" . $value . "'";
+						}
+					}
+					$description = 'Mengedit data user: ' . implode(', ', $changes);
+					log_activity('edit_user', $description);
 					$this->session->set_flashdata('success', 'User berhasil diperbarui!');
 				} else {
 					if (!$this->input->post('password')) {
@@ -314,6 +458,10 @@ class Admin extends CI_Controller
 						redirect('admin/user');
 					}
 					$this->User_model->insert_user($data);
+					$description = 'Menambahkan user baru: ' . implode(', ', array_map(function ($k, $v) {
+						return $k . " '" . $v . "'";
+					}, array_keys($data), $data));
+					log_activity('add_user', $description);
 					$this->session->set_flashdata('success', 'User berhasil ditambahkan!');
 				}
 				redirect('admin/user');
@@ -340,7 +488,10 @@ class Admin extends CI_Controller
 
 		if ($this->input->get('delete')) {
 			$id = $this->input->get('delete');
+			$anak = $this->Anak_model->get_anak_by_id($id);
 			$this->Anak_model->delete_anak($id);
+			$description = 'Menghapus data anak: nama_anak \'' . $anak->nama_anak . '\'';
+			log_activity('delete_anak', $description);
 			$this->session->set_flashdata('success', 'Data anak berhasil dihapus!');
 			redirect('admin/anak');
 		}
@@ -374,10 +525,23 @@ class Admin extends CI_Controller
 				);
 
 				if ($id) {
+					$old_anak = $this->Anak_model->get_anak_by_id($id);
 					$this->Anak_model->update_anak($id, $data);
+					$changes = [];
+					foreach ($data as $key => $value) {
+						if ($old_anak->$key != $value) {
+							$changes[] = $key . " dari '" . $old_anak->$key . "' ke '" . $value . "'";
+						}
+					}
+					$description = 'Mengedit data anak: ' . implode(', ', $changes);
+					log_activity('edit_anak', $description);
 					$this->session->set_flashdata('success', 'Data anak berhasil diperbarui!');
 				} else {
 					$this->Anak_model->insert_anak($data);
+					$description = 'Menambahkan data anak baru: ' . implode(', ', array_map(function ($k, $v) {
+						return $k . " '" . $v . "'";
+					}, array_keys($data), $data));
+					log_activity('add_anak', $description);
 					$this->session->set_flashdata('success', 'Data anak berhasil ditambahkan!');
 				}
 				redirect('admin/anak');
@@ -426,6 +590,8 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_kk($id_anak, $file_path);
+			$description = 'Mengupload KK untuk anak ' . $anak->nama_anak . ': ' . $data['file_name'];
+			log_activity('upload_kk', $description);
 			$this->session->set_flashdata('success', 'File KK berhasil diupload!');
 		}
 
@@ -467,6 +633,8 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_akta($id_anak, $file_path);
+			$description = 'Mengupload akta untuk anak ' . $anak->nama_anak . ': ' . $data['file_name'];
+			log_activity('upload_akta', $description);
 			$this->session->set_flashdata('success', 'File Akta berhasil diupload!');
 		}
 
@@ -508,7 +676,52 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_pendukung($id_anak, $file_path);
+			$description = 'Mengupload dokumen pendukung untuk anak ' . $anak->nama_anak . ': ' . $data['file_name'];
+			log_activity('upload_pendukung', $description);
 			$this->session->set_flashdata('success', 'File pendukung berhasil diupload!');
+		}
+
+		redirect('admin/anak');
+	}
+
+	public function upload_foto($id_anak)
+	{
+		$this->load->model('Anak_model');
+		$this->load->library('upload');
+
+		$anak = $this->Anak_model->get_anak_by_id($id_anak);
+
+		$folder_name = $anak->nik ? $anak->nik . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak) : preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak);
+		$upload_path = FCPATH . 'assets/uploads/foto_anak/' . $folder_name . '/';
+
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		if (!empty($anak->foto)) {
+			$old_filename = basename($anak->foto);
+			$old_file = $upload_path . $old_filename;
+			if (file_exists($old_file)) {
+				unlink($old_file);
+			}
+		}
+
+		$config['upload_path'] = $upload_path;
+		$config['allowed_types'] = 'jpg|jpeg|png';
+		$config['max_size'] = 2048;
+		$config['file_name'] = 'foto_' . time();
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('foto')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+		} else {
+			$data = $this->upload->data();
+			$file_path = $folder_name . '/' . $data['file_name'];
+			$this->Anak_model->update_foto($id_anak, $file_path);
+			$description = 'Mengupload foto untuk anak ' . $anak->nama_anak . ': ' . $data['file_name'];
+			log_activity('upload_foto', $description);
+			$this->session->set_flashdata('success', 'Foto berhasil diupload!');
 		}
 
 		redirect('admin/anak');
@@ -559,7 +772,10 @@ class Admin extends CI_Controller
 
 		if ($this->input->get('delete')) {
 			$id = $this->input->get('delete');
+			$pengurus = $this->Pengurus_model->get_pengurus_by_id($id);
 			$this->Pengurus_model->delete_pengurus($id);
+			$description = 'Menghapus data pengurus: nama_pengurus \'' . $pengurus->nama_pengurus . '\'';
+			log_activity('delete_pengurus', $description);
 			$this->session->set_flashdata('success', 'Data pengurus berhasil dihapus!');
 			redirect('admin/pengurus');
 		}
@@ -583,10 +799,23 @@ class Admin extends CI_Controller
 				);
 
 				if ($id) {
+					$old_pengurus = $this->Pengurus_model->get_pengurus_by_id($id);
 					$this->Pengurus_model->update_pengurus($id, $data);
+					$changes = [];
+					foreach ($data as $key => $value) {
+						if ($old_pengurus->$key != $value) {
+							$changes[] = $key . " dari '" . $old_pengurus->$key . "' ke '" . $value . "'";
+						}
+					}
+					$description = 'Mengedit data pengurus: ' . implode(', ', $changes);
+					log_activity('edit_pengurus', $description);
 					$this->session->set_flashdata('success', 'Data pengurus berhasil diperbarui!');
 				} else {
 					$this->Pengurus_model->insert_pengurus($data);
+					$description = 'Menambahkan data pengurus baru: ' . implode(', ', array_map(function ($k, $v) {
+						return $k . " '" . $v . "'";
+					}, array_keys($data), $data));
+					log_activity('add_pengurus', $description);
 					$this->session->set_flashdata('success', 'Data pengurus berhasil ditambahkan!');
 				}
 				redirect('admin/pengurus');
@@ -640,6 +869,8 @@ class Admin extends CI_Controller
 			$data = $this->upload->data();
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Pengurus_model->update_ktp($id_pengurus, $file_path);
+			$description = 'Mengupload KTP untuk pengurus ' . $pengurus->nama_pengurus . ': ' . $data['file_name'];
+			log_activity('upload_ktp', $description);
 			$this->session->set_flashdata('success', 'File KTP berhasil diupload!');
 		}
 
@@ -734,6 +965,7 @@ class Admin extends CI_Controller
 
 		$html = $this->pdf_export->generate_laporan_anak($data);
 		$this->pdf_export->generate($html, 'laporan_data_anak_' . date('Ymd') . '.pdf', 'D');
+		log_activity('export_pdf', 'Mengekspor laporan PDF data anak');
 	}
 
 	public function export_excel_anak()
@@ -743,6 +975,7 @@ class Admin extends CI_Controller
 
 		$data['anak'] = $this->Anak_model->get_all_anak();
 		$this->excel_export->export_laporan_anak($data, 'laporan_data_anak_' . date('Ymd') . '.xlsx');
+		log_activity('export_excel', 'Mengekspor laporan Excel data anak');
 	}
 
 	public function export_pdf_pengurus()
@@ -755,6 +988,7 @@ class Admin extends CI_Controller
 
 		$html = $this->pdf_export->generate_laporan_pengurus($data);
 		$this->pdf_export->generate($html, 'laporan_pengurus_' . date('Ymd') . '.pdf', 'D');
+		log_activity('export_pdf_pengurus', 'Mengekspor laporan PDF data pengurus');
 	}
 
 	public function export_excel_pengurus()
@@ -764,6 +998,7 @@ class Admin extends CI_Controller
 
 		$data['pengurus'] = $this->Pengurus_model->get_all_pengurus();
 		$this->excel_export->export_laporan_pengurus($data, 'laporan_pengurus_' . date('Ymd') . '.xlsx');
+		log_activity('export_excel_pengurus', 'Mengekspor laporan Excel data pengurus');
 	}
 
 	public function export_pdf_dokumen()
@@ -776,6 +1011,7 @@ class Admin extends CI_Controller
 
 		$html = $this->pdf_export->generate_laporan_dokumen($data);
 		$this->pdf_export->generate($html, 'laporan_dokumen_' . date('Ymd') . '.pdf', 'D');
+		log_activity('export_pdf_dokumen', 'Mengekspor laporan PDF data dokumen');
 	}
 
 	public function export_pdf_statistik()
@@ -788,6 +1024,7 @@ class Admin extends CI_Controller
 
 		$html = $this->pdf_export->generate_laporan_statistik($data);
 		$this->pdf_export->generate($html, 'laporan_statistik_' . date('Ymd') . '.pdf', 'D');
+		log_activity('export_pdf_statistik', 'Mengekspor laporan PDF data statistik');
 	}
 
 	public function generate_pdf_statistik()
@@ -857,6 +1094,7 @@ class Admin extends CI_Controller
 
 		$data['anak'] = $this->Anak_model->get_all_anak();
 		$this->excel_export->export_laporan_dokumen($data, 'laporan_dokumen_' . date('Ymd') . '.xlsx');
+		log_activity('export_excel_dokumen', 'Mengekspor laporan Excel data dokumen');
 	}
 
 	public function kontak()
@@ -866,6 +1104,33 @@ class Admin extends CI_Controller
 			'page_title' => 'Kontak Pengembang',
 			'content' => $this->load->view('admin/kontak', NULL, TRUE)
 		);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function changelog()
+	{
+		$data = array(
+			'title' => 'Changelog - LKSA Harapan Bangsa',
+			'page_title' => 'Changelog',
+			'content' => $this->load->view('admin/changelog', NULL, TRUE)
+		);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function logs()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+			redirect('admin');
+		}
+
+		$this->load->model('User_log_model');
+		$logs = $this->User_log_model->get_all_logs();
+
+		$data['logs'] = $logs;
+		$data['title'] = 'Log Aktivitas User - LKSA Harapan Bangsa';
+		$data['page_title'] = 'Log Aktivitas User';
+		$data['content'] = $this->load->view('admin/logs', $data, TRUE);
 		$this->load->view('templates/admin_layout', $data);
 	}
 }

@@ -129,13 +129,22 @@
 					</a>
 				</li>
 
+				<!-- Changelog -->
+				<li class="nav-item">
+					<a href="<?php echo site_url('admin/changelog'); ?>"
+						class="nav-link <?php echo $this->uri->segment(2) == 'changelog' ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-history"></i>
+						<p>Changelog</p>
+					</a>
+				</li>
+
 				<!-- Pengaturan -->
 				<li class="nav-header">PENGATURAN</li>
 
 				<li
-					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'menu-open' : ''; ?>">
+					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing')) ? 'menu-open' : ''; ?>">
 					<a href="#"
-						class="nav-link <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'active' : ''; ?>">
+						class="nav-link <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing')) ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-cogs"></i>
 						<p>
 							Pengaturan
@@ -143,7 +152,7 @@
 						</p>
 					</a>
 					<ul class="nav nav-treeview"
-						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user')) ? 'display: block;' : ''; ?>">
+						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing')) ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/pengaturan'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'pengaturan' ? 'active' : ''; ?>">
@@ -152,10 +161,24 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="<?php echo site_url('admin/landing'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'landing' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Landing Page</p>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="<?php echo site_url('admin/user'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'user' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Kelola User</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/logs'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'logs' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Log Aktivitas</p>
 							</a>
 						</li>
 						<li class="nav-item">

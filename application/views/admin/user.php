@@ -19,9 +19,11 @@
 		<div class="card-header bg-primary text-white py-3">
 			<div class="d-flex justify-content-between align-items-center">
 				<h5 class="mb-0 font-weight-bold"><i class="fas fa-users mr-2"></i>Manajemen User</h5>
-				<button class="btn btn-light btn-sm px-3 font-weight-bold" data-toggle="modal" data-target="#modalAdd">
-					<i class="fas fa-plus mr-1"></i> Tambah User
-				</button>
+				<?php if ($this->session->userdata('role') == 'admin'): ?>
+					<button class="btn btn-light btn-sm px-3 font-weight-bold" data-toggle="modal" data-target="#modalAdd">
+						<i class="fas fa-plus mr-1"></i> Tambah User
+					</button>
+				<?php endif; ?>
 			</div>
 		</div>
 		<div class="card-body p-0">
@@ -63,14 +65,18 @@
 								</td>
 								<td class="text-center">
 									<div class="btn-group">
+										<?php if ($this->session->userdata('role') == 'admin' || $user->id_user == $this->session->userdata('id_user')): ?>
 										<button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
 											data-target="#modalEdit<?php echo $user->id_user; ?>" title="Edit">
 											<i class="fas fa-edit"></i>
 										</button>
+										<?php endif; ?>
+										<?php if ($this->session->userdata('role') == 'admin'): ?>
 										<button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
 											data-target="#modalDelete<?php echo $user->id_user; ?>" title="Hapus">
 											<i class="fas fa-trash"></i>
 										</button>
+										<?php endif; ?>
 									</div>
 								</td>
 							</tr>

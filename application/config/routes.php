@@ -52,3 +52,4 @@ $route['admin/pengaturan/upload_kop'] = 'admin/upload_kop';
 
 $route['admin/dukung_kami'] = 'admin/dukung_kami';
 $route['admin/kontak'] = 'admin/kontak';
+$route['admin/changelog'] = 'admin/changelog';

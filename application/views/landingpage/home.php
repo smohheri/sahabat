@@ -637,7 +637,7 @@
 				</div>
 				<div class="col-lg-6">
 					<div class="hero-image" data-aos="fade-left">
-						<img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&h=400&fit=crop"
+						<img src="<?php echo !empty($settings->hero_image) ? base_url('assets/uploads/landing/' . $settings->hero_image) : 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&h=400&fit=crop'; ?>"
 							alt="Anak-anak dalam program kesejahteraan">
 					</div>
 				</div>
@@ -723,7 +723,7 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6" data-aos="fade-right">
 					<div class="about-image">
-						<img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop"
+						<img src="<?php echo !empty($settings->about_image) ? base_url('assets/uploads/landing/' . $settings->about_image) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop'; ?>"
 							alt="Pusat kesejahteraan anak">
 					</div>
 				</div>

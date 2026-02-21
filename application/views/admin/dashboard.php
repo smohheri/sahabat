@@ -246,6 +246,15 @@
 							<span class="sum-label">Dokumen Kurang</span>
 							<span class="sum-value"><?php echo $dokumen_kurang; ?></span>
 						</div>
+						<div class="sum-row">
+							<span class="sum-dot bg-purple"></span>
+							<span class="sum-label">Foto Tersedia</span>
+							<span class="sum-value">
+								<?php echo count(array_filter($anak_terbaru, function ($a) {
+									return !empty($a->foto);
+								})); ?>
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>

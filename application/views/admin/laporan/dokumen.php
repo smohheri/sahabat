@@ -47,6 +47,18 @@
 			</div>
 		</div>
 
+		<div class="stat-card stat-purple">
+			<div class="stat-icon">
+				<i class="fas fa-camera"></i>
+			</div>
+			<div class="stat-info">
+				<span class="stat-number"><?php echo count(array_filter($anak, function ($a) {
+					return !empty($a->foto);
+				})); ?></span>
+				<span class="stat-label">Punya Foto</span>
+			</div>
+		</div>
+
 		<div class="stat-card stat-yellow">
 			<div class="stat-icon">
 				<i class="fas fa-folder"></i>
@@ -86,12 +98,16 @@
 			$punya_akta = count(array_filter($anak, function ($a) {
 				return !empty($a->file_akta);
 			}));
+			$punya_foto = count(array_filter($anak, function ($a) {
+				return !empty($a->foto);
+			}));
 			$punya_pendukung = count(array_filter($anak, function ($a) {
 				return !empty($a->file_pendukung);
 			}));
 
 			$persen_kk = $total > 0 ? round(($punya_kk / $total) * 100) : 0;
 			$persen_akta = $total > 0 ? round(($punya_akta / $total) * 100) : 0;
+			$persen_foto = $total > 0 ? round(($punya_foto / $total) * 100) : 0;
 			$persen_pendukung = $total > 0 ? round(($punya_pendukung / $total) * 100) : 0;
 			?>
 			<div class="progress-item">
@@ -120,9 +136,25 @@
 
 			<div class="progress-item">
 				<div class="progress-label">
+					<span class="progress-title">Foto</span>
+					<span class="progress-value"><?php echo $punya_foto; ?> / <?php echo $total; ?> anak
+						(<?php echo $persen_foto; ?>%)</span>
+				</div>
+				<div class="progress-bar-wrap">
+					<div class="progress-bar-fill" style="width: <?php echo $persen_foto; ?>%; background: #6f42c1;">
+					</div>
+				</div>
+			</div>
+
+			<div class="progress-item">
+				<div class="progress-label">
 					<span class="progress-title">Dokumen Pendukung</span>
-					<span class="progress-value"><?php echo $punya_pendukung; ?> / <?php echo $total; ?> anak
-						(<?php echo $persen_pendukung; ?>%)</span>
+					<span class="progress-value">
+						<?php echo $punya_pendukung; ?> /
+						<?php echo $total; ?> anak
+						(
+						<?php echo $persen_pendukung; ?>%)
+					</span>
 				</div>
 				<div class="progress-bar-wrap">
 					<div class="progress-bar-fill"
@@ -148,6 +180,7 @@
 							<th>NIK</th>
 							<th>KK</th>
 							<th>Akta</th>
+							<th>Foto</th>
 							<th>Pendukung</th>
 							<th>Status</th>
 						</tr>
@@ -183,6 +216,13 @@
 									<?php endif; ?>
 								</td>
 								<td>
+									<?php if (!empty($a->foto)): ?>
+										<span class="badge-status badge-purple"><i class="fas fa-check"></i> Ada</span>
+									<?php else: ?>
+										<span class="badge-status badge-gray"><i class="fas fa-minus"></i> -</span>
+									<?php endif; ?>
+								</td>
+								<td>
 									<?php if (!empty($a->file_pendukung)): ?>
 										<span class="badge-status badge-yellow"><i class="fas fa-check"></i> Ada</span>
 									<?php else: ?>
@@ -202,7 +242,7 @@
 						<?php endforeach; ?>
 						<?php if (empty($anak)): ?>
 							<tr>
-								<td colspan="7" class="text-center text-muted py-4">
+								<td colspan="8" class="text-center text-muted py-4">
 									<i class="fas fa-inbox fa-2x mb-2"></i><br>
 									Belum ada data anak
 								</td>
@@ -583,6 +623,11 @@
 	.badge-yellow {
 		background: rgba(246, 194, 62, 0.1);
 		color: #f6c23e;
+	}
+
+	.badge-purple {
+		background: rgba(111, 66, 193, 0.1);
+		color: #6f42c1;
 	}
 
 	.badge-gray {

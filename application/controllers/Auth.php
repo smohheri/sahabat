@@ -8,6 +8,8 @@ class Auth extends CI_Controller
 		parent::__construct();
 		$this->load->model('User_model');
 		$this->load->library('form_validation');
+		$this->load->helper('ip');
+		$this->load->helper('logging');
 	}
 
 	public function login()
@@ -42,6 +44,10 @@ class Auth extends CI_Controller
 					'is_logged_in' => TRUE
 				);
 				$this->session->set_userdata($session_data);
+
+				// Log login activity
+				log_activity('login', 'Login ke sistem');
+
 				redirect('admin');
 			} else {
 				$this->session->set_flashdata('error', 'Username atau password salah!');
@@ -52,6 +58,11 @@ class Auth extends CI_Controller
 
 	public function logout()
 	{
+		// Log logout activity before destroying session
+		if ($this->session->userdata('is_logged_in')) {
+			log_activity('logout', 'Logout dari sistem');
+		}
+
 		$this->session->sess_destroy();
 		redirect('auth/login');
 	}

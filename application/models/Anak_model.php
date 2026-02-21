@@ -59,4 +59,10 @@ class Anak_model extends CI_Model
 		return $this->db->update('anak', ['file_pendukung' => $filename]);
 	}
 
+	public function update_foto($id, $filename)
+	{
+		$this->db->where('id_anak', $id);
+		return $this->db->update('anak', ['foto' => $filename]);
+	}
+
 }

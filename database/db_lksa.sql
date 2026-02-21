@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id_user`, `nama`, `username`, `password`, `role`, `created_at`) VALUES
-(1, 'Administrator', 'admin', '$2y$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'admin', '2026-02-20 09:08:31');
+(1, 'Administrator', 'admin', '$2a$12$AEEuJJBCfCWIBAFq.Z2nz.62OhdzTjhn5RJLHMgJV158AfBX3d7EC', 'admin', '2026-02-20 09:08:31');
 
 --
 -- Constraints for dumped tables

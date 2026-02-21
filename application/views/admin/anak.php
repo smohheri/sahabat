@@ -1,16 +1,17 @@
 <!-- Data Anak - Clean & Colorful with Document Upload -->
 <div class="container-fluid">
+
 	<!-- Flash Messages -->
 	<?php if ($this->session->flashdata('success')): ?>
 		<div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-			<?php echo $this->session->flashdata('success'); ?>
+			<i class="fas fa-check-circle mr-2"></i><?php echo $this->session->flashdata('success'); ?>
 			<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
 		</div>
 	<?php endif; ?>
 
 	<?php if ($this->session->flashdata('error')): ?>
 		<div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-			<?php echo $this->session->flashdata('error'); ?>
+			<i class="fas fa-exclamation-circle mr-2"></i><?php echo $this->session->flashdata('error'); ?>
 			<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
 		</div>
 	<?php endif; ?>
@@ -103,6 +104,8 @@
 								<td class="text-center">
 									<?php
 									$doc_count = 0;
+									if ($row->foto)
+										$doc_count++;
 									if ($row->file_kk)
 										$doc_count++;
 									if ($row->file_akta)
@@ -112,8 +115,8 @@
 									?>
 									<?php if ($doc_count > 0): ?>
 										<span class="badge badge-primary px-2 py-1"
-											title="<?php echo $doc_count; ?> dokumen tersedia">
-											<i class="fas fa-file-alt mr-1"></i><?php echo $doc_count; ?>
+											title="<?php echo $doc_count; ?>/4 dokumen tersedia">
+											<i class="fas fa-file-alt mr-1"></i><?php echo $doc_count; ?>/4
 										</span>
 									<?php else: ?>
 										<span class="badge badge-light text-muted px-2 py-1">-</span>
@@ -121,6 +124,10 @@
 								</td>
 								<td class="text-center">
 									<div class="btn-group">
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+											data-target="#modalView<?php echo $row->id_anak; ?>" title="View Data">
+											<i class="fas fa-eye"></i>
+										</button>
 										<button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
 											data-target="#modalEdit<?php echo $row->id_anak; ?>" title="Edit">
 											<i class="fas fa-edit"></i>
@@ -267,6 +274,40 @@
 												data-dismiss="modal"><span>&times;</span></button>
 										</div>
 										<div class="modal-body p-4">
+											<!-- Upload Foto -->
+											<div class="mb-4">
+												<label class="font-weight-bold text-muted mb-2">Foto Anak</label>
+												<?php if ($row->foto): ?>
+													<div
+														class="alert alert-success py-2 mb-2 d-flex justify-content-between align-items-center">
+														<div>
+															<i class="fas fa-check-circle mr-1"></i> File tersedia: <span
+																class="font-weight-bold"><?php echo basename($row->foto); ?></span>
+														</div>
+														<a href="<?php echo base_url('assets/uploads/foto_anak/' . $row->foto); ?>"
+															target="_blank" class="btn btn-sm btn-primary"
+															style="text-decoration: none;">
+															<i class="fas fa-eye mr-1"></i> View
+														</a>
+													</div>
+												<?php endif; ?>
+												<?php echo form_open_multipart('admin/upload_foto/' . $row->id_anak); ?>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" name="foto"
+															id="foto<?php echo $row->id_anak; ?>" accept=".jpg,.jpeg,.png"
+															required>
+														<label class="custom-file-label"
+															for="foto<?php echo $row->id_anak; ?>">Pilih file...</label>
+													</div>
+													<div class="input-group-append">
+														<button class="btn btn-primary" type="submit">Upload</button>
+													</div>
+												</div>
+												<small class="text-muted">Format: JPG, PNG (Max 2MB)</small>
+												</form>
+											</div>
+
 											<!-- Upload KK -->
 											<div class="mb-4">
 												<label class="font-weight-bold text-muted mb-2">Kartu Keluarga (KK)</label>
@@ -410,6 +451,218 @@
 									</div>
 								</div>
 							</div>
+
+							<!-- Modal View -->
+							<div class="modal fade" id="modalView<?php echo $row->id_anak; ?>" tabindex="-1">
+								<div class="modal-dialog modal-dialog-centered modal-xl">
+									<div class="modal-content border-0 shadow">
+										<div class="modal-header bg-primary text-white">
+											<h5 class="modal-title font-weight-bold"><i class="fas fa-eye mr-2"></i>Detail
+												Data Anak</h5>
+											<button type="button" class="close text-white"
+												data-dismiss="modal"><span>&times;</span></button>
+										</div>
+										<div class="modal-body p-4">
+											<!-- Photo Display -->
+											<div class="text-center mb-4">
+												<?php if ($row->foto): ?>
+													<img src="<?php echo base_url('assets/uploads/foto_anak/' . $row->foto); ?>"
+														alt="Foto <?php echo $row->nama_anak; ?>"
+														class="img-fluid rounded shadow-sm"
+														style="max-width: 150px; max-height: 150px;">
+												<?php else: ?>
+													<div class="bg-light rounded d-inline-flex align-items-center justify-content-center"
+														style="width: 150px; height: 150px;">
+														<i class="fas fa-user fa-4x text-muted"></i>
+													</div>
+												<?php endif; ?>
+											</div>
+
+											<!-- Personal Information -->
+											<div class="card border-0 shadow-sm mb-4">
+												<div class="card-header bg-light">
+													<h6 class="font-weight-bold text-primary mb-0"><i
+															class="fas fa-user mr-2"></i>Informasi Pribadi</h6>
+												</div>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Nama
+																	Anak</label>
+																<p class="form-control-plaintext font-weight-semibold h5">
+																	<?php echo $row->nama_anak; ?>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">NIK</label>
+																<p class="form-control-plaintext">
+																	<?php echo $row->nik ?: '<span class="text-muted">Tidak tersedia</span>'; ?>
+																</p>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-4">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Jenis
+																	Kelamin</label>
+																<p class="form-control-plaintext">
+																	<span
+																		class="badge badge-<?php echo $row->jenis_kelamin == 'L' ? 'primary' : 'danger'; ?> px-3 py-2">
+																		<i
+																			class="fas fa-<?php echo $row->jenis_kelamin == 'L' ? 'male' : 'female'; ?> mr-1"></i>
+																		<?php echo $row->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
+																	</span>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-4">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Tempat
+																	Lahir</label>
+																<p class="form-control-plaintext">
+																	<?php echo $row->tempat_lahir; ?>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-4">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Tanggal
+																	Lahir</label>
+																<p class="form-control-plaintext">
+																	<?php echo tanggal_indo($row->tanggal_lahir); ?> <small
+																		class="text-muted">(Umur:
+																		<?php echo umur($row->tanggal_lahir); ?>)</small>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Education and Status -->
+											<div class="card border-0 shadow-sm mb-4">
+												<div class="card-header bg-light">
+													<h6 class="font-weight-bold text-success mb-0"><i
+															class="fas fa-graduation-cap mr-2"></i>Pendidikan & Status</h6>
+												</div>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label
+																	class="font-weight-bold text-muted mb-2">Pendidikan</label>
+																<p class="form-control-plaintext">
+																	<span class="badge badge-info px-3 py-2">
+																		<i
+																			class="fas fa-graduation-cap mr-1"></i><?php echo $row->pendidikan; ?>
+																	</span>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Status
+																	Anak</label>
+																<p class="form-control-plaintext">
+																	<span
+																		class="badge badge-<?php echo $row->status_anak == 'Aktif' ? 'success' : ($row->status_anak == 'Nonaktif' ? 'secondary' : 'warning'); ?> px-3 py-2">
+																		<?php echo $row->status_anak; ?>
+																	</span>
+																</p>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Status
+																	Tinggal</label>
+																<p class="form-control-plaintext">
+																	<span
+																		class="badge badge-<?php echo $row->status_tinggal == 'Tinggal di LKSA' ? 'primary' : 'info'; ?> px-3 py-2">
+																		<?php echo $row->status_tinggal ?: 'Belum diisi'; ?>
+																	</span>
+																</p>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="form-group mb-3">
+																<label class="font-weight-bold text-muted mb-2">Tanggal
+																	Masuk</label>
+																<p class="form-control-plaintext">
+																	<?php echo tanggal_indo($row->tanggal_masuk); ?>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Documents -->
+											<div class="card border-0 shadow-sm">
+												<div class="card-header bg-light">
+													<h6 class="font-weight-bold text-warning mb-0"><i
+															class="fas fa-file-alt mr-2"></i>Dokumen</h6>
+												</div>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-md-4 text-center">
+															<div class="border rounded p-3 mb-3">
+																<i class="fas fa-id-card fa-2x text-primary mb-2"></i>
+																<h6 class="font-weight-bold">Kartu Keluarga (KK)</h6>
+																<?php if ($row->file_kk): ?>
+																	<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/kk'); ?>"
+																		target="_blank" class="btn btn-primary btn-sm">
+																		<i class="fas fa-eye mr-1"></i> Lihat Dokumen
+																	</a>
+																<?php else: ?>
+																	<span class="text-muted">Tidak tersedia</span>
+																<?php endif; ?>
+															</div>
+														</div>
+														<div class="col-md-4 text-center">
+															<div class="border rounded p-3 mb-3">
+																<i class="fas fa-birthday-cake fa-2x text-success mb-2"></i>
+																<h6 class="font-weight-bold">Akta Kelahiran</h6>
+																<?php if ($row->file_akta): ?>
+																	<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/akta'); ?>"
+																		target="_blank" class="btn btn-success btn-sm">
+																		<i class="fas fa-eye mr-1"></i> Lihat Dokumen
+																	</a>
+																<?php else: ?>
+																	<span class="text-muted">Tidak tersedia</span>
+																<?php endif; ?>
+															</div>
+														</div>
+														<div class="col-md-4 text-center">
+															<div class="border rounded p-3 mb-3">
+																<i class="fas fa-folder-open fa-2x text-info mb-2"></i>
+																<h6 class="font-weight-bold">Dokumen Pendukung</h6>
+																<?php if ($row->file_pendukung): ?>
+																	<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/pendukung'); ?>"
+																		target="_blank" class="btn btn-info btn-sm">
+																		<i class="fas fa-eye mr-1"></i> Lihat Dokumen
+																	</a>
+																<?php else: ?>
+																	<span class="text-muted">Tidak tersedia</span>
+																<?php endif; ?>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer bg-light">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Tutup</button>
+										</div>
+									</div>
+								</div>
+							</div>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
@@ -417,6 +670,8 @@
 		</div>
 	</div>
 </div>
+
+
 
 <!-- Modal Add -->
 <div class="modal fade" id="modalAdd" tabindex="-1">
@@ -555,6 +810,8 @@
 			var fileName = $(this).val().split('\\').pop();
 			$(this).siblings('.custom-file-label').addClass('selected').html(fileName);
 		});
+
+
 
 	});
 </script>

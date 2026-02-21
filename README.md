@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -30,7 +30,9 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Laporan data anak (PDF & Excel)
 - Laporan pengurus
 - Laporan dokumen
-- Laporan statistik
+- Laporan statistik dengan chart (PDF & Excel)
+- Export PDF statistik dengan chart sebagai gambar
+- Dukungan legend pada chart (jenis kelamin, usia, pendidikan)
 - Kop surat yang dapat dikustomisasi
 
 ### ⚙️ Pengaturan Sistem
@@ -41,7 +43,17 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 
 ### ❤️ Dukung Kami
 - Halaman informasi donasi sukarela
-- Informasi rekening untuk kontribusi pengembangan aplikasi
+- Informasi rekening Bank BSI dan BRI untuk kontribusi
+- Tombol copy nomor rekening dengan notifikasi
+
+### 🎨 UI/UX
+- Tema AdminLTE 3 dengan Bootstrap 4
+- Dashboard clean dan colorful
+- Responsive design untuk mobile dan desktop
+- Animasi AOS pada landing page
+- Font Awesome icons
+- Dark Mode support untuk halaman laporan
+- Halaman Kontak Pengembang dengan formulir kontak
 
 ## 🛠️ Teknologi
 
@@ -49,12 +61,14 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - **Bahasa**: PHP 7.4+
 - **Database**: MySQL/MariaDB
 - **Frontend**: Bootstrap 4, AdminLTE 3, jQuery
-- **Library**: 
+- **Library**:
   - DataTables untuk tabel interaktif
   - TCPDF untuk export PDF
   - PHPExcel/PhpSpreadsheet untuk export Excel
   - AOS untuk animasi
   - Font Awesome untuk icon
+  - Chart.js untuk visualisasi data
+  - Helper tanggal_indo untuk format tanggal Indonesia
 
 ## 📋 Prasyarat
 
@@ -128,13 +142,13 @@ sahabat/
 ## 📱 Screenshot
 
 ### Dashboard Admin
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](dashboard.png)
 
 ### Data Anak
-![Data Anak](screenshots/anak.png)
+![Data Anak](data_anak.png)
 
 ### Laporan PDF
-![Laporan](screenshots/laporan.png)
+![Laporan](laporan.png)
 
 ## 🤝 Kontribusi
 
@@ -150,8 +164,14 @@ Kontribusi selalu diterima! Untuk berkontribusi:
 
 Jika Anda ingin mendukung pengembangan aplikasi SAHABAT, donasi dapat disalurkan melalui:
 
-**Bank BRI**: 057201014816537  
+**Bank BSI**: 7252957170  
 **Atas Nama**: Moh. Heri Setiawan
+
+**Bank BRI**: 057201014816537
+**Atas Nama**: Moh. Heri Setiawan
+
+### QRIS
+![QRIS](assets/img/QRIS.png)
 
 Setiap dukungan akan membantu peningkatan fitur dan keberlanjutan layanan.
 
