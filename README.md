@@ -55,6 +55,12 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Dark Mode support untuk halaman laporan
 - Halaman Kontak Pengembang dengan formulir kontak
 
+### 🖼️ Landing Page Dinamis
+- Upload gambar hero dan about section dari admin panel
+- Fallback otomatis ke gambar Unsplash jika belum ada upload
+- Interface admin untuk manajemen gambar landing page
+- Optimasi gambar untuk performa website
+
 ## 🛠️ Teknologi
 
 - **Framework**: CodeIgniter 3.x
@@ -101,6 +107,7 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 5. **Atur permission folder**
    ```bash
    chmod 755 -R assets/uploads/
+   chmod 755 -R assets/uploads/landing/
    chmod 755 -R application/cache/
    chmod 755 -R application/logs/
    ```
@@ -123,7 +130,12 @@ sahabat/
 │   ├── css/            # Stylesheet
 │   ├── js/             # JavaScript
 │   ├── img/            # Gambar default
-│   ├── uploads/        # Upload folder (logo, dokumen)
+│   ├── uploads/        # Upload folder (logo, dokumen, landing images)
+│   │   ├── logos/      # Logo LKSA
+│   │   ├── documents/  # Dokumen legal
+│   │   ├── kop/        # Kop surat
+│   │   ├── landing/    # Gambar landing page (hero, about)
+│   │   └── foto_anak/  # Foto anak
 │   ├── plugins/        # Third-party plugins
 │   └── landing/        # Landing page assets
 ├── database/
