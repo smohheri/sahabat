@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
