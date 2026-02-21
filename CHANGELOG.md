@@ -5,6 +5,49 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-02-22
+
+### Added
+- 📊 **DataTables Server-Side Pagination untuk Log Aktivitas**
+  - Implementasi pagination server-side untuk performa yang lebih baik dengan data log besar
+  - Search functionality di semua kolom (nama, username, aktivitas, deskripsi, IP address)
+  - Sorting berdasarkan kolom waktu, nama, username, aktivitas
+  - Stats cards menampilkan data langsung tanpa loading
+  - Styling komprehensif untuk semua kontrol DataTables dengan margin dan padding yang tepat
+  - Dark mode support lengkap untuk semua kontrol DataTables
+  - Bahasa Indonesia untuk interface DataTables
+
+### Changed
+- 🔄 **Update `application/models/User_log_model.php`**
+  - Method baru `get_logs_datatable()` untuk query paginated dengan search dan sorting
+  - Method `count_all_logs()` dan `count_filtered_logs()` untuk DataTables
+
+- 🔄 **Update `application/controllers/Admin.php`**
+  - Method `logs_ajax()` baru untuk mengembalikan data JSON DataTables
+  - Method `logs()` diupdate untuk load stats data langsung
+
+- 🔄 **Update `application/views/admin/logs.php`**
+  - Konfigurasi DataTables untuk server-side processing
+  - Stats cards menampilkan data langsung dari controller
+  - CSS styling komprehensif untuk pagination, search bar, info text, length selector
+  - Dark mode styling untuk semua kontrol DataTables
+
+- 🔄 **Update `application/helpers/logging_helper.php`**
+  - Memindahkan fungsi `get_activity_color()` dan `get_activity_icon()` dari view ke helper
+
+- 🔄 **Update `application/config/routes.php`**
+  - Route baru `admin/logs_ajax` untuk endpoint DataTables
+
+- 🔄 **Update `application/config/config.php`**
+  - Disable CSRF protection untuk development environment
+
+### Technical
+- 🔧 **Libraries DataTables**
+  - Menambahkan DataTables CSS dan JS libraries ke view logs.php
+  - Fix loading order dengan dynamic script loading untuk menghindari konflik jQuery
+
+---
+
 ## [1.4.0] - 2025-02-22
 
 ### Added
@@ -363,6 +406,14 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ---
 
 ## Catatan Rilis
+
+### Versi 1.5.0
+- Menambahkan DataTables server-side pagination untuk tabel log aktivitas
+- Performa yang lebih baik untuk data log yang besar
+- Search dan sorting functionality lengkap
+- Stats cards menampilkan data langsung tanpa loading
+- Styling komprehensif untuk semua kontrol DataTables
+- Dark mode support lengkap
 
 ### Versi 1.4.0
 - Menambahkan fitur gambar landing page dinamis

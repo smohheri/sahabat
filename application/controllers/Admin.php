@@ -1125,12 +1125,287 @@ class Admin extends CI_Controller
 		}
 
 		$this->load->model('User_log_model');
-		$logs = $this->User_log_model->get_all_logs();
 
-		$data['logs'] = $logs;
+		// Get stats data
+		$all_logs = $this->User_log_model->get_all_logs();
+		$total_logs = count($all_logs);
+		$login_count = count(array_filter($all_logs, function ($log) {
+			return $log->activity == 'login';
+		}));
+		$edit_count = count(array_filter($all_logs, function ($log) {
+			return strpos($log->activity, 'edit') !== false || strpos($log->activity, 'update') !== false;
+		}));
+		$add_count = count(array_filter($all_logs, function ($log) {
+			return strpos($log->activity, 'add') !== false || strpos($log->activity, 'upload') !== false;
+		}));
+
+		$data['total_logs'] = $total_logs;
+		$data['login_count'] = $login_count;
+		$data['edit_count'] = $edit_count;
+		$data['add_count'] = $add_count;
+
 		$data['title'] = 'Log Aktivitas User - LKSA Harapan Bangsa';
 		$data['page_title'] = 'Log Aktivitas User';
 		$data['content'] = $this->load->view('admin/logs', $data, TRUE);
 		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function logs_ajax()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			echo json_encode(['error' => 'Access denied']);
+			return;
+		}
+
+		$this->load->model('User_log_model');
+		$this->load->helper('logging');
+
+		// DataTables parameters
+		$draw = intval($this->input->post('draw'));
+		$start = intval($this->input->post('start'));
+		$length = intval($this->input->post('length'));
+		$search = $this->input->post('search')['value'];
+
+		// Ordering
+		$order_column_index = $this->input->post('order')[0]['column'];
+		$order_dir = $this->input->post('order')[0]['dir'];
+		$columns = ['nama', 'username', 'activity', 'description', 'ip_address', 'created_at'];
+		$order_column = $columns[$order_column_index] ?? 'created_at';
+
+		// Get data
+		$logs = $this->User_log_model->get_logs_datatable($start, $length, $search, $order_column, $order_dir);
+		$total_records = $this->User_log_model->count_all_logs();
+		$filtered_records = $this->User_log_model->count_filtered_logs($search);
+
+		// Format data for DataTables
+		$data = [];
+		$no = $start + 1;
+		foreach ($logs as $log) {
+			$data[] = [
+				$no++,
+				'<div class="user-cell">
+					<div class="user-avatar bg-' . ($log->role == 'admin' ? 'purple' : 'blue') . '">' .
+				strtoupper(substr($log->nama, 0, 1)) . '
+					</div>
+					<div>
+						<div class="user-name">' . $log->nama . '</div>
+						<div class="user-role">' . $log->username . '</div>
+					</div>
+				</div>',
+				'<span class="activity-badge badge-' . get_activity_color($log->activity) . '">
+					<i class="fas fa-' . get_activity_icon($log->activity) . ' mr-1"></i>' .
+				ucfirst($log->activity) . '
+				</span>',
+				$log->description,
+				$log->ip_address,
+				date('d/m/Y H:i:s', strtotime($log->created_at))
+			];
+		}
+
+		// Response
+		$response = [
+			'draw' => $draw,
+			'recordsTotal' => $total_records,
+			'recordsFiltered' => $filtered_records,
+			'data' => $data
+		];
+
+		echo json_encode($response);
+	}
+
+	public function backup()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+			redirect('admin');
+		}
+
+		if ($this->input->post('backup_database')) {
+			$this->backup_database();
+		} elseif ($this->input->post('backup_files')) {
+			$this->backup_files();
+		}
+
+		$data['title'] = 'Backup & Restore - LKSA Harapan Bangsa';
+		$data['page_title'] = 'Backup & Restore';
+		$data['content'] = $this->load->view('admin/backup', NULL, TRUE);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	private function backup_database()
+	{
+		$this->load->dbutil();
+		$this->load->helper('file');
+
+		$backup = $this->dbutil->backup(array(
+			'format' => 'zip',
+			'filename' => 'db_lksa_backup_' . date('Y-m-d_H-i-s') . '.sql'
+		));
+
+		$backup_path = FCPATH . 'assets/backups/database/';
+		if (!is_dir($backup_path)) {
+			mkdir($backup_path, 0755, TRUE);
+		}
+
+		$filename = 'db_lksa_backup_' . date('Y-m-d_H-i-s') . '.zip';
+		$filepath = $backup_path . $filename;
+
+		if (write_file($filepath, $backup)) {
+			log_activity('backup_database', 'Database backup berhasil: ' . $filename);
+			$this->session->set_flashdata('success', 'Database backup berhasil! File: ' . $filename);
+		} else {
+			$this->session->set_flashdata('error', 'Gagal membuat database backup!');
+		}
+
+		redirect('admin/backup');
+	}
+
+	private function backup_files()
+	{
+		$this->load->library('zip');
+		$this->load->helper('file');
+
+		$backup_path = FCPATH . 'assets/backups/files/';
+		if (!is_dir($backup_path)) {
+			mkdir($backup_path, 0755, TRUE);
+		}
+
+		// Add uploads directory to zip
+		$upload_path = FCPATH . 'assets/uploads/';
+		$this->zip->read_dir($upload_path, FALSE);
+
+		$filename = 'files_backup_' . date('Y-m-d_H-i-s') . '.zip';
+		$filepath = $backup_path . $filename;
+
+		if ($this->zip->archive($filepath)) {
+			log_activity('backup_files', 'File backup berhasil: ' . $filename);
+			$this->session->set_flashdata('success', 'File backup berhasil! File: ' . $filename);
+		} else {
+			$this->session->set_flashdata('error', 'Gagal membuat file backup!');
+		}
+
+		redirect('admin/backup');
+	}
+
+	public function download_backup($type, $filename)
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			show_error('Access denied', 403);
+		}
+
+		$backup_path = FCPATH . 'assets/backups/' . $type . '/' . $filename;
+
+		if (!file_exists($backup_path)) {
+			show_error('File tidak ditemukan', 404);
+		}
+
+		$this->load->helper('download');
+		force_download($backup_path, NULL);
+		log_activity('download_backup', 'Download backup: ' . $type . '/' . $filename);
+	}
+
+	public function restore_database()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk melakukan restore!');
+			redirect('admin/backup');
+		}
+
+		$this->load->library('upload');
+
+		$config['upload_path'] = FCPATH . 'assets/temp/';
+		$config['allowed_types'] = 'sql';
+		$config['max_size'] = 10240; // 10MB
+		$config['file_name'] = 'restore_db_' . time() . '.sql';
+
+		if (!is_dir($config['upload_path'])) {
+			mkdir($config['upload_path'], 0755, TRUE);
+		}
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('db_file')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+			redirect('admin/backup');
+		} else {
+			$data = $this->upload->data();
+			$file_path = $data['full_path'];
+
+			// Read SQL file
+			$sql = file_get_contents($file_path);
+
+			// Execute SQL
+			$this->load->database();
+			$queries = array_filter(array_map('trim', explode(';', $sql)));
+
+			$this->db->trans_start();
+
+			foreach ($queries as $query) {
+				if (!empty($query)) {
+					$this->db->query($query);
+				}
+			}
+
+			$this->db->trans_complete();
+
+			// Clean up
+			unlink($file_path);
+
+			if ($this->db->trans_status() === FALSE) {
+				$this->session->set_flashdata('error', 'Restore database gagal! Periksa file SQL.');
+			} else {
+				log_activity('restore_database', 'Restore database dari file: ' . $data['file_name']);
+				$this->session->set_flashdata('success', 'Database berhasil direstore!');
+			}
+
+			redirect('admin/backup');
+		}
+	}
+
+	public function restore_files()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk melakukan restore!');
+			redirect('admin/backup');
+		}
+
+		$this->load->library('upload');
+
+		$config['upload_path'] = FCPATH . 'assets/temp/';
+		$config['allowed_types'] = 'zip';
+		$config['max_size'] = 51200; // 50MB
+		$config['file_name'] = 'restore_files_' . time() . '.zip';
+
+		if (!is_dir($config['upload_path'])) {
+			mkdir($config['upload_path'], 0755, TRUE);
+		}
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('files_zip')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+			redirect('admin/backup');
+		} else {
+			$data = $this->upload->data();
+			$zip_path = $data['full_path'];
+			$extract_path = FCPATH . 'assets/uploads/';
+
+			// Load zip library
+			$this->load->library('zip');
+			$this->zip->read_file($zip_path);
+
+			// Extract to uploads directory
+			if ($this->zip->extract($extract_path)) {
+				log_activity('restore_files', 'Restore files dari file: ' . $data['file_name']);
+				$this->session->set_flashdata('success', 'Files berhasil direstore!');
+			} else {
+				$this->session->set_flashdata('error', 'Restore files gagal! Periksa file ZIP.');
+			}
+
+			// Clean up
+			unlink($zip_path);
+
+			redirect('admin/backup');
+		}
 	}
 }
