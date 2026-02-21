@@ -7,6 +7,148 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-02-21
+
+### Added
+- ✨ **Export PDF Statistik dengan Chart sebagai Gambar**
+  - Halaman laporan statistik sekarang bisa export ke PDF dengan gambar chart
+  - Menggunakan JavaScript untuk mengkonversi Chart.js canvas ke base64
+  - Mengirim data chart ke server via AJAX
+  - Chart gambar disematkan di dalam PDF
+
+- 📊 **Dukungan Legend Chart**
+  - **Chart Jenis Kelamin** (Doughnut): Menambahkan judul dan legend di bawah chart
+  - **Chart Usia** (Bar): Menambahkan judul dan legend di bawah chart
+  - **Chart Pendidikan** (Bar): Menambahkan judul dan legend di bawah chart
+
+- 🧹 **Hapus File Temporary Otomatis**
+  - File PDF dihapus otomatis dari folder `assets/temp/` setelah didownload
+  - Delay 3 detik sebelum dihapus untuk memastikan user sudah download
+  - Menambahkan endpoint `admin/delete_temp_file` (POST)
+
+- ⏳ **Indikator Loading**
+  - Tombol "Export PDF" menampilkan status "Generating..." saat proses
+  - Tombol dinonaktifkan saat PDF sedang dibuat
+  - Kembali normal setelah selesai
+
+### Changed
+- 🔄 **Update `application/controllers/Admin.php`**
+  - Menambahkan method `generate_pdf_statistik()` - generate PDF dengan gambar chart
+  - Menambahkan method `delete_temp_file()` - hapus file temp setelah didownload
+
+- 🔄 **Update `application/views/admin/laporan/statistik.php`**
+  - Konfigurasi Chart.js menambahkan opsi legend (judul dan label)
+  - JavaScript menambahkan fitur hapus file temporary otomatis
+  - Menambahkan indikator loading state
+
+- 🔄 **Update `application/libraries/Pdf_export.php`**
+  - Menambahkan method `generate_to_file()` - simpan PDF ke file
+  - Menambahkan method `generate_laporan_statistik_with_charts()` - sematkan gambar chart di PDF
+
+- 🔄 **Update `application/config/routes.php`**
+  - Menambahkan route `admin/delete_temp_file`
+
+### Technical
+- 🔧 **Direktori baru** - `assets/temp/` untuk menyimpan file PDF sementara
+
+---
+
+## [1.2.0] - 2025-01-18
+
+### Added
+- ✨ **Halaman Kontak Pengembang** (`application/views/admin/kontak.php`)
+  - Halaman baru untuk menghubungi pengembang aplikasi
+  - Info pengembang: Moh. Heri Setiawan (Lead Developer)
+  - Link GitHub, LinkedIn, dan email langsung
+  - Formulir kontak untuk mengirim pesan
+  - Bagian informasi jam operasional
+  - Dukungan Dark Mode penuh
+
+- 🎨 **Menu Navbar Kontak**
+  - Link "Kontak" di navbar bagian kanan
+  - Format teks seperti menu "Dashboard"
+  - Icon + teks "Kontak"
+  - Langsung menuju halaman kontak pengembang
+
+- 📋 **Struktur Menu Sidebar Terbaru**
+  - Menu "Kontak Pengembang" sebagai menu utama
+  - Menu "Dukung Kami" di bawah kategori INFORMASI
+  - Kategori menu baru: INFORMASI (memuat Kontak Pengembang & Dukung Kami)
+  - Icon headsett untuk Kontak Pengembang
+  - Posisi menu: Di bawah LAPORAN, di atas PENGATURAN
+
+- 🔧 **Route Baru**
+  - Menambahkan route `admin/kontak` di `application/config/routes.php`
+  - Controller `Admin.php` dengan fungsi `kontak()`
+
+---
+
+## [1.1.0] - 2025-01-17
+
+### Added
+- ✨ **Dark Mode Support** - Menambahkan styles dark mode untuk semua halaman laporan:
+  - `application/views/admin/laporan/index.php` - Menu laporan utama
+  - `application/views/admin/laporan/data_anak.php` - Laporan data anak
+  - `application/views/admin/laporan/keuangan.php` - Laporan keuangan
+  - `application/views/admin/laporan/pengurus.php` - Laporan pengurus
+  - `application/views/admin/laporan/dokumen.php` - Laporan dokumen
+  - `application/views/admin/laporan/statistik.php` - Laporan statistik
+  - Cara mengaktifkan: Tambahkan class `dark-mode` pada tag `<body>`
+
+- ✨ **Helper Tanggal Indonesia** (`application/helpers/tanggal_helper.php`)
+  - Fungsi `tanggal_indo($date)` - Format: "15 Januari 2024"
+  - Fungsi `tanggal_indo_short($date)` - Format: "15 Jan 2024"
+  - Fungsi `bulan_indo($month)` - Format: "Januari"
+  - Fungsi `umur($tanggal_lahir)` - Format: "10 tahun"
+  - Fungsi `waktu_indo($datetime)` - Format: "Senin, 15 Januari 2024 10:30 WIB"
+  - Helper di-load secara otomatis melalui autoload
+
+- 📚 **Update Library PDF Export** (`application/libraries/Pdf_export.php`)
+  - Menggunakan helper tanggal_indo untuk format tanggal Indonesia
+  - Format periode laporan menggunakan bulan_indo
+  - Format umur menggunakan fungsi umur()
+  - Footer laporan menggunakan format tanggal Indonesia
+
+- 🎨 **Redesain Halaman Dukung Kami** (`application/views/admin/dukung_kami.php`)
+  - Hero section dengan animasi dan wave divider
+  - Aplikasi badge dengan nama "SAHABAT"
+  - Card rekening 2 kolom:
+    - **Bank BSI**: 7252957170 (Tema hijau stabilo)
+    - **Bank BRI**: 057201014816537 (Tema biru dongker)
+  - Copy to clipboard dengan toast notification
+  - Full width layout (12 grid)
+  - Responsive design
+  - Efek glow dan animasi modern
+
+### Changed
+- 🔄 **Environment Production** - Mengubah default ENVIRONMENT dari 'development' ke 'production' di `index.php`
+- 🔄 **View Laporan** - Menggunakan helper tanggal_indo untuk konsistensi format tanggal:
+  - `application/views/admin/laporan/data_anak.php`
+  - `application/views/admin/laporan/pengurus.php`
+- 🔄 **View Admin** - Menggunakan helper tanggal_indo:
+  - `application/views/admin/anak.php`
+
+### Technical
+- 🔧 **Konfigurasi Autoload** - Menambahkan 'tanggal' ke helper autoload di `application/config/autoload.php`
+- 🔧 **Controller Update** - Menambahkan field media sosial di `application/controllers/Admin.php` fungsi pengaturan()
+- 🔧 **Database Schema** - File SQL untuk menambahkan kolom media sosial: `database/alter_table_add_social_media.sql`
+
+- ✨ **Fitur Media Sosial** - Menambahkan kolom media sosial ke database:
+  - Facebook, Twitter, Instagram, YouTube, LinkedIn, WhatsApp
+  - File SQL: `database/alter_table_add_social_media.sql`
+
+- 📱 **Pengaturan Media Sosial di Admin** (`application/views/admin/pengaturan.php`)
+  - Input form untuk 6 media sosial
+  - Icon Font Awesome untuk setiap platform
+
+- 🌐 **Media Sosial di Landing Page** (`application/views/landingpage/home.php`)
+  - Link media sosial di footer sekarang dinamis dari database
+  - Semua link membuka di tab baru dengan `target="_blank"`
+  - Keamanan: Menggunakan `rel="noopener noreferrer"`
+  - WhatsApp smart detection: Mendukung URL lengkap atau nomor telepon saja
+
+---
+
 ## [1.0.0] - 2024-01-15
 
 ### Added
@@ -105,6 +247,24 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ---
 
 ## Catatan Rilis
+
+### Versi 1.3.0
+- Menambahkan fitur Export PDF Statistik dengan chart sebagai gambar
+- Chart sekarang memiliki judul dan legend
+- File temporary PDF dihapus secara otomatis
+- Menambahkan indikator loading
+
+### Versi 1.2.0
+- Menambahkan halaman kontak pengembang
+- Memperbarui struktur menu sidebar
+- Menambahkan menu Dukung Kami ke sidebar
+
+### Versi 1.1.0
+- Menambahkan format tanggal Indonesia di seluruh aplikasi
+- Menambahkan Dark Mode support untuk halaman laporan
+- Redesain halaman Dukung Kami dengan rekening Bank BSI dan BRI
+- Optimasi untuk production deployment
+- Konsistensi UI dengan format tanggal lokal
 
 ### Versi 1.0.0
 Versi stabil pertama dengan semua fitur utama telah diimplementasikan. Aplikasi siap digunakan untuk produksi dengan LKSA.

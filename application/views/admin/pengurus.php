@@ -98,8 +98,7 @@
 												<div
 													class="alert alert-success py-2 mb-3 d-flex justify-content-between align-items-center">
 													<div>
-														<i class="fas fa-check-circle mr-1"></i> File KTP tersedia:
-														<span
+														<i class="fas fa-check-circle mr-1"></i> File KTP tersedia: <span
 															class="font-weight-bold"><?php echo basename($row->file_ktp); ?></span>
 													</div>
 													<a href="<?php echo site_url('admin/view_ktp/' . $row->id_pengurus); ?>"
@@ -109,25 +108,24 @@
 													</a>
 												</div>
 											<?php endif; ?>
-											<form action="<?php echo site_url('admin/upload_ktp/' . $row->id_pengurus); ?>"
-												method="post" enctype="multipart/form-data">
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">File KTP</label>
-													<div class="input-group">
-														<div class="custom-file">
-															<input type="file" class="custom-file-input" name="file_ktp"
-																id="file_ktp<?php echo $row->id_pengurus; ?>"
-																accept=".pdf,.jpg,.jpeg,.png" required>
-															<label class="custom-file-label"
-																for="file_ktp<?php echo $row->id_pengurus; ?>">Pilih
-																file...</label>
-														</div>
-														<div class="input-group-append">
-															<button class="btn btn-primary" type="submit">Upload</button>
-														</div>
+											<?php echo form_open_multipart('admin/upload_ktp/' . $row->id_pengurus); ?>
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">File KTP</label>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" name="file_ktp"
+															id="file_ktp<?php echo $row->id_pengurus; ?>"
+															accept=".pdf,.jpg,.jpeg,.png" required>
+														<label class="custom-file-label"
+															for="file_ktp<?php echo $row->id_pengurus; ?>">Pilih
+															file...</label>
 													</div>
-													<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
+													<div class="input-group-append">
+														<button class="btn btn-primary" type="submit">Upload</button>
+													</div>
 												</div>
+												<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
+											</div>
 											</form>
 										</div>
 										<div class="modal-footer bg-light">
@@ -148,48 +146,48 @@
 											<button type="button" class="close text-white"
 												data-dismiss="modal"><span>&times;</span></button>
 										</div>
-										<form action="<?php echo site_url('admin/pengurus'); ?>" method="post">
-											<div class="modal-body p-4">
-												<input type="hidden" name="id_pengurus"
-													value="<?php echo $row->id_pengurus; ?>">
+										<?php echo form_open('admin/pengurus'); ?>
+										<div class="modal-body p-4">
+											<input type="hidden" name="id_pengurus"
+												value="<?php echo $row->id_pengurus; ?>">
 
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">Nama Pengurus</label>
-													<input type="text" class="form-control" name="nama_pengurus"
-														value="<?php echo $row->nama_pengurus; ?>" required>
-												</div>
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">Nama Pengurus</label>
+												<input type="text" class="form-control" name="nama_pengurus"
+													value="<?php echo $row->nama_pengurus; ?>" required>
+											</div>
 
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">Jabatan</label>
-													<input type="text" class="form-control" name="jabatan"
-														value="<?php echo $row->jabatan; ?>" required>
-												</div>
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">Jabatan</label>
+												<input type="text" class="form-control" name="jabatan"
+													value="<?php echo $row->jabatan; ?>" required>
+											</div>
 
-												<div class="row">
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">No HP</label>
-															<input type="text" class="form-control" name="no_hp"
-																value="<?php echo $row->no_hp; ?>" required>
-														</div>
-													</div>
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Email</label>
-															<input type="email" class="form-control" name="email"
-																value="<?php echo $row->email; ?>" placeholder="Optional">
-														</div>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">No HP</label>
+														<input type="text" class="form-control" name="no_hp"
+															value="<?php echo $row->no_hp; ?>" required>
 													</div>
 												</div>
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Email</label>
+														<input type="email" class="form-control" name="email"
+															value="<?php echo $row->email; ?>" placeholder="Optional">
+													</div>
+												</div>
+											</div>
 
-											</div>
-											<div class="modal-footer bg-light">
-												<button type="button" class="btn btn-secondary"
-													data-dismiss="modal">Batal</button>
-												<button type="submit" class="btn btn-warning text-white font-weight-bold">
-													<i class="fas fa-save mr-1"></i>Simpan Perubahan
-												</button>
-											</div>
+										</div>
+										<div class="modal-footer bg-light">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Batal</button>
+											<button type="submit" class="btn btn-warning text-white font-weight-bold">
+												<i class="fas fa-save mr-1"></i>Simpan Perubahan
+											</button>
+										</div>
 										</form>
 									</div>
 								</div>
@@ -242,42 +240,41 @@
 				<h5 class="modal-title font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Tambah Pengurus Baru</h5>
 				<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
 			</div>
-			<form action="<?php echo site_url('admin/pengurus'); ?>" method="post" id="formAddPengurus">
-				<div class="modal-body p-4">
-					<div class="form-group mb-3">
-						<label class="font-weight-bold text-muted mb-2">Nama Pengurus</label>
-						<input type="text" class="form-control" name="nama_pengurus" placeholder="Masukkan nama lengkap"
-							required>
-					</div>
+			<?php echo form_open('admin/pengurus', 'id="formAddPengurus"'); ?>
+			<div class="modal-body p-4">
+				<div class="form-group mb-3">
+					<label class="font-weight-bold text-muted mb-2">Nama Pengurus</label>
+					<input type="text" class="form-control" name="nama_pengurus" placeholder="Masukkan nama lengkap"
+						required>
+				</div>
 
-					<div class="form-group mb-3">
-						<label class="font-weight-bold text-muted mb-2">Jabatan</label>
-						<input type="text" class="form-control" name="jabatan"
-							placeholder="Contoh: Ketua, Sekretaris, Bendahara" required>
-					</div>
+				<div class="form-group mb-3">
+					<label class="font-weight-bold text-muted mb-2">Jabatan</label>
+					<input type="text" class="form-control" name="jabatan"
+						placeholder="Contoh: Ketua, Sekretaris, Bendahara" required>
+				</div>
 
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">No HP</label>
-								<input type="text" class="form-control" name="no_hp" placeholder="08xxxxxxxxxx"
-									required>
-							</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">No HP</label>
+							<input type="text" class="form-control" name="no_hp" placeholder="08xxxxxxxxxx" required>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Email</label>
-								<input type="email" class="form-control" name="email" placeholder="email@domain.com">
-							</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Email</label>
+							<input type="email" class="form-control" name="email" placeholder="email@domain.com">
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer bg-light">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-					<button type="submit" class="btn btn-primary font-weight-bold">
-						<i class="fas fa-save mr-1"></i>Simpan
-					</button>
-				</div>
+			</div>
+			<div class="modal-footer bg-light">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+				<button type="submit" class="btn btn-primary font-weight-bold">
+					<i class="fas fa-save mr-1"></i>Simpan
+				</button>
+			</div>
 			</form>
 		</div>
 	</div>
@@ -367,5 +364,122 @@
 
 	.custom-file-label::after {
 		content: "Browse";
+	}
+
+	/* Dark Mode Styles for pengurus.php */
+	body.dark-mode .table {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .table td,
+	body.dark-mode .table th {
+		border-color: #0f3460 !important;
+	}
+
+	body.dark-mode .table tbody tr:hover {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .table-hover tbody tr:hover {
+		background-color: #0f3460 !important;
+		color: #fff;
+	}
+
+	body.dark-mode .text-muted {
+		color: #a0a0a0 !important;
+	}
+
+	body.dark-mode .card {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .card-header {
+		background-color: #0f3460;
+		border-bottom-color: #16213e;
+	}
+
+	body.dark-mode .card-body {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .bg-light {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .modal-content {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .modal-header {
+		background-color: #0f3460;
+	}
+
+	body.dark-mode .modal-body {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .modal-footer {
+		background-color: #0f3460;
+	}
+
+	body.dark-mode .form-control {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .form-control:focus {
+		background-color: #1a1a2e;
+		color: #fff;
+		border-color: #00d9ff;
+	}
+
+	body.dark-mode .custom-file-label {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .input-group-text {
+		background-color: #0f3460;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .alert-success {
+		background-color: #1b4332;
+		border-color: #2d6a4f;
+		color: #95d5b2;
+	}
+
+	body.dark-mode .alert-danger {
+		background-color: #5c1a1a;
+		border-color: #7f2626;
+		color: #f5b7b1;
+	}
+
+	body.dark-mode .close {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .close:hover {
+		color: #fff;
+	}
+
+	body.dark-mode .badge-light {
+		background-color: #0f3460;
+		color: #e0e0e0;
+	}
+
+	body.dark-mode select.form-control {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .table .rounded-circle {
+		background-color: #0f3460 !important;
 	}
 </style>

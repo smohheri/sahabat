@@ -877,4 +877,102 @@
 			font-size: 28px;
 		}
 	}
+
+	/* Dark Mode Styles for dashboard.php */
+	body.dark-mode .dashboard-clean {
+		background-color: #1a1a2e;
+	}
+
+	body.dark-mode .stat-card {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .card-number {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .card-label {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .substat-item {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .substat-value {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .substat-label {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .panel {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .panel-header {
+		border-bottom-color: #0f3460;
+	}
+
+	body.dark-mode .panel-header h3 {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .clean-table th {
+		background-color: #0f3460;
+		color: #e0e0e0;
+		border-bottom-color: #0f3460;
+	}
+
+	body.dark-mode .clean-table td {
+		border-bottom-color: #0f3460;
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .clean-table tbody tr:hover {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .item-title {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .item-subtitle {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .sum-row {
+		border-bottom-color: #0f3460;
+	}
+
+	body.dark-mode .sum-label {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .sum-value {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .btn-link {
+		color: #00d9ff;
+	}
+
+	body.dark-mode .btn-link:hover {
+		color: #fff;
+	}
+
+	body.dark-mode .text-muted {
+		color: #a0a0a0 !important;
+	}
+
+	body.dark-mode .list-item:hover {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .info-box-clean {
+		background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+		border: 1px solid #00d9ff;
+	}
 </style>

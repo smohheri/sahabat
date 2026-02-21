@@ -73,7 +73,6 @@
 										</button>
 									</div>
 								</td>
-
 							</tr>
 
 							<!-- Modal Edit -->
@@ -86,69 +85,69 @@
 											<button type="button" class="close text-white"
 												data-dismiss="modal"><span>&times;</span></button>
 										</div>
-										<form action="<?php echo site_url('admin/user'); ?>" method="post">
-											<div class="modal-body p-4">
-												<input type="hidden" name="id_user" value="<?php echo $user->id_user; ?>">
+										<?php echo form_open('admin/user'); ?>
+										<div class="modal-body p-4">
+											<input type="hidden" name="id_user" value="<?php echo $user->id_user; ?>">
 
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">Nama Lengkap</label>
-													<div class="input-group">
-														<div class="input-group-prepend">
-															<span class="input-group-text bg-light"><i
-																	class="fas fa-user text-primary"></i></span>
-														</div>
-														<input type="text" class="form-control" name="nama"
-															value="<?php echo $user->nama; ?>" required>
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">Nama Lengkap</label>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text bg-light"><i
+																class="fas fa-user text-primary"></i></span>
 													</div>
-												</div>
-
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">Username</label>
-													<div class="input-group">
-														<div class="input-group-prepend">
-															<span class="input-group-text bg-light"><i
-																	class="fas fa-id-card text-primary"></i></span>
-														</div>
-														<input type="text" class="form-control" name="username"
-															value="<?php echo $user->username; ?>" required>
-													</div>
-												</div>
-
-												<div class="form-group mb-3">
-													<label class="font-weight-bold text-muted mb-2">Password Baru</label>
-													<div class="input-group">
-														<div class="input-group-prepend">
-															<span class="input-group-text bg-light"><i
-																	class="fas fa-lock text-primary"></i></span>
-														</div>
-														<input type="password" class="form-control" name="password"
-															placeholder="Kosongkan jika tidak diubah">
-													</div>
-													<small class="text-muted">Biarkan kosong jika tidak ingin mengubah
-														password</small>
-												</div>
-
-												<div class="form-group mb-0">
-													<label class="font-weight-bold text-muted mb-2">Role</label>
-													<div class="input-group">
-														<div class="input-group-prepend">
-															<span class="input-group-text bg-light"><i
-																	class="fas fa-user-shield text-primary"></i></span>
-														</div>
-														<select class="form-control" name="role" required>
-															<option value="admin" <?php echo $user->role == 'admin' ? 'selected' : ''; ?>>Admin</option>
-															<option value="operator" <?php echo $user->role == 'operator' ? 'selected' : ''; ?>>Operator</option>
-														</select>
-													</div>
+													<input type="text" class="form-control" name="nama"
+														value="<?php echo $user->nama; ?>" required>
 												</div>
 											</div>
-											<div class="modal-footer bg-light">
-												<button type="button" class="btn btn-secondary"
-													data-dismiss="modal">Batal</button>
-												<button type="submit" class="btn btn-warning text-white font-weight-bold">
-													<i class="fas fa-save mr-1"></i>Simpan Perubahan
-												</button>
+
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">Username</label>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text bg-light"><i
+																class="fas fa-id-card text-primary"></i></span>
+													</div>
+													<input type="text" class="form-control" name="username"
+														value="<?php echo $user->username; ?>" required>
+												</div>
 											</div>
+
+											<div class="form-group mb-3">
+												<label class="font-weight-bold text-muted mb-2">Password Baru</label>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text bg-light"><i
+																class="fas fa-lock text-primary"></i></span>
+													</div>
+													<input type="password" class="form-control" name="password"
+														placeholder="Kosongkan jika tidak diubah">
+												</div>
+												<small class="text-muted">Biarkan kosong jika tidak ingin mengubah
+													password</small>
+											</div>
+
+											<div class="form-group mb-0">
+												<label class="font-weight-bold text-muted mb-2">Role</label>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text bg-light"><i
+																class="fas fa-user-shield text-primary"></i></span>
+													</div>
+													<select class="form-control" name="role" required>
+														<option value="admin" <?php echo $user->role == 'admin' ? 'selected' : ''; ?>>Admin</option>
+														<option value="operator" <?php echo $user->role == 'operator' ? 'selected' : ''; ?>>Operator</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer bg-light">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Batal</button>
+											<button type="submit" class="btn btn-warning text-white font-weight-bold">
+												<i class="fas fa-save mr-1"></i>Simpan Perubahan
+											</button>
+										</div>
 										</form>
 									</div>
 								</div>
@@ -199,63 +198,62 @@
 				<h5 class="modal-title font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Tambah User Baru</h5>
 				<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
 			</div>
-			<form action="<?php echo site_url('admin/user'); ?>" method="post">
-				<div class="modal-body p-4">
-					<div class="form-group mb-3">
-						<label class="font-weight-bold text-muted mb-2">Nama Lengkap</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text bg-light"><i class="fas fa-user text-primary"></i></span>
-							</div>
-							<input type="text" class="form-control" name="nama" placeholder="Masukkan nama lengkap"
-								required>
+			<?php echo form_open('admin/user'); ?>
+			<div class="modal-body p-4">
+				<div class="form-group mb-3">
+					<label class="font-weight-bold text-muted mb-2">Nama Lengkap</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text bg-light"><i class="fas fa-user text-primary"></i></span>
 						</div>
-					</div>
-
-					<div class="form-group mb-3">
-						<label class="font-weight-bold text-muted mb-2">Username</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text bg-light"><i
-										class="fas fa-id-card text-primary"></i></span>
-							</div>
-							<input type="text" class="form-control" name="username" placeholder="Masukkan username"
-								required>
-						</div>
-					</div>
-
-					<div class="form-group mb-3">
-						<label class="font-weight-bold text-muted mb-2">Password</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text bg-light"><i class="fas fa-lock text-primary"></i></span>
-							</div>
-							<input type="password" class="form-control" name="password" placeholder="Masukkan password"
-								required>
-						</div>
-					</div>
-
-					<div class="form-group mb-0">
-						<label class="font-weight-bold text-muted mb-2">Role</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text bg-light"><i
-										class="fas fa-user-shield text-primary"></i></span>
-							</div>
-							<select class="form-control" name="role" required>
-								<option value="">Pilih Role</option>
-								<option value="admin">Admin</option>
-								<option value="operator">Operator</option>
-							</select>
-						</div>
+						<input type="text" class="form-control" name="nama" placeholder="Masukkan nama lengkap"
+							required>
 					</div>
 				</div>
-				<div class="modal-footer bg-light">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-					<button type="submit" class="btn btn-primary font-weight-bold">
-						<i class="fas fa-save mr-1"></i>Simpan
-					</button>
+
+				<div class="form-group mb-3">
+					<label class="font-weight-bold text-muted mb-2">Username</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text bg-light"><i class="fas fa-id-card text-primary"></i></span>
+						</div>
+						<input type="text" class="form-control" name="username" placeholder="Masukkan username"
+							required>
+					</div>
 				</div>
+
+				<div class="form-group mb-3">
+					<label class="font-weight-bold text-muted mb-2">Password</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text bg-light"><i class="fas fa-lock text-primary"></i></span>
+						</div>
+						<input type="password" class="form-control" name="password" placeholder="Masukkan password"
+							required>
+					</div>
+				</div>
+
+				<div class="form-group mb-0">
+					<label class="font-weight-bold text-muted mb-2">Role</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text bg-light"><i
+									class="fas fa-user-shield text-primary"></i></span>
+						</div>
+						<select class="form-control" name="role" required>
+							<option value="">Pilih Role</option>
+							<option value="admin">Admin</option>
+							<option value="operator">Operator</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer bg-light">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+				<button type="submit" class="btn btn-primary font-weight-bold">
+					<i class="fas fa-save mr-1"></i>Simpan
+				</button>
+			</div>
 			</form>
 		</div>
 	</div>

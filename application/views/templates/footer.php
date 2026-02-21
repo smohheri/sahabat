@@ -44,6 +44,9 @@
 	<?php endforeach; ?>
 <?php endif; ?>
 
+<!-- Chart.js -->
+<script src="<?php echo base_url('assets/plugins/chart.js/Chart.js'); ?>"></script>
+
 </body>
 
 </html>

@@ -73,24 +73,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+/*
+|--------------------------------------------------------------------------
+| Environment Helper Function (jika belum ada)
+|--------------------------------------------------------------------------
+*/
+if (!function_exists('env')) {
+	function env($key, $default = null)
+	{
+		$value = getenv($key);
+		if ($value === false) {
+			return $default;
+		}
+		return $value;
+	}
+}
+
 $db['default'] = array(
-	'dsn' => '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'db_lksa',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
+	'dsn' => env('db_dsn', ''),
+	'hostname' => env('db_hostname', 'localhost'),
+	'username' => env('db_username', 'root'),
+	'password' => env('db_password', ''),
+	'database' => env('db_database', 'db_lksa'),
+	'dbdriver' => env('db_driver', 'mysqli'),
+	'dbprefix' => env('db_prefix', ''),
+	'pconnect' => env('db_pconnect', FALSE),
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
+	'cache_on' => env('db_cache_on', FALSE),
+	'cachedir' => env('db_cachedir', ''),
+	'char_set' => env('db_char_set', 'utf8'),
+	'dbcollat' => env('db_collation', 'utf8_general_ci'),
+	'swap_pre' => env('db_swap_pre', ''),
+	'encrypt' => env('db_encrypt', FALSE),
+	'compress' => env('db_compress', FALSE),
+	'stricton' => env('db_stricton', FALSE),
 	'failover' => array(),
-	'save_queries' => TRUE
+	'save_queries' => env('db_save_queries', TRUE)
 );

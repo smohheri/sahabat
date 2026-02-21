@@ -108,9 +108,19 @@
 					</ul>
 				</li>
 
-				<!-- Dukung Kami -->
-				<li class="nav-header">DUKUNGAN</li>
+				<!-- Informasi -->
+				<li class="nav-header">INFORMASI</li>
 
+				<!-- Kontak Pengembang -->
+				<li class="nav-item">
+					<a href="<?php echo site_url('admin/kontak'); ?>"
+						class="nav-link <?php echo $this->uri->segment(2) == 'kontak' ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-headset"></i>
+						<p>Kontak Pengembang</p>
+					</a>
+				</li>
+
+				<!-- Dukung Kami -->
 				<li class="nav-item">
 					<a href="<?php echo site_url('admin/dukung_kami'); ?>"
 						class="nav-link <?php echo $this->uri->segment(2) == 'dukung_kami' ? 'active' : ''; ?>">

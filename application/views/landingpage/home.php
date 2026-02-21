@@ -9,6 +9,15 @@
 	<title><?php echo $settings->nama_lksa ?? 'LKSA Harapan Bangsa'; ?> - Sistem Informasi Lembaga Kesejahteraan Sosial
 		Anak</title>
 
+	<!-- Favicon - Menggunakan logo dari pengaturan -->
+	<?php
+	$logo = $settings->logo ?? null;
+	$favicon_url = !empty($logo)
+		? base_url('assets/uploads/logos/' . $logo)
+		: base_url('assets/img/AdminLTELogo.png');
+	?>
+	<link rel="icon" type="image/png" href="<?php echo $favicon_url; ?>">
+
 	<!-- Google Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -750,26 +759,26 @@
 			<div class="row">
 				<div class="col-6 col-md-3" data-aos="fade-up">
 					<div class="stat-item">
-						<div class="stat-number">200+</div>
+						<div class="stat-number"><?php echo $stats['total_anak']; ?></div>
 						<div class="stat-label">Anak Asuh</div>
 					</div>
 				</div>
 				<div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
 					<div class="stat-item">
-						<div class="stat-number">50+</div>
+						<div class="stat-number"><?php echo $stats['total_pengurus']; ?></div>
 						<div class="stat-label">Pengurus Aktif</div>
 					</div>
 				</div>
 				<div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
 					<div class="stat-item">
-						<div class="stat-number">15+</div>
+						<div class="stat-number"><?php echo $stats['tahun_pengabdian']; ?></div>
 						<div class="stat-label">Tahun Pengabdian</div>
 					</div>
 				</div>
 				<div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
 					<div class="stat-item">
-						<div class="stat-number">100%</div>
-						<div class="stat-label">Komitmen</div>
+						<div class="stat-number"><?php echo $stats['anak_aktif']; ?></div>
+						<div class="stat-label">Anak Aktif</div>
 					</div>
 				</div>
 			</div>
@@ -805,10 +814,35 @@
 						<p>Lembaga kesejahteraan sosial anak yang berkomitmen untuk memberikan perlindungan dan
 							pendidikan bagi anak-anak Indonesia.</p>
 						<div class="social-links">
-							<a href="#"><i class="fab fa-facebook-f"></i></a>
-							<a href="#"><i class="fab fa-twitter"></i></a>
-							<a href="#"><i class="fab fa-instagram"></i></a>
-							<a href="#"><i class="fab fa-linkedin-in"></i></a>
+							<?php if (!empty($settings->facebook)): ?>
+								<a href="<?php echo $settings->facebook; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-facebook-f"></i></a>
+							<?php endif; ?>
+							<?php if (!empty($settings->twitter)): ?>
+								<a href="<?php echo $settings->twitter; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-twitter"></i></a>
+							<?php endif; ?>
+							<?php if (!empty($settings->instagram)): ?>
+								<a href="<?php echo $settings->instagram; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-instagram"></i></a>
+							<?php endif; ?>
+							<?php if (!empty($settings->youtube)): ?>
+								<a href="<?php echo $settings->youtube; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-youtube"></i></a>
+							<?php endif; ?>
+							<?php if (!empty($settings->linkedin)): ?>
+								<a href="<?php echo $settings->linkedin; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-linkedin-in"></i></a>
+							<?php endif; ?>
+							<?php if (!empty($settings->whatsapp)): ?>
+								<?php
+								$wa_number = $settings->whatsapp;
+								// Jika sudah ada URL, gunakan langsung; jika hanya nomor, gunakan wa.me
+								$wa_link = (strpos($wa_number, 'http') === 0) ? $wa_number : 'https://wa.me/' . $wa_number;
+								?>
+								<a href="<?php echo $wa_link; ?>" target="_blank" rel="noopener noreferrer"><i
+										class="fab fa-whatsapp"></i></a>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

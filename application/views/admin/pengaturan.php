@@ -127,6 +127,109 @@
 					</div>
 					<?php echo form_error('tahun_berdiri', '<small class="text-danger">', '</small>'); ?>
 				</div>
+
+				<!-- Social Media Fields -->
+				<hr class="mt-4">
+				<h5 class="mb-3"><i class="fas fa-share-alt mr-2"></i>Media Sosial</h5>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="facebook">
+								<i class="fab fa-facebook mr-1"></i>Facebook
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-facebook"></i></span>
+								</div>
+								<input type="text" class="form-control" id="facebook" name="facebook"
+									value="<?php echo set_value('facebook', $pengaturan->facebook ?? ''); ?>"
+									placeholder="URL Facebook">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="twitter">
+								<i class="fab fa-twitter mr-1"></i>Twitter
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-twitter"></i></span>
+								</div>
+								<input type="text" class="form-control" id="twitter" name="twitter"
+									value="<?php echo set_value('twitter', $pengaturan->twitter ?? ''); ?>"
+									placeholder="URL Twitter">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="instagram">
+								<i class="fab fa-instagram mr-1"></i>Instagram
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-instagram"></i></span>
+								</div>
+								<input type="text" class="form-control" id="instagram" name="instagram"
+									value="<?php echo set_value('instagram', $pengaturan->instagram ?? ''); ?>"
+									placeholder="URL Instagram">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="youtube">
+								<i class="fab fa-youtube mr-1"></i>YouTube
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-youtube"></i></span>
+								</div>
+								<input type="text" class="form-control" id="youtube" name="youtube"
+									value="<?php echo set_value('youtube', $pengaturan->youtube ?? ''); ?>"
+									placeholder="URL YouTube">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="linkedin">
+								<i class="fab fa-linkedin mr-1"></i>LinkedIn
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+								</div>
+								<input type="text" class="form-control" id="linkedin" name="linkedin"
+									value="<?php echo set_value('linkedin', $pengaturan->linkedin ?? ''); ?>"
+									placeholder="URL LinkedIn">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="whatsapp">
+								<i class="fab fa-whatsapp mr-1"></i>WhatsApp
+							</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+								</div>
+								<input type="text" class="form-control" id="whatsapp" name="whatsapp"
+									value="<?php echo set_value('whatsapp', $pengaturan->whatsapp ?? ''); ?>"
+									placeholder="Nomor WhatsApp (contoh: 6281234567890)">
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<!-- /.card-body -->
 

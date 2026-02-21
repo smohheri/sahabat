@@ -6,7 +6,6 @@ class Admin extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		// Check if user is logged in
 		if (!$this->session->userdata('is_logged_in')) {
 			redirect('auth/login');
 		}
@@ -18,7 +17,6 @@ class Admin extends CI_Controller
 		$this->load->model('Pengurus_model');
 		$this->load->model('User_model');
 
-		// Get statistics
 		$anak = $this->Anak_model->get_all_anak();
 		$pengurus = $this->Pengurus_model->get_all_pengurus();
 
@@ -59,13 +57,11 @@ class Admin extends CI_Controller
 			else
 				$dokumen_kurang++;
 
-			// Status anak
 			if ($a->status_anak == 'Aktif')
 				$anak_aktif++;
 			else
 				$anak_nonaktif++;
 
-			// Pendidikan
 			$pend = strtolower($a->pendidikan);
 			if (strpos($pend, 'sd') !== false || strpos($pend, 'mi') !== false)
 				$pendidikan_sd++;
@@ -76,7 +72,6 @@ class Admin extends CI_Controller
 			elseif (strpos($pend, 'pt') !== false || strpos($pend, 'univ') !== false || strpos($pend, 'd3') !== false || strpos($pend, 's1') !== false)
 				$pendidikan_pt++;
 
-			// Anak baru (masuk dalam 1 bulan terakhir)
 			if (!empty($a->tanggal_masuk)) {
 				$tanggal_masuk = new DateTime($a->tanggal_masuk);
 				if ($tanggal_masuk >= $one_month_ago)
@@ -145,7 +140,13 @@ class Admin extends CI_Controller
 					'no_telp' => $this->input->post('no_telp'),
 					'email' => $this->input->post('email'),
 					'nama_kepala' => $this->input->post('nama_kepala'),
-					'tahun_berdiri' => $this->input->post('tahun_berdiri')
+					'tahun_berdiri' => $this->input->post('tahun_berdiri'),
+					'facebook' => $this->input->post('facebook'),
+					'twitter' => $this->input->post('twitter'),
+					'instagram' => $this->input->post('instagram'),
+					'youtube' => $this->input->post('youtube'),
+					'linkedin' => $this->input->post('linkedin'),
+					'whatsapp' => $this->input->post('whatsapp')
 				);
 
 				$this->User_model->update_pengaturan($data_update);
@@ -167,7 +168,6 @@ class Admin extends CI_Controller
 		$this->load->model('User_model');
 		$this->load->library('upload');
 
-		// Get current pengaturan to check existing logo
 		$pengaturan = $this->User_model->get_pengaturan();
 		if (!empty($pengaturan->logo)) {
 			$old_logo_path = FCPATH . 'assets/uploads/logos/' . $pengaturan->logo;
@@ -178,7 +178,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = FCPATH . 'assets/uploads/logos/';
 		$config['allowed_types'] = 'jpg|jpeg|png|gif';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'logo_' . time();
 		$config['detect_mime'] = TRUE;
 		$config['xss_clean'] = TRUE;
@@ -194,7 +194,6 @@ class Admin extends CI_Controller
 		} else {
 			$data = $this->upload->data();
 			$logo_name = $data['file_name'];
-
 			$this->User_model->update_pengaturan(['logo' => $logo_name]);
 			$this->session->set_flashdata('success', 'Logo berhasil diupload!');
 		}
@@ -207,7 +206,6 @@ class Admin extends CI_Controller
 		$this->load->model('User_model');
 		$this->load->library('upload');
 
-		// Get current pengaturan to check existing dokumen
 		$pengaturan = $this->User_model->get_pengaturan();
 		if (!empty($pengaturan->dokumen_legal)) {
 			$old_dokumen_path = FCPATH . 'assets/uploads/documents/' . $pengaturan->dokumen_legal;
@@ -218,7 +216,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = FCPATH . 'assets/uploads/documents/';
 		$config['allowed_types'] = 'pdf';
-		$config['max_size'] = 5120; // 5MB
+		$config['max_size'] = 5120;
 		$config['file_name'] = 'dokumen_' . time();
 
 		$this->upload->initialize($config);
@@ -228,7 +226,6 @@ class Admin extends CI_Controller
 		} else {
 			$data = $this->upload->data();
 			$dokumen_name = $data['file_name'];
-
 			$this->User_model->update_pengaturan(['dokumen_legal' => $dokumen_name]);
 			$this->session->set_flashdata('success', 'Dokumen legal berhasil diupload!');
 		}
@@ -241,7 +238,6 @@ class Admin extends CI_Controller
 		$this->load->model('User_model');
 		$this->load->library('upload');
 
-		// Get current pengaturan to check existing kop
 		$pengaturan = $this->User_model->get_pengaturan();
 		if (!empty($pengaturan->kop_surat)) {
 			$old_kop_path = FCPATH . 'assets/uploads/kop/' . $pengaturan->kop_surat;
@@ -250,7 +246,6 @@ class Admin extends CI_Controller
 			}
 		}
 
-		// Create directory if not exists
 		$upload_path = FCPATH . 'assets/uploads/kop/';
 		if (!is_dir($upload_path)) {
 			mkdir($upload_path, 0755, TRUE);
@@ -258,7 +253,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = $upload_path;
 		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'kop_' . time();
 		$config['detect_mime'] = TRUE;
 		$config['xss_clean'] = TRUE;
@@ -270,9 +265,8 @@ class Admin extends CI_Controller
 		} else {
 			$data = $this->upload->data();
 			$kop_name = $data['file_name'];
-
 			$this->User_model->update_pengaturan(['kop_surat' => $kop_name]);
-			$this->session->set_flashdata('success', 'Kop surat berhasil diupload! Kop akan muncul di bagian atas laporan PDF.');
+			$this->session->set_flashdata('success', 'Kop surat berhasil diupload!');
 		}
 
 		redirect('admin/pengaturan');
@@ -283,7 +277,6 @@ class Admin extends CI_Controller
 		$this->load->model('User_model');
 		$this->load->library('form_validation');
 
-		// Handle delete action
 		if ($this->input->get('delete')) {
 			$id = $this->input->get('delete');
 			$this->User_model->delete_user($id);
@@ -291,7 +284,6 @@ class Admin extends CI_Controller
 			redirect('admin/user');
 		}
 
-		// Handle add/edit action
 		if ($this->input->post()) {
 			$id = $this->input->post('id_user');
 
@@ -309,17 +301,14 @@ class Admin extends CI_Controller
 					'role' => $this->input->post('role')
 				);
 
-				// Only update password if provided
 				if ($this->input->post('password')) {
 					$data['password'] = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
 				}
 
 				if ($id) {
-					// Update existing user
 					$this->User_model->update_user($id, $data);
 					$this->session->set_flashdata('success', 'User berhasil diperbarui!');
 				} else {
-					// Insert new user
 					if (!$this->input->post('password')) {
 						$this->session->set_flashdata('error', 'Password wajib diisi untuk user baru!');
 						redirect('admin/user');
@@ -331,7 +320,6 @@ class Admin extends CI_Controller
 			}
 		}
 
-		// Get user for edit
 		$edit_user = null;
 		if ($this->input->get('edit')) {
 			$edit_user = $this->User_model->get_user_by_id($this->input->get('edit'));
@@ -350,7 +338,6 @@ class Admin extends CI_Controller
 		$this->load->model('Anak_model');
 		$this->load->library('form_validation');
 
-		// Handle delete action
 		if ($this->input->get('delete')) {
 			$id = $this->input->get('delete');
 			$this->Anak_model->delete_anak($id);
@@ -358,7 +345,6 @@ class Admin extends CI_Controller
 			redirect('admin/anak');
 		}
 
-		// Handle add/edit action
 		if ($this->input->post()) {
 			$id = $this->input->post('id_anak');
 
@@ -388,11 +374,9 @@ class Admin extends CI_Controller
 				);
 
 				if ($id) {
-					// Update existing anak
 					$this->Anak_model->update_anak($id, $data);
 					$this->session->set_flashdata('success', 'Data anak berhasil diperbarui!');
 				} else {
-					// Insert new anak
 					$this->Anak_model->insert_anak($data);
 					$this->session->set_flashdata('success', 'Data anak berhasil ditambahkan!');
 				}
@@ -412,19 +396,15 @@ class Admin extends CI_Controller
 		$this->load->model('Anak_model');
 		$this->load->library('upload');
 
-		// Get anak data
 		$anak = $this->Anak_model->get_anak_by_id($id_anak);
 
-		// Create folder name with prefix NIK_nama or nama only if NIK empty
 		$folder_name = $anak->nik ? $anak->nik . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak) : preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak);
 		$upload_path = FCPATH . 'assets/uploads/dokumen_anak/' . $folder_name . '/';
 
-		// Create directory if not exists
 		if (!is_dir($upload_path)) {
 			mkdir($upload_path, 0755, TRUE);
 		}
 
-		// Delete old file if exists (extract just filename from stored path)
 		if (!empty($anak->file_kk)) {
 			$old_filename = basename($anak->file_kk);
 			$old_file = $upload_path . $old_filename;
@@ -435,7 +415,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = $upload_path;
 		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'kk_' . time();
 
 		$this->upload->initialize($config);
@@ -444,7 +424,6 @@ class Admin extends CI_Controller
 			$this->session->set_flashdata('error', $this->upload->display_errors());
 		} else {
 			$data = $this->upload->data();
-			// Store relative path with folder
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_kk($id_anak, $file_path);
 			$this->session->set_flashdata('success', 'File KK berhasil diupload!');
@@ -458,19 +437,15 @@ class Admin extends CI_Controller
 		$this->load->model('Anak_model');
 		$this->load->library('upload');
 
-		// Get anak data
 		$anak = $this->Anak_model->get_anak_by_id($id_anak);
 
-		// Create folder name with prefix NIK_nama or nama only if NIK empty
 		$folder_name = $anak->nik ? $anak->nik . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak) : preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak);
 		$upload_path = FCPATH . 'assets/uploads/dokumen_anak/' . $folder_name . '/';
 
-		// Create directory if not exists
 		if (!is_dir($upload_path)) {
 			mkdir($upload_path, 0755, TRUE);
 		}
 
-		// Delete old file if exists (extract just filename from stored path)
 		if (!empty($anak->file_akta)) {
 			$old_filename = basename($anak->file_akta);
 			$old_file = $upload_path . $old_filename;
@@ -481,7 +456,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = $upload_path;
 		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'akta_' . time();
 
 		$this->upload->initialize($config);
@@ -490,7 +465,6 @@ class Admin extends CI_Controller
 			$this->session->set_flashdata('error', $this->upload->display_errors());
 		} else {
 			$data = $this->upload->data();
-			// Store relative path with folder
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_akta($id_anak, $file_path);
 			$this->session->set_flashdata('success', 'File Akta berhasil diupload!');
@@ -504,19 +478,15 @@ class Admin extends CI_Controller
 		$this->load->model('Anak_model');
 		$this->load->library('upload');
 
-		// Get anak data
 		$anak = $this->Anak_model->get_anak_by_id($id_anak);
 
-		// Create folder name with prefix NIK_nama or nama only if NIK empty
 		$folder_name = $anak->nik ? $anak->nik . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak) : preg_replace('/[^a-zA-Z0-9]/', '_', $anak->nama_anak);
 		$upload_path = FCPATH . 'assets/uploads/dokumen_anak/' . $folder_name . '/';
 
-		// Create directory if not exists
 		if (!is_dir($upload_path)) {
 			mkdir($upload_path, 0755, TRUE);
 		}
 
-		// Delete old file if exists (extract just filename from stored path)
 		if (!empty($anak->file_pendukung)) {
 			$old_filename = basename($anak->file_pendukung);
 			$old_file = $upload_path . $old_filename;
@@ -527,7 +497,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = $upload_path;
 		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'pendukung_' . time();
 
 		$this->upload->initialize($config);
@@ -536,7 +506,6 @@ class Admin extends CI_Controller
 			$this->session->set_flashdata('error', $this->upload->display_errors());
 		} else {
 			$data = $this->upload->data();
-			// Store relative path with folder
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Anak_model->update_file_pendukung($id_anak, $file_path);
 			$this->session->set_flashdata('success', 'File pendukung berhasil diupload!');
@@ -548,14 +517,12 @@ class Admin extends CI_Controller
 	public function view_dokumen($id_anak, $jenis)
 	{
 		$this->load->model('Anak_model');
-
 		$anak = $this->Anak_model->get_anak_by_id($id_anak);
 
 		if (!$anak) {
 			show_404();
 		}
 
-		// Determine which file to show
 		$file_field = 'file_' . $jenis;
 		$file_path = $anak->$file_field;
 
@@ -571,12 +538,10 @@ class Admin extends CI_Controller
 			redirect('admin/anak');
 		}
 
-		// Get file info
 		$file_info = pathinfo($full_path);
 		$file_ext = strtolower($file_info['extension']);
 		$file_name = $file_info['basename'];
 
-		// Set headers for file display/download
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: inline; filename="' . $file_name . '"');
 		header('Content-Length: ' . filesize($full_path));
@@ -592,7 +557,6 @@ class Admin extends CI_Controller
 		$this->load->model('Pengurus_model');
 		$this->load->library('form_validation');
 
-		// Handle delete action
 		if ($this->input->get('delete')) {
 			$id = $this->input->get('delete');
 			$this->Pengurus_model->delete_pengurus($id);
@@ -600,7 +564,6 @@ class Admin extends CI_Controller
 			redirect('admin/pengurus');
 		}
 
-		// Handle add/edit action
 		if ($this->input->post()) {
 			$id = $this->input->post('id_pengurus');
 
@@ -620,11 +583,9 @@ class Admin extends CI_Controller
 				);
 
 				if ($id) {
-					// Update existing pengurus
 					$this->Pengurus_model->update_pengurus($id, $data);
 					$this->session->set_flashdata('success', 'Data pengurus berhasil diperbarui!');
 				} else {
-					// Insert new pengurus
 					$this->Pengurus_model->insert_pengurus($data);
 					$this->session->set_flashdata('success', 'Data pengurus berhasil ditambahkan!');
 				}
@@ -644,7 +605,6 @@ class Admin extends CI_Controller
 		$this->load->model('Pengurus_model');
 		$this->load->library('upload');
 
-		// Get pengurus data
 		$pengurus = $this->Pengurus_model->get_pengurus_by_id($id_pengurus);
 
 		if (!$pengurus) {
@@ -652,16 +612,13 @@ class Admin extends CI_Controller
 			redirect('admin/pengurus');
 		}
 
-		// Create folder name with prefix nama_pengurus
 		$folder_name = preg_replace('/[^a-zA-Z0-9]/', '_', $pengurus->nama_pengurus);
 		$upload_path = FCPATH . 'assets/uploads/dokumen_pengurus/' . $folder_name . '/';
 
-		// Create directory if not exists
 		if (!is_dir($upload_path)) {
 			mkdir($upload_path, 0755, TRUE);
 		}
 
-		// Delete old file if exists
 		if (!empty($pengurus->file_ktp)) {
 			$old_filename = basename($pengurus->file_ktp);
 			$old_file = $upload_path . $old_filename;
@@ -672,7 +629,7 @@ class Admin extends CI_Controller
 
 		$config['upload_path'] = $upload_path;
 		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
-		$config['max_size'] = 2048; // 2MB
+		$config['max_size'] = 2048;
 		$config['file_name'] = 'ktp_' . time();
 
 		$this->upload->initialize($config);
@@ -681,7 +638,6 @@ class Admin extends CI_Controller
 			$this->session->set_flashdata('error', $this->upload->display_errors());
 		} else {
 			$data = $this->upload->data();
-			// Store relative path with folder
 			$file_path = $folder_name . '/' . $data['file_name'];
 			$this->Pengurus_model->update_ktp($id_pengurus, $file_path);
 			$this->session->set_flashdata('success', 'File KTP berhasil diupload!');
@@ -693,7 +649,6 @@ class Admin extends CI_Controller
 	public function view_ktp($id_pengurus)
 	{
 		$this->load->model('Pengurus_model');
-
 		$pengurus = $this->Pengurus_model->get_pengurus_by_id($id_pengurus);
 
 		if (!$pengurus || empty($pengurus->file_ktp)) {
@@ -708,11 +663,9 @@ class Admin extends CI_Controller
 			redirect('admin/pengurus');
 		}
 
-		// Get file info
 		$file_info = pathinfo($full_path);
 		$file_name = $file_info['basename'];
 
-		// Set headers for file display
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: inline; filename="' . $file_name . '"');
 		header('Content-Length: ' . filesize($full_path));
@@ -722,8 +675,6 @@ class Admin extends CI_Controller
 		readfile($full_path);
 		exit;
 	}
-
-	// ==================== LAPORAN ====================
 
 	public function laporan($jenis = 'data_anak')
 	{
@@ -772,8 +723,6 @@ class Admin extends CI_Controller
 
 		$this->load->view('templates/admin_layout', $data);
 	}
-
-	// ==================== EXPORT PDF & EXCEL ====================
 
 	public function export_pdf_anak()
 	{
@@ -829,6 +778,78 @@ class Admin extends CI_Controller
 		$this->pdf_export->generate($html, 'laporan_dokumen_' . date('Ymd') . '.pdf', 'D');
 	}
 
+	public function export_pdf_statistik()
+	{
+		$this->load->model('Anak_model');
+		$this->load->library('Pdf_export');
+
+		$data['anak'] = $this->Anak_model->get_all_anak();
+		$data['settings'] = $this->config->item('settings');
+
+		$html = $this->pdf_export->generate_laporan_statistik($data);
+		$this->pdf_export->generate($html, 'laporan_statistik_' . date('Ymd') . '.pdf', 'D');
+	}
+
+	public function generate_pdf_statistik()
+	{
+		$this->load->model('Anak_model');
+		$this->load->library('Pdf_export');
+
+		$genderChart = $this->input->post('genderChart');
+		$ageChart = $this->input->post('ageChart');
+		$educationChart = $this->input->post('educationChart');
+
+		$data_stats = array(
+			'total' => $this->input->post('total'),
+			'laki' => $this->input->post('laki'),
+			'perempuan' => $this->input->post('perempuan'),
+			'aktif' => $this->input->post('aktif'),
+			'usia_dibawah5' => $this->input->post('usia_dibawah5'),
+			'usia_5_12' => $this->input->post('usia_5_12'),
+			'usia_13_17' => $this->input->post('usia_13_17'),
+			'usia_diatas17' => $this->input->post('usia_diatas17'),
+			'pendidikan' => json_decode($this->input->post('pendidikan'), true)
+		);
+
+		$data['anak'] = $this->Anak_model->get_all_anak();
+		$data['settings'] = $this->config->item('settings');
+		$data['chart_images'] = array(
+			'gender' => $genderChart,
+			'age' => $ageChart,
+			'education' => $educationChart
+		);
+		$data['stats'] = $data_stats;
+
+		$html = $this->pdf_export->generate_laporan_statistik_with_charts($data);
+
+		$filename = 'statistik_' . time() . '.pdf';
+		$temp_dir = FCPATH . 'assets/temp/';
+		if (!is_dir($temp_dir)) {
+			mkdir($temp_dir, 0755, true);
+		}
+		$filepath = $temp_dir . $filename;
+
+		$this->pdf_export->generate_to_file($html, $filepath);
+
+		echo json_encode(array('success' => true, 'filename' => $filename));
+	}
+
+	public function delete_temp_file()
+	{
+		$filename = $this->input->post('filename');
+		if (!empty($filename)) {
+			$filepath = FCPATH . 'assets/temp/' . $filename;
+			if (file_exists($filepath)) {
+				unlink($filepath);
+				echo json_encode(array('success' => true));
+			} else {
+				echo json_encode(array('success' => false, 'message' => 'File not found'));
+			}
+		} else {
+			echo json_encode(array('success' => false, 'message' => 'No filename provided'));
+		}
+	}
+
 	public function export_excel_dokumen()
 	{
 		$this->load->model('Anak_model');
@@ -836,5 +857,15 @@ class Admin extends CI_Controller
 
 		$data['anak'] = $this->Anak_model->get_all_anak();
 		$this->excel_export->export_laporan_dokumen($data, 'laporan_dokumen_' . date('Ymd') . '.xlsx');
+	}
+
+	public function kontak()
+	{
+		$data = array(
+			'title' => 'Kontak Pengembang - LKSA Harapan Bangsa',
+			'page_title' => 'Kontak Pengembang',
+			'content' => $this->load->view('admin/kontak', NULL, TRUE)
+		);
+		$this->load->view('templates/admin_layout', $data);
 	}
 }

@@ -33,9 +33,11 @@
 							<th>Nama Anak</th>
 							<th class="text-center">JK</th>
 							<th>Tempat/Tgl Lahir</th>
+							<th>Umur</th>
 							<th>Pendidikan</th>
 							<th>Status</th>
 							<th>Status Tinggal</th>
+							<th>Tgl Masuk</th>
 							<th class="text-center">Dokumen</th>
 							<th class="text-center" style="width: 120px;">Aksi</th>
 						</tr>
@@ -63,13 +65,17 @@
 								<td class="text-center">
 									<span
 										class="badge badge-<?php echo $row->jenis_kelamin == 'L' ? 'primary' : 'danger'; ?> px-2 py-1">
-										<?php echo $row->jenis_kelamin == 'L' ? 'L' : 'P'; ?>
+										<?php echo $row->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
 									</span>
 								</td>
 								<td>
 									<div class="text-muted"><?php echo $row->tempat_lahir; ?></div>
-									<small
-										class="text-muted"><?php echo date('d/m/Y', strtotime($row->tanggal_lahir)); ?></small>
+									<small class="text-muted"><?php echo tanggal_indo($row->tanggal_lahir); ?></small>
+								</td>
+								<td>
+									<span class="badge badge-secondary px-2 py-1">
+										<?php echo umur($row->tanggal_lahir); ?>
+									</span>
 								</td>
 								<td>
 									<span class="badge badge-info px-2 py-1 font-weight-normal">
@@ -90,6 +96,9 @@
 									?> px-2 py-1 font-weight-normal">
 										<?php echo $row->status_tinggal ?? 'Belum diisi'; ?>
 									</span>
+								</td>
+								<td>
+									<small class="text-muted"><?php echo tanggal_indo($row->tanggal_masuk); ?></small>
 								</td>
 								<td class="text-center">
 									<?php
@@ -138,117 +147,110 @@
 											<button type="button" class="close text-white"
 												data-dismiss="modal"><span>&times;</span></button>
 										</div>
-										<form action="<?php echo site_url('admin/anak'); ?>" method="post"
-											class="form-anak">
-											<div class="modal-body p-4">
-												<input type="hidden" name="id_anak" value="<?php echo $row->id_anak; ?>">
+										<?php echo form_open('admin/anak', 'class="form-anak"'); ?>
+										<div class="modal-body p-4">
+											<input type="hidden" name="id_anak" value="<?php echo $row->id_anak; ?>">
 
-												<div class="row">
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Nama
-																Anak</label>
-															<input type="text" class="form-control" name="nama_anak"
-																value="<?php echo $row->nama_anak; ?>" required>
-														</div>
-													</div>
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">NIK</label>
-															<input type="text" class="form-control" name="nik"
-																value="<?php echo $row->nik; ?>" placeholder="Optional">
-														</div>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
+														<input type="text" class="form-control" name="nama_anak"
+															value="<?php echo $row->nama_anak; ?>" required>
 													</div>
 												</div>
-
-												<div class="row">
-													<div class="col-md-4">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Jenis
-																Kelamin</label>
-															<select class="form-control" name="jenis_kelamin" required>
-																<option value="L" <?php echo $row->jenis_kelamin == 'L' ? 'selected' : ''; ?>>Laki-laki</option>
-																<option value="P" <?php echo $row->jenis_kelamin == 'P' ? 'selected' : ''; ?>>Perempuan</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Tempat
-																Lahir</label>
-															<input type="text" class="form-control" name="tempat_lahir"
-																value="<?php echo $row->tempat_lahir; ?>" required>
-														</div>
-													</div>
-													<div class="col-md-4">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Tanggal
-																Lahir</label>
-															<input type="date" class="form-control" name="tanggal_lahir"
-																value="<?php echo $row->tanggal_lahir; ?>" required>
-														</div>
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">NIK</label>
+														<input type="text" class="form-control" name="nik"
+															value="<?php echo $row->nik; ?>" placeholder="Optional">
 													</div>
 												</div>
-
-												<div class="row">
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label
-																class="font-weight-bold text-muted mb-2">Pendidikan</label>
-															<select class="form-control" name="pendidikan" required>
-																<option value="TK" <?php echo $row->pendidikan == 'TK' ? 'selected' : ''; ?>>TK</option>
-																<option value="SD" <?php echo $row->pendidikan == 'SD' ? 'selected' : ''; ?>>SD</option>
-																<option value="SMP" <?php echo $row->pendidikan == 'SMP' ? 'selected' : ''; ?>>SMP</option>
-																<option value="SMA" <?php echo $row->pendidikan == 'SMA' ? 'selected' : ''; ?>>SMA</option>
-																<option value="PT" <?php echo $row->pendidikan == 'PT' ? 'selected' : ''; ?>>Perguruan Tinggi</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Status
-																Anak</label>
-															<select class="form-control" name="status_anak" required>
-																<option value="Aktif" <?php echo $row->status_anak == 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
-																<option value="Nonaktif" <?php echo $row->status_anak == 'Nonaktif' ? 'selected' : ''; ?>>
-																	Nonaktif</option>
-																<option value="Alumni" <?php echo $row->status_anak == 'Alumni' ? 'selected' : ''; ?>>Alumni
-																</option>
-															</select>
-														</div>
-													</div>
-												</div>
-
-												<div class="row">
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Status
-																Tinggal</label>
-															<select class="form-control" name="status_tinggal" required>
-																<option value="Tinggal di LKSA" <?php echo $row->status_tinggal == 'Tinggal di LKSA' ? 'selected' : ''; ?>>Tinggal di LKSA</option>
-																<option value="Luar LKSA" <?php echo $row->status_tinggal == 'Luar LKSA' ? 'selected' : ''; ?>>
-																	Luar LKSA</option>
-															</select>
-														</div>
-													</div>
-													<div class="col-md-6">
-														<div class="form-group mb-3">
-															<label class="font-weight-bold text-muted mb-2">Tanggal
-																Masuk</label>
-															<input type="date" class="form-control" name="tanggal_masuk"
-																value="<?php echo $row->tanggal_masuk; ?>" required>
-														</div>
-													</div>
-												</div>
-
 											</div>
-											<div class="modal-footer bg-light">
-												<button type="button" class="btn btn-secondary"
-													data-dismiss="modal">Batal</button>
-												<button type="submit" class="btn btn-warning text-white font-weight-bold">
-													<i class="fas fa-save mr-1"></i>Simpan Perubahan
-												</button>
+
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Jenis
+															Kelamin</label>
+														<select class="form-control" name="jenis_kelamin" required>
+															<option value="L" <?php echo $row->jenis_kelamin == 'L' ? 'selected' : ''; ?>>Laki-laki</option>
+															<option value="P" <?php echo $row->jenis_kelamin == 'P' ? 'selected' : ''; ?>>Perempuan</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
+														<input type="text" class="form-control" name="tempat_lahir"
+															value="<?php echo $row->tempat_lahir; ?>" required>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Tanggal
+															Lahir</label>
+														<input type="date" class="form-control" name="tanggal_lahir"
+															value="<?php echo $row->tanggal_lahir; ?>" required>
+													</div>
+												</div>
 											</div>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
+														<select class="form-control" name="pendidikan" required>
+															<option value="TK" <?php echo $row->pendidikan == 'TK' ? 'selected' : ''; ?>>TK</option>
+															<option value="SD" <?php echo $row->pendidikan == 'SD' ? 'selected' : ''; ?>>SD</option>
+															<option value="SMP" <?php echo $row->pendidikan == 'SMP' ? 'selected' : ''; ?>>SMP</option>
+															<option value="SMA" <?php echo $row->pendidikan == 'SMA' ? 'selected' : ''; ?>>SMA</option>
+															<option value="PT" <?php echo $row->pendidikan == 'PT' ? 'selected' : ''; ?>>Perguruan Tinggi</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Status Anak</label>
+														<select class="form-control" name="status_anak" required>
+															<option value="Aktif" <?php echo $row->status_anak == 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
+															<option value="Nonaktif" <?php echo $row->status_anak == 'Nonaktif' ? 'selected' : ''; ?>>Nonaktif
+															</option>
+															<option value="Alumni" <?php echo $row->status_anak == 'Alumni' ? 'selected' : ''; ?>>Alumni</option>
+														</select>
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Status
+															Tinggal</label>
+														<select class="form-control" name="status_tinggal" required>
+															<option value="Tinggal di LKSA" <?php echo $row->status_tinggal == 'Tinggal di LKSA' ? 'selected' : ''; ?>>Tinggal di LKSA</option>
+															<option value="Luar LKSA" <?php echo $row->status_tinggal == 'Luar LKSA' ? 'selected' : ''; ?>>Luar LKSA</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="form-group mb-3">
+														<label class="font-weight-bold text-muted mb-2">Tanggal
+															Masuk</label>
+														<input type="date" class="form-control" name="tanggal_masuk"
+															value="<?php echo $row->tanggal_masuk; ?>" required>
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="modal-footer bg-light">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Batal</button>
+											<button type="submit" class="btn btn-warning text-white font-weight-bold">
+												<i class="fas fa-save mr-1"></i>Simpan Perubahan
+											</button>
+										</div>
 										</form>
 									</div>
 								</div>
@@ -272,8 +274,7 @@
 													<div
 														class="alert alert-success py-2 mb-2 d-flex justify-content-between align-items-center">
 														<div>
-															<i class="fas fa-check-circle mr-1"></i> File tersedia:
-															<span
+															<i class="fas fa-check-circle mr-1"></i> File tersedia: <span
 																class="font-weight-bold"><?php echo basename($row->file_kk); ?></span>
 														</div>
 														<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/kk'); ?>"
@@ -283,22 +284,20 @@
 														</a>
 													</div>
 												<?php endif; ?>
-												<form action="<?php echo site_url('admin/upload_kk/' . $row->id_anak); ?>"
-													method="post" enctype="multipart/form-data">
-													<div class="input-group">
-														<div class="custom-file">
-															<input type="file" class="custom-file-input" name="file_kk"
-																id="file_kk<?php echo $row->id_anak; ?>"
-																accept=".pdf,.jpg,.jpeg,.png" required>
-															<label class="custom-file-label"
-																for="file_kk<?php echo $row->id_anak; ?>">Pilih
-																file...</label>
-														</div>
-														<div class="input-group-append">
-															<button class="btn btn-primary" type="submit">Upload</button>
-														</div>
+												<?php echo form_open_multipart('admin/upload_kk/' . $row->id_anak); ?>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" name="file_kk"
+															id="file_kk<?php echo $row->id_anak; ?>"
+															accept=".pdf,.jpg,.jpeg,.png" required>
+														<label class="custom-file-label"
+															for="file_kk<?php echo $row->id_anak; ?>">Pilih file...</label>
 													</div>
-													<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
+													<div class="input-group-append">
+														<button class="btn btn-primary" type="submit">Upload</button>
+													</div>
+												</div>
+												<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
 												</form>
 											</div>
 
@@ -309,8 +308,7 @@
 													<div
 														class="alert alert-success py-2 mb-2 d-flex justify-content-between align-items-center">
 														<div>
-															<i class="fas fa-check-circle mr-1"></i> File tersedia:
-															<span
+															<i class="fas fa-check-circle mr-1"></i> File tersedia: <span
 																class="font-weight-bold"><?php echo basename($row->file_akta); ?></span>
 														</div>
 														<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/akta'); ?>"
@@ -320,22 +318,21 @@
 														</a>
 													</div>
 												<?php endif; ?>
-												<form action="<?php echo site_url('admin/upload_akta/' . $row->id_anak); ?>"
-													method="post" enctype="multipart/form-data">
-													<div class="input-group">
-														<div class="custom-file">
-															<input type="file" class="custom-file-input" name="file_akta"
-																id="file_akta<?php echo $row->id_anak; ?>"
-																accept=".pdf,.jpg,.jpeg,.png" required>
-															<label class="custom-file-label"
-																for="file_akta<?php echo $row->id_anak; ?>">Pilih
-																file...</label>
-														</div>
-														<div class="input-group-append">
-															<button class="btn btn-primary" type="submit">Upload</button>
-														</div>
+												<?php echo form_open_multipart('admin/upload_akta/' . $row->id_anak); ?>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" name="file_akta"
+															id="file_akta<?php echo $row->id_anak; ?>"
+															accept=".pdf,.jpg,.jpeg,.png" required>
+														<label class="custom-file-label"
+															for="file_akta<?php echo $row->id_anak; ?>">Pilih
+															file...</label>
 													</div>
-													<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
+													<div class="input-group-append">
+														<button class="btn btn-primary" type="submit">Upload</button>
+													</div>
+												</div>
+												<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
 												</form>
 											</div>
 
@@ -347,8 +344,7 @@
 													<div
 														class="alert alert-success py-2 mb-2 d-flex justify-content-between align-items-center">
 														<div>
-															<i class="fas fa-check-circle mr-1"></i> File tersedia:
-															<span
+															<i class="fas fa-check-circle mr-1"></i> File tersedia: <span
 																class="font-weight-bold"><?php echo basename($row->file_pendukung); ?></span>
 														</div>
 														<a href="<?php echo site_url('admin/view_dokumen/' . $row->id_anak . '/pendukung'); ?>"
@@ -358,24 +354,21 @@
 														</a>
 													</div>
 												<?php endif; ?>
-												<form
-													action="<?php echo site_url('admin/upload_pendukung/' . $row->id_anak); ?>"
-													method="post" enctype="multipart/form-data">
-													<div class="input-group">
-														<div class="custom-file">
-															<input type="file" class="custom-file-input"
-																name="file_pendukung"
-																id="file_pendukung<?php echo $row->id_anak; ?>"
-																accept=".pdf,.jpg,.jpeg,.png" required>
-															<label class="custom-file-label"
-																for="file_pendukung<?php echo $row->id_anak; ?>">Pilih
-																file...</label>
-														</div>
-														<div class="input-group-append">
-															<button class="btn btn-primary" type="submit">Upload</button>
-														</div>
+												<?php echo form_open_multipart('admin/upload_pendukung/' . $row->id_anak); ?>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" name="file_pendukung"
+															id="file_pendukung<?php echo $row->id_anak; ?>"
+															accept=".pdf,.jpg,.jpeg,.png" required>
+														<label class="custom-file-label"
+															for="file_pendukung<?php echo $row->id_anak; ?>">Pilih
+															file...</label>
 													</div>
-													<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
+													<div class="input-group-append">
+														<button class="btn btn-primary" type="submit">Upload</button>
+													</div>
+												</div>
+												<small class="text-muted">Format: PDF, JPG, PNG (Max 2MB)</small>
 												</form>
 											</div>
 										</div>
@@ -433,103 +426,103 @@
 				<h5 class="modal-title font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Tambah Anak Baru</h5>
 				<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
 			</div>
-			<form action="<?php echo site_url('admin/anak'); ?>" method="post" id="formAddAnak">
-				<div class="modal-body p-4">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
-								<input type="text" class="form-control" name="nama_anak"
-									placeholder="Masukkan nama anak" required>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">NIK</label>
-								<input type="text" class="form-control" name="nik"
-									placeholder="Nomor Induk Kependudukan (optional)">
-							</div>
+			<?php echo form_open('admin/anak', 'id="formAddAnak"'); ?>
+			<div class="modal-body p-4">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
+							<input type="text" class="form-control" name="nama_anak" placeholder="Masukkan nama anak"
+								required>
 						</div>
 					</div>
-
-					<div class="row">
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
-								<select class="form-control" name="jenis_kelamin" required>
-									<option value="">Pilih</option>
-									<option value="L">Laki-laki</option>
-									<option value="P">Perempuan</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
-								<input type="text" class="form-control" name="tempat_lahir" placeholder="Kota/Kabupaten"
-									required>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
-								<input type="date" class="form-control" name="tanggal_lahir" required>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
-								<select class="form-control" name="pendidikan" required>
-									<option value="">Pilih Pendidikan</option>
-									<option value="TK">TK</option>
-									<option value="SD">SD</option>
-									<option value="SMP">SMP</option>
-									<option value="SMA">SMA</option>
-									<option value="PT">Perguruan Tinggi</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Status Anak</label>
-								<select class="form-control" name="status_anak" required>
-									<option value="">Pilih Status</option>
-									<option value="Aktif">Aktif</option>
-									<option value="Nonaktif">Nonaktif</option>
-									<option value="Alumni">Alumni</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
-								<select class="form-control" name="status_tinggal" required>
-									<option value="">Pilih Status Tinggal</option>
-									<option value="Tinggal di LKSA">Tinggal di LKSA</option>
-									<option value="Luar LKSA">Luar LKSA</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
-								<input type="date" class="form-control" name="tanggal_masuk" required>
-							</div>
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">NIK</label>
+							<input type="text" class="form-control" name="nik"
+								placeholder="Nomor Induk Kependudukan (optional)">
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer bg-light">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-					<button type="submit" class="btn btn-success font-weight-bold">
-						<i class="fas fa-save mr-1"></i>Simpan
-					</button>
+
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
+							<select class="form-control" name="jenis_kelamin" required>
+								<option value="">Pilih</option>
+								<option value="L">Laki-laki</option>
+								<option value="P">Perempuan</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
+							<input type="text" class="form-control" name="tempat_lahir" placeholder="Kota/Kabupaten"
+								required>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
+							<input type="date" class="form-control" name="tanggal_lahir" required>
+						</div>
+					</div>
 				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
+							<select class="form-control" name="pendidikan" required>
+								<option value="">Pilih Pendidikan</option>
+								<option value="TK">TK</option>
+								<option value="SD">SD</option>
+								<option value="SMP">SMP</option>
+								<option value="SMA">SMA</option>
+								<option value="PT">Perguruan Tinggi</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Status Anak</label>
+							<select class="form-control" name="status_anak" required>
+								<option value="">Pilih Status</option>
+								<option value="Aktif">Aktif</option>
+								<option value="Nonaktif">Nonaktif</option>
+								<option value="Alumni">Alumni</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
+							<select class="form-control" name="status_tinggal" required>
+								<option value="">Pilih Status Tinggal</option>
+								<option value="Tinggal di LKSA">Tinggal di LKSA</option>
+								<option value="Luar LKSA">Luar LKSA</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
+							<input type="date" class="form-control" name="tanggal_masuk" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer bg-light">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+				<button type="submit" class="btn btn-success font-weight-bold">
+					<i class="fas fa-save mr-1"></i>Simpan
+				</button>
+			</div>
 			</form>
 		</div>
 	</div>
@@ -620,5 +613,122 @@
 
 	.custom-file-label::after {
 		content: "Browse";
+	}
+
+	/* Dark Mode Styles for anak.php */
+	body.dark-mode .table {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .table td,
+	body.dark-mode .table th {
+		border-color: #0f3460 !important;
+	}
+
+	body.dark-mode .table tbody tr:hover {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .table-hover tbody tr:hover {
+		background-color: #0f3460 !important;
+		color: #fff;
+	}
+
+	body.dark-mode .text-muted {
+		color: #a0a0a0 !important;
+	}
+
+	body.dark-mode .card {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .card-header {
+		background-color: #0f3460;
+		border-bottom-color: #16213e;
+	}
+
+	body.dark-mode .card-body {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .bg-light {
+		background-color: #0f3460 !important;
+	}
+
+	body.dark-mode .modal-content {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .modal-header {
+		background-color: #0f3460;
+	}
+
+	body.dark-mode .modal-body {
+		background-color: #16213e;
+	}
+
+	body.dark-mode .modal-footer {
+		background-color: #0f3460;
+	}
+
+	body.dark-mode .form-control {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .form-control:focus {
+		background-color: #1a1a2e;
+		color: #fff;
+		border-color: #00d9ff;
+	}
+
+	body.dark-mode .custom-file-label {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .input-group-text {
+		background-color: #0f3460;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .alert-success {
+		background-color: #1b4332;
+		border-color: #2d6a4f;
+		color: #95d5b2;
+	}
+
+	body.dark-mode .alert-danger {
+		background-color: #5c1a1a;
+		border-color: #7f2626;
+		color: #f5b7b1;
+	}
+
+	body.dark-mode .close {
+		color: #e0e0e0;
+	}
+
+	body.dark-mode .close:hover {
+		color: #fff;
+	}
+
+	body.dark-mode .badge-light {
+		background-color: #0f3460;
+		color: #e0e0e0;
+	}
+
+	body.dark-mode select.form-control {
+		background-color: #1a1a2e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .table .rounded-circle {
+		background-color: #0f3460 !important;
 	}
 </style>
