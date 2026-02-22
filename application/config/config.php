@@ -23,12 +23,17 @@ if (!function_exists('env')) {
 |--------------------------------------------------------------------------
 */
 // Auto-detect base URL (works for both local and production)
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-	(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-	? 'https' : 'http';
+
 $host = $_SERVER['HTTP_HOST'];
-$path = '/simpintar/';
-$config['base_url'] = $protocol . '://' . $host . $path;
+$path = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+if ($host == 'localhost') {
+	$config['base_url'] = 'http://' . $host . $path;
+} else {
+	$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+		(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+		? 'https' : 'http';
+	$config['base_url'] = $protocol . '://' . $host . $path;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +89,7 @@ $config['subclass_prefix'] = env('subclass_prefix', 'MY_');
 | Composer auto-loading
 |--------------------------------------------------------------------------
 */
-$config['composer_autoload'] = env('composer_autoload', FALSE);
+$config['composer_autoload'] = FCPATH . 'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -221,7 +226,7 @@ $config['sess_regenerate_destroy'] = env('sess_regenerate_destroy', FALSE);
 */
 $config['cookie_prefix'] = env('cookie_prefix', '');
 $config['cookie_domain'] = env('cookie_domain', '');
-$config['cookie_path'] = '/simpintar/';
+$config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = FALSE;
 $config['cookie_samesite'] = env('cookie_samesite', 'Lax');
