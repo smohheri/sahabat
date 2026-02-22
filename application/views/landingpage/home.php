@@ -378,6 +378,83 @@
 			font-size: 18px;
 		}
 
+		/* Facilities Section */
+		.facilities-section {
+			padding: 100px 0;
+			background: var(--white);
+		}
+
+		.facilities-title {
+			text-align: center;
+			margin-bottom: 60px;
+		}
+
+		.facilities-title h2 {
+			font-size: 40px;
+			font-weight: 700;
+			color: var(--secondary-color);
+			margin-bottom: 15px;
+		}
+
+		.facilities-title p {
+			font-size: 18px;
+			color: var(--text-light);
+			max-width: 600px;
+			margin: 0 auto;
+		}
+
+		.facility-card {
+			background: var(--white);
+			border-radius: 20px;
+			padding: 30px;
+			text-align: center;
+			transition: all 0.3s ease;
+			border: 1px solid #eee;
+			height: 100%;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.facility-card:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			border-color: var(--primary-color);
+		}
+
+		.facility-image {
+			width: 100%;
+			height: 200px;
+			border-radius: 15px;
+			object-fit: cover;
+			margin-bottom: 20px;
+		}
+
+		.facility-icon {
+			width: 60px;
+			height: 60px;
+			background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+			border-radius: 15px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 15px;
+			font-size: 24px;
+			color: var(--white);
+		}
+
+		.facility-card h3 {
+			font-size: 20px;
+			font-weight: 600;
+			margin-bottom: 10px;
+			color: var(--secondary-color);
+		}
+
+		.facility-card p {
+			color: var(--text-light);
+			line-height: 1.6;
+			margin: 0;
+		}
+
 		/* Stats Section */
 		.stats-section {
 			padding: 80px 0;
@@ -597,6 +674,9 @@
 						<a class="nav-link" href="#tentang">Tentang</a>
 					</li>
 					<li class="nav-item">
+						<a class="nav-link" href="#fasilitas">Fasilitas</a>
+					</li>
+					<li class="nav-item">
 						<a class="nav-link" href="#kontak">Kontak</a>
 					</li>
 					<li class="nav-item ms-lg-3">
@@ -775,6 +855,72 @@
 		</div>
 	</section>
 
+	<!-- Facilities Section -->
+	<section class="facilities-section" id="fasilitas">
+		<div class="container">
+			<div class="facilities-title" data-aos="fade-up">
+				<h2>Fasilitas <?php echo $settings->nama_lksa ?? 'LKSA'; ?></h2>
+				<p>Fasilitas lengkap dan nyaman untuk mendukung perkembangan dan kesejahteraan anak-anak</p>
+			</div>
+			<div class="row g-4">
+				<?php
+				$delay = 100;
+				if (!empty($facilities)):
+					foreach ($facilities as $facility):
+						?>
+						<div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+							<div class="facility-card">
+								<?php if (!empty($facility->gambar)): ?>
+									<img src="<?php echo base_url('assets/uploads/facilities/' . $facility->gambar); ?>"
+										alt="<?php echo htmlspecialchars($facility->nama_fasilitas); ?>" class="facility-image">
+								<?php else: ?>
+									<img src="https://source.unsplash.com/random/600x400/?<?php echo urlencode(strtolower($facility->nama_fasilitas)); ?>"
+										alt="<?php echo htmlspecialchars($facility->nama_fasilitas); ?>" class="facility-image">
+								<?php endif; ?>
+								<div class="facility-icon">
+									<i class="fas <?php echo !empty($facility->icon) ? $facility->icon : 'fa-star'; ?>"></i>
+								</div>
+								<h3><?php echo htmlspecialchars($facility->nama_fasilitas); ?></h3>
+								<p><?php echo htmlspecialchars($facility->deskripsi); ?></p>
+							</div>
+						</div>
+						<?php
+						$delay += 100;
+					endforeach;
+				else:
+					// Fallback to default facilities if no data
+					$default_facilities = [
+						['name' => 'Asrama', 'desc' => 'Tempat tinggal yang nyaman dan aman untuk anak-anak dengan fasilitas lengkap.', 'icon' => 'fa-home', 'img' => 'dormitory'],
+						['name' => 'Ruang Belajar', 'desc' => 'Fasilitas belajar modern dengan peralatan lengkap untuk mendukung pendidikan anak.', 'icon' => 'fa-book', 'img' => 'classroom'],
+						['name' => 'Kantin', 'desc' => 'Area makan yang bersih dan sehat dengan menu bergizi untuk kebutuhan nutrisi anak.', 'icon' => 'fa-utensils', 'img' => 'cafeteria'],
+						['name' => 'Lapangan Olahraga', 'desc' => 'Fasilitas olahraga lengkap untuk mengembangkan kesehatan fisik dan mental anak.', 'icon' => 'fa-futbol', 'img' => 'sports'],
+						['name' => 'Klinik Kesehatan', 'desc' => 'Pelayanan kesehatan 24 jam dengan tenaga medis profesional untuk kesehatan anak.', 'icon' => 'fa-heartbeat', 'img' => 'clinic'],
+						['name' => 'Perpustakaan', 'desc' => 'Koleksi buku dan bahan bacaan lengkap untuk meningkatkan pengetahuan dan kreativitas.', 'icon' => 'fa-book-open', 'img' => 'library'],
+						['name' => 'Ruang Ibadah', 'desc' => 'Tempat ibadah yang tenang dan nyaman untuk membentuk karakter spiritual anak.', 'icon' => 'fa-mosque', 'img' => 'mosque'],
+						['name' => 'Taman Bermain', 'desc' => 'Area bermain yang aman dan menyenangkan untuk mengembangkan kreativitas dan sosialisasi.', 'icon' => 'fa-child', 'img' => 'playground']
+					];
+					foreach ($default_facilities as $facility):
+						?>
+						<div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+							<div class="facility-card">
+								<img src="https://source.unsplash.com/random/600x400/?<?php echo $facility['img']; ?>"
+									alt="<?php echo $facility['name']; ?>" class="facility-image">
+								<div class="facility-icon">
+									<i class="fas <?php echo $facility['icon']; ?>"></i>
+								</div>
+								<h3><?php echo $facility['name']; ?></h3>
+								<p><?php echo $facility['desc']; ?></p>
+							</div>
+						</div>
+						<?php
+						$delay += 100;
+					endforeach;
+				endif;
+				?>
+			</div>
+		</div>
+	</section>
+
 	<!-- Stats Section -->
 	<section class="stats-section">
 		<div class="container">
@@ -803,6 +949,7 @@
 						<div class="stat-label">Anak Aktif</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 	</section>
@@ -826,18 +973,32 @@
 						<h3
 							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
 							Jenis Kelamin</h3>
-						<div class="row text-center">
-							<div class="col-6">
-								<div style="font-size: 36px; font-weight: 700; color: #3498DB; margin-bottom: 5px;">
-									<?php echo $stats['anak_laki']; ?>
+						<div class="gender-stats">
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">Laki-laki</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['anak_laki']; ?></span>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">Laki-laki</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['anak_laki'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, #3498DB, #2980B9); border-radius: 3px;">
+									</div>
+								</div>
 							</div>
-							<div class="col-6">
-								<div style="font-size: 36px; font-weight: 700; color: #E74C3C; margin-bottom: 5px;">
-									<?php echo $stats['anak_perempuan']; ?>
+							<div>
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">Perempuan</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['anak_perempuan']; ?></span>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">Perempuan</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['anak_perempuan'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, #E74C3C, #C0392B); border-radius: 3px;">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -923,33 +1084,200 @@
 							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
 							Kelompok Usia</h3>
 						<div class="age-stats">
-							<div
-								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
-								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
-									<?php echo $stats['usia_dibawah5']; ?>
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">Dibawah 5 Tahun</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['usia_dibawah5']; ?></span>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">Dibawah 5 Tahun</div>
-							</div>
-							<div
-								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
-								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
-									<?php echo $stats['usia_5_12']; ?>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['usia_dibawah5'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">5 - 12 Tahun</div>
 							</div>
-							<div
-								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
-								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
-									<?php echo $stats['usia_13_17']; ?>
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">5 - 12 Tahun</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['usia_5_12']; ?></span>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">13 - 17 Tahun</div>
-							</div>
-							<div style="padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
-								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
-									<?php echo $stats['usia_diatas17']; ?>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['usia_5_12'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
 								</div>
-								<div style="font-size: 14px; color: var(--text-light);">Diatas 17 Tahun</div>
 							</div>
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">13 - 17 Tahun</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['usia_13_17']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['usia_13_17'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+							<div>
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">Diatas 17 Tahun</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['usia_diatas17']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['usia_diatas17'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Kategori Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #27AE60, #2ECC71); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-users-cog"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Kategori Anak</h3>
+						<div class="kategori-stats">
+							<?php
+							$categories = array(
+								'Yatim' => $stats['kategori_yatim'] ?? 0,
+								'Piatu' => $stats['kategori_piatu'] ?? 0,
+								'Yatim Piatu' => $stats['kategori_yatim_piatu'] ?? 0,
+								'Dhuafa' => $stats['kategori_dhuafa'] ?? 0,
+								'Fakir Miskin' => $stats['kategori_fakir_miskin'] ?? 0,
+								'Ibnu Sabil' => $stats['kategori_ibnu_sabil'] ?? 0,
+								'Laqith' => $stats['kategori_laqith'] ?? 0
+							);
+
+							$displayed_count = 0;
+							foreach ($categories as $name => $count):
+								if ($count > 0):
+									$displayed_count++;
+									?>
+									<div style="margin-bottom: 15px;">
+										<div
+											style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+											<span style="font-size: 14px; color: var(--text-light);"><?php echo $name; ?></span>
+											<span
+												style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $count; ?></span>
+										</div>
+										<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+											<div
+												style="width: <?php echo $stats['total_anak'] > 0 ? ($count / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+											</div>
+										</div>
+									</div>
+									<?php
+								endif;
+							endforeach;
+
+							if ($displayed_count == 0):
+								?>
+								<div
+									style="color: var(--text-light); font-style: italic; text-align: center; padding: 20px;">
+									Data kategori belum tersedia
+								</div>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tempat Lahir Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="500">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #F39C12, #E67E22); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-map-marker-alt"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Tempat Lahir</h3>
+						<div class="tempat-lahir-stats">
+							<?php
+							$tempat_lahir = $stats['tempat_lahir'] ?? array();
+							if (!empty($tempat_lahir)):
+								foreach ($tempat_lahir as $tempat => $count):
+									?>
+									<div style="margin-bottom: 15px;">
+										<div
+											style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+											<span
+												style="font-size: 14px; color: var(--text-light);"><?php echo htmlspecialchars($tempat); ?></span>
+											<span
+												style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $count; ?></span>
+										</div>
+										<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+											<div
+												style="width: <?php echo $stats['total_anak'] > 0 ? ($count / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+											</div>
+										</div>
+									</div>
+									<?php
+								endforeach;
+							else:
+								?>
+								<div style="color: var(--text-light); font-style: italic;">
+									Data tempat lahir belum tersedia
+								</div>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tahun Masuk Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="600">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #8E44AD, #9B59B6); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-calendar-alt"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Tahun Masuk LKSA</h3>
+						<div class="tahun-masuk-stats">
+							<?php
+							$tahun_masuk = $stats['tahun_masuk'] ?? array();
+							if (!empty($tahun_masuk)):
+								foreach ($tahun_masuk as $tahun => $count):
+									?>
+									<div style="margin-bottom: 15px;">
+										<div
+											style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+											<span
+												style="font-size: 14px; color: var(--text-light);"><?php echo $tahun; ?></span>
+											<span
+												style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $count; ?></span>
+										</div>
+										<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+											<div
+												style="width: <?php echo $stats['total_anak'] > 0 ? ($count / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+											</div>
+										</div>
+									</div>
+									<?php
+								endforeach;
+							else:
+								?>
+								<div style="color: var(--text-light); font-style: italic;">
+									Data tahun masuk belum tersedia
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

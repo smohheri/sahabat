@@ -68,3 +68,8 @@ $route['admin/carousel/update_sort_order'] = 'admin/update_carousel_sort_order';
 
 $route['admin/landing'] = 'admin/landing';
 $route['admin/landing/upload_about_image'] = 'admin/upload_about_image';
+
+$route['admin/facilities'] = 'admin/facilities';
+$route['admin/facilities/upload'] = 'admin/facilities_upload';
+$route['admin/facilities/update'] = 'admin/facilities_update';
+$route['admin/facilities/delete/(:num)'] = 'admin/facilities_delete/$1';

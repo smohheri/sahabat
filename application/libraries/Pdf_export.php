@@ -126,6 +126,7 @@ class Pdf_export
                     <th style="width: 15%;">Tempat/Tgl Lahir</th>
                     <th style="width: 8%;">Usia</th>
                     <th style="width: 12%;">Pendidikan</th>
+                    <th style="width: 10%;">Kategori</th>
                     <th style="width: 10%;">Status</th>
                     <th style="width: 15%;">Tgl Masuk</th>
                 </tr>
@@ -143,6 +144,7 @@ class Pdf_export
                     <td>' . $a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir) . '</td>
                     <td style="text-align: center;">' . umur($a->tanggal_lahir) . '</td>
                     <td>' . $a->pendidikan . '</td>
+                    <td>' . ($a->kategori ?: '-') . '</td>
                     <td style="text-align: center;">' . $a->status_anak . '</td>
                     <td style="text-align: center;">' . tanggal_indo($a->tanggal_masuk) . '</td>
                 </tr>';

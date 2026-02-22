@@ -32,9 +32,9 @@ class Excel_export
 		$this->sheet->setCellValue('A3', 'Periode: ' . date('F Y'));
 
 		// Merge title cells
-		$this->sheet->mergeCells('A1:I1');
-		$this->sheet->mergeCells('A2:I2');
-		$this->sheet->mergeCells('A3:I3');
+		$this->sheet->mergeCells('A1:J1');
+		$this->sheet->mergeCells('A2:J2');
+		$this->sheet->mergeCells('A3:J3');
 
 		// Style title
 		$this->sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
@@ -43,7 +43,7 @@ class Excel_export
 		$this->sheet->getStyle('A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 		// Headers
-		$headers = ['No', 'NIK', 'Nama Anak', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Usia', 'Pendidikan', 'Status'];
+		$headers = ['No', 'NIK', 'Nama Anak', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Usia', 'Pendidikan', 'Kategori', 'Status'];
 		$row = 5;
 		$col = 'A';
 
@@ -70,10 +70,11 @@ class Excel_export
 			$this->sheet->setCellValue('F' . $row, date('d-m-Y', strtotime($a->tanggal_lahir)));
 			$this->sheet->setCellValue('G' . $row, $usia . ' tahun');
 			$this->sheet->setCellValue('H' . $row, $a->pendidikan);
-			$this->sheet->setCellValue('I' . $row, $a->status_anak);
+			$this->sheet->setCellValue('I' . $row, $a->kategori ?: '-');
+			$this->sheet->setCellValue('J' . $row, $a->status_anak);
 
 			// Add borders
-			for ($c = 'A'; $c <= 'I'; $c++) {
+			for ($c = 'A'; $c <= 'J'; $c++) {
 				$this->sheet->getStyle($c . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 			}
 
@@ -81,7 +82,7 @@ class Excel_export
 		}
 
 		// Auto width
-		foreach (range('A', 'I') as $col) {
+		foreach (range('A', 'J') as $col) {
 			$this->sheet->getColumnDimension($col)->setAutoSize(true);
 		}
 

@@ -45,43 +45,60 @@
 				</div>
 				<div class="panel-body">
 					<?php if (!empty($carousel_images)): ?>
-						<div class="carousel-grid">
+						<div class="row">
 							<?php foreach ($carousel_images as $image): ?>
-								<div class="carousel-item" data-id="<?php echo $image->id_carousel; ?>">
-									<div class="carousel-image-container">
-										<?php
-										$image_path = 'assets/uploads/landing/' . $image->image_name;
-										?>
-										<img src="<?php echo base_url($image_path); ?>" alt="<?php echo $image->title; ?>"
-											class="carousel-image">
-										<div class="carousel-overlay">
-											<div class="carousel-actions">
-												<button class="btn btn-sm btn-light edit-btn"
-													data-id="<?php echo $image->id_carousel; ?>" title="Edit">
-													<i class="fas fa-edit"></i>
-												</button>
-												<button class="btn btn-sm btn-danger delete-btn"
-													data-id="<?php echo $image->id_carousel; ?>" title="Hapus">
-													<i class="fas fa-trash"></i>
-												</button>
+								<div class="col-md-6 mb-4">
+									<div class="card">
+										<div class="card-body p-0 position-relative">
+											<?php
+											$image_path = 'assets/uploads/landing/' . $image->image_name;
+											?>
+											<a href="<?php echo base_url($image_path); ?>" data-toggle="lightbox"
+												data-title="<?php echo $image->title; ?>">
+												<img src="<?php echo base_url($image_path); ?>" class="img-fluid"
+													alt="<?php echo $image->title; ?>">
+											</a>
+											<div class="position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+												<?php if ($image->is_active): ?>
+													<span class="badge bg-success"><i class="fas fa-check-circle"></i> Aktif</span>
+												<?php endif; ?>
 											</div>
 										</div>
-										<?php if ($image->is_active): ?>
-											<div class="active-badge">
-												<i class="fas fa-check-circle"></i> Aktif
+										<div class="card-body">
+											<div class="row">
+												<div class="col-12">
+													<h5 class="card-title"><?php echo $image->title ?: 'Carousel Image'; ?></h5>
+												</div>
 											</div>
-										<?php endif; ?>
-									</div>
-									<div class="carousel-info">
-										<h4><?php echo $image->title ?: 'Carousel Image'; ?></h4>
-										<?php if ($image->description): ?>
-											<p class="description">
-												<?php echo substr($image->description, 0, 80) . (strlen($image->description) > 80 ? '...' : ''); ?>
-											</p>
-										<?php endif; ?>
-										<div class="sort-info">
-											<small><i class="fas fa-sort-numeric-up mr-1"></i>Urutan:
-												<?php echo $image->sort_order; ?></small>
+											<div class="row">
+												<div class="col-12">
+													<?php if ($image->description): ?>
+														<p class="card-text">
+															<?php echo substr($image->description, 0, 80) . (strlen($image->description) > 80 ? '...' : ''); ?>
+														</p>
+													<?php endif; ?>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6 d-flex align-items-center">
+													<p class="card-text">
+														<small class="text-muted">Urutan:
+															<?php echo $image->sort_order; ?></small>
+													</p>
+												</div>
+												<div class="col-md-6 d-flex align-items-center justify-content-end">
+													<div class="btn-group" role="group">
+														<button class="btn btn-primary btn-sm edit-btn"
+															data-id="<?php echo $image->id_carousel; ?>" title="Edit">
+															<i class="fas fa-edit"></i>
+														</button>
+														<button class="btn btn-danger btn-sm delete-btn"
+															data-id="<?php echo $image->id_carousel; ?>" title="Hapus">
+															<i class="fas fa-trash"></i>
+														</button>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -243,7 +260,7 @@
 				</div>
 				<div class="form-group">
 					<label for="edit_description">Deskripsi</label>
-					<textarea class="form-control" id="edit_description" name="description" rows="3"
+					<textarea class="form-control" id="edit_description" name="description"
 						placeholder="Masukkan deskripsi gambar"></textarea>
 				</div>
 				<div class="form-group">
@@ -394,9 +411,6 @@
 		height: 180px;
 		overflow: hidden;
 		background: #f8fafc;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 	}
 
 	.carousel-image {
@@ -404,6 +418,7 @@
 		height: 100%;
 		object-fit: cover;
 		transition: transform 0.3s ease;
+		display: block;
 	}
 
 	.carousel-item:hover .carousel-image {
@@ -432,6 +447,7 @@
 		justify-content: center;
 		opacity: 0;
 		transition: opacity 0.3s ease;
+		z-index: 2;
 	}
 
 	.carousel-item:hover .carousel-overlay {
@@ -471,6 +487,7 @@
 		display: flex;
 		align-items: center;
 		gap: 4px;
+		z-index: 3;
 	}
 
 	.carousel-info {
@@ -813,6 +830,108 @@
 		color: #e74a3b;
 	}
 
+	/* Modern Bootstrap Card Design */
+	.card {
+		border: none;
+		border-radius: 20px;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		overflow: hidden;
+		background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+	}
+
+	.card:hover {
+		transform: translateY(-15px) scale(1.02);
+		box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+	}
+
+	.card-img-top {
+		border-radius: 20px 20px 0 0;
+		height: 220px;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+		filter: brightness(1);
+	}
+
+	.card:hover .card-img-top {
+		transform: scale(1.1);
+		filter: brightness(1.1) contrast(1.1);
+	}
+
+	.card-body {
+		background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+		padding: 1.5rem;
+		border-radius: 0 0 20px 20px;
+	}
+
+	.card-title {
+		font-weight: 700;
+		color: #2d3748;
+		margin-bottom: 0.5rem;
+		font-size: 1.1rem;
+	}
+
+	.card-text {
+		color: #718096;
+		font-size: 0.9rem;
+		line-height: 1.4;
+	}
+
+	.badge {
+		border-radius: 25px;
+		font-size: 10px;
+		padding: 8px 12px;
+		font-weight: 600;
+		background: linear-gradient(45deg, #28a745, #20c997);
+		color: white;
+		border: none;
+		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+	}
+
+	.btn-group .btn {
+		border-radius: 50% !important;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		border: 2px solid;
+		font-size: 14px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.btn-outline-primary {
+		background: linear-gradient(45deg, #007bff, #0056b3);
+		border-color: #007bff;
+		color: white;
+	}
+
+	.btn-outline-primary:hover {
+		background: linear-gradient(45deg, #0056b3, #004085);
+		border-color: #0056b3;
+		transform: scale(1.1);
+		box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+	}
+
+	.btn-outline-danger {
+		background: linear-gradient(45deg, #dc3545, #c82333);
+		border-color: #dc3545;
+		color: white;
+	}
+
+	.btn-outline-danger:hover {
+		background: linear-gradient(45deg, #c82333, #a02622);
+		border-color: #c82333;
+		transform: scale(1.1);
+		box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+	}
+
+	.text-muted {
+		color: #a0aec0 !important;
+		font-weight: 500;
+	}
+
 	/* Responsive */
 	@media (max-width: 1200px) {
 		.content-grid {
@@ -1024,12 +1143,12 @@
 
 	// Edit button click
 	$('.edit-btn').on('click', function () {
-		var card = $(this).closest('.carousel-item');
+		var card = $(this).closest('.card');
 		var id = $(this).data('id');
-		var title = card.find('.carousel-info h4').text();
-		var description = card.find('.description').text() || '';
-		var sortOrder = card.find('.sort-info small').text().replace('Urutan: ', '');
-		var isActive = card.find('.active-badge').length > 0;
+		var title = card.find('.card-title').text();
+		var description = card.find('.card-text').first().text().trim() || '';
+		var sortOrder = card.find('small').text().replace('Urutan: ', '');
+		var isActive = card.find('.badge').length > 0;
 
 		$('#edit_id_carousel').val(id);
 		$('#edit_title').val(title === 'Carousel Image' ? '' : title);

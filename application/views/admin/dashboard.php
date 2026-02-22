@@ -109,6 +109,29 @@
 		</div>
 	</div>
 
+	<!-- Charts Section -->
+	<div class="charts-row">
+		<!-- Education Chart -->
+		<div class="chart-panel">
+			<div class="panel-header">
+				<h3><i class="fas fa-chart-bar text-blue"></i> Distribusi Pendidikan</h3>
+			</div>
+			<div class="panel-body">
+				<canvas id="educationChart" width="400" height="200"></canvas>
+			</div>
+		</div>
+
+		<!-- Category Chart -->
+		<div class="chart-panel">
+			<div class="panel-header">
+				<h3><i class="fas fa-chart-bar text-green"></i> Distribusi Kategori</h3>
+			</div>
+			<div class="panel-body">
+				<canvas id="categoryChart" width="400" height="200"></canvas>
+			</div>
+		</div>
+	</div>
+
 	<!-- Content Grid -->
 	<div class="content-grid">
 		<!-- Left: Data Tables -->
@@ -395,6 +418,25 @@
 
 	.substats-row:last-child {
 		margin-bottom: 30px;
+	}
+
+	/* Charts Row */
+	.charts-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 25px;
+		margin-bottom: 30px;
+	}
+
+	.chart-panel {
+		background: #fff;
+		border-radius: 16px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+		overflow: hidden;
+	}
+
+	.chart-panel .panel-body {
+		padding: 20px;
 	}
 
 	.substat-item {
@@ -864,6 +906,10 @@
 			grid-template-columns: repeat(3, 1fr);
 		}
 
+		.charts-row {
+			grid-template-columns: 1fr;
+		}
+
 		.content-grid {
 			grid-template-columns: 1fr;
 		}
@@ -984,4 +1030,106 @@
 		background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
 		border: 1px solid #00d9ff;
 	}
+
+	body.dark-mode .chart-panel {
+		background-color: #16213e;
+	}
 </style>
+
+<script>
+	$(document).ready(function () {
+		// Education Chart
+		var educationCtx = document.getElementById('educationChart').getContext('2d');
+		var educationChart = new Chart(educationCtx, {
+			type: 'bar',
+			data: {
+				labels: <?php echo json_encode($chart_pendidikan_labels); ?>,
+				datasets: [{
+					label: 'Jumlah Anak',
+					data: <?php echo json_encode($chart_pendidikan_data); ?>,
+					backgroundColor: [
+						'rgba(78, 115, 223, 0.8)',
+						'rgba(28, 200, 138, 0.8)',
+						'rgba(246, 194, 62, 0.8)',
+						'rgba(231, 74, 59, 0.8)',
+						'rgba(111, 66, 193, 0.8)'
+					],
+					borderColor: [
+						'rgba(78, 115, 223, 1)',
+						'rgba(28, 200, 138, 1)',
+						'rgba(246, 194, 62, 1)',
+						'rgba(231, 74, 59, 1)',
+						'rgba(111, 66, 193, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							stepSize: 1
+						}
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
+				}
+			}
+		});
+
+		// Category Chart
+		var categoryCtx = document.getElementById('categoryChart').getContext('2d');
+		var categoryChart = new Chart(categoryCtx, {
+			type: 'bar',
+			data: {
+				labels: <?php echo json_encode($chart_kategori_labels); ?>,
+				datasets: [{
+					label: 'Jumlah Anak',
+					data: <?php echo json_encode($chart_kategori_data); ?>,
+					backgroundColor: [
+						'rgba(78, 115, 223, 0.8)',
+						'rgba(232, 62, 140, 0.8)',
+						'rgba(28, 200, 138, 0.8)',
+						'rgba(246, 194, 62, 0.8)',
+						'rgba(231, 74, 59, 0.8)',
+						'rgba(111, 66, 193, 0.8)',
+						'rgba(32, 201, 151, 0.8)'
+					],
+					borderColor: [
+						'rgba(78, 115, 223, 1)',
+						'rgba(232, 62, 140, 1)',
+						'rgba(28, 200, 138, 1)',
+						'rgba(246, 194, 62, 1)',
+						'rgba(231, 74, 59, 1)',
+						'rgba(111, 66, 193, 1)',
+						'rgba(32, 201, 151, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							stepSize: 1
+						}
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
+				}
+			}
+		});
+	});
+</script>

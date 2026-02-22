@@ -5,6 +5,77 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2025-02-23
+
+### Removed
+- ✂️ **Edit Functionality from Facilities Page**
+  - Removed edit button from facility cards
+  - Removed edit modal and associated form
+  - Facilities can now only be added or deleted, not edited
+  - Cleaned up JavaScript handlers for edit functionality
+
+### Fixed
+- 🐛 **Facilities Modal Issues**
+  - Added "fade" class to modals for proper Bootstrap modal animation
+  - Fixed JavaScript selector for description text to prevent incorrect data population when facilities have no description
+  - Improved modal triggering to use consistent Bootstrap data attributes
+
+### Added
+- ✨ **Facilities Management Page**
+  - New admin page for managing landing page facilities
+  - Add facilities with image upload, description, icon selection
+  - Delete facilities with confirmation
+  - Grid display with facility cards
+  - File: `application/views/admin/facilities.php`
+  - Model: `application/models/Fasilitas_model.php`
+  - Database: `database/alter_table_add_facilities.sql`
+
+### Changed
+- 🔄 **Facilities Page Modifications**
+  - Removed edit functionality (button, modal, JavaScript)
+  - Updated Select2 initialization to only target add modal
+  - Fixed description paragraph selector to use specific class
+
+### Technical
+- 🔧 **Database Schema**
+  - `database/alter_table_add_facilities.sql` - Tabel fasilitas dengan kolom lengkap
+  - Tabel `fasilitas` dengan fields: id_fasilitas, nama_fasilitas, deskripsi, gambar, icon, sort_order, is_active
+  - Data default 8 fasilitas (Asrama, Ruang Belajar, Kantin, dll.)
+  - `database/alter_anak_table.sql` - Penambahan kolom dokumen dan kategori pada tabel anak
+  - Kolom baru: file_kk, file_akta, file_pendukung, kategori (enum Islamic categories)
+  - Modifikasi enum pendidikan untuk menambah 'PT' (Perguruan Tinggi)
+
+- 🔧 **Model Baru**
+  - `application/models/Fasilitas_model.php` - CRUD operasi fasilitas
+
+- 🔧 **Dashboard Enhancements**
+  - Penambahan statistik pendidikan TK (Taman Kanak-Kanak)
+  - Penambahan section charts untuk visualisasi data
+  - Update statistik kategori anak dengan 7 kategori Islamic
+
+- 🔧 **Data Anak Improvements**
+  - Penambahan kolom kategori dengan 7 pilihan: Yatim, Piatu, Yatim Piatu, Dhuafa, Fakir dan Miskin, Ibnu Sabil, Laqith
+  - Modifikasi tabel data anak: hapus kolom Usia, Status, Tanggal Masuk; tambah kolom Kategori
+  - Update enum pendidikan untuk mendukung Perguruan Tinggi (PT)
+
+- 🔧 **Landing Page Updates**
+  - Penambahan section fasilitas di halaman home
+  - Styling dan layout untuk menampilkan fasilitas LKSA
+
+- 🔧 **UI/UX Improvements**
+  - Modifikasi sidebar admin dengan struktur menu yang lebih baik
+  - Optimisasi footer dengan penghapusan jQuery yang redundant
+  - Update layout carousel admin dengan grid system yang lebih responsif
+
+- 🔧 **Library Updates**
+  - `application/libraries/Excel_export.php` - Perbaikan export data anak
+  - `application/libraries/Pdf_export.php` - Perbaikan generate laporan PDF
+
+- 🔧 **Helper Updates**
+  - `application/helpers/logging_helper.php` - Perbaikan fungsi logging aktivitas
+
+---
+
 ## [1.6.0] - 2025-02-22
 
 ### Added

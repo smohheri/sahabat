@@ -142,10 +142,8 @@
 							<th>Nama Anak</th>
 							<th>Jenis Kelamin</th>
 							<th>Tempat/Tgl Lahir</th>
-							<th>Usia</th>
 							<th>Pendidikan</th>
-							<th>Status</th>
-							<th>Tanggal Masuk</th>
+							<th>Kategori</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
@@ -170,15 +168,8 @@
 									</span>
 								</td>
 								<td><?php echo $a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir); ?></td>
-								<td><?php echo umur($a->tanggal_lahir); ?></td>
 								<td><?php echo $a->pendidikan; ?></td>
-								<td>
-									<span
-										class="badge-status badge-<?php echo $a->status_anak == 'Aktif' ? 'green' : 'gray'; ?>">
-										<?php echo $a->status_anak; ?>
-									</span>
-								</td>
-								<td><?php echo tanggal_indo($a->tanggal_masuk); ?></td>
+								<td><?php echo $a->kategori ?: '-'; ?></td>
 								<td>
 									<div class="btn-group">
 										<button class="btn btn-sm btn-info" data-toggle="modal"
@@ -203,7 +194,7 @@
 						<?php endforeach; ?>
 						<?php if (empty($anak)): ?>
 							<tr>
-								<td colspan="10" class="text-center text-muted py-4">
+								<td colspan="8" class="text-center text-muted py-4">
 									<i class="fas fa-inbox fa-2x mb-2"></i><br>
 									Belum ada data anak
 								</td>
@@ -294,6 +285,28 @@
 									<option value="Nonaktif" <?php echo $a->status_anak == 'Nonaktif' ? 'selected' : ''; ?>>
 										Nonaktif</option>
 									<option value="Alumni" <?php echo $a->status_anak == 'Alumni' ? 'selected' : ''; ?>>Alumni
+									</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Kategori</label>
+								<select class="form-control" name="kategori" required>
+									<option value="">Pilih Kategori</option>
+									<option value="Yatim" <?php echo $a->kategori == 'Yatim' ? 'selected' : ''; ?>>Yatim
+									</option>
+									<option value="Piatu" <?php echo $a->kategori == 'Piatu' ? 'selected' : ''; ?>>Piatu
+									</option>
+									<option value="Yatim Piatu" <?php echo $a->kategori == 'Yatim Piatu' ? 'selected' : ''; ?>>Yatim Piatu</option>
+									<option value="Dhuafa" <?php echo $a->kategori == 'Dhuafa' ? 'selected' : ''; ?>>Dhuafa
+									</option>
+									<option value="Fakir dan Miskin" <?php echo $a->kategori == 'Fakir dan Miskin' ? 'selected' : ''; ?>>Fakir dan Miskin</option>
+									<option value="Ibnu Sabil" <?php echo $a->kategori == 'Ibnu Sabil' ? 'selected' : ''; ?>>
+										Ibnu Sabil</option>
+									<option value="Laqith" <?php echo $a->kategori == 'Laqith' ? 'selected' : ''; ?>>Laqith
 									</option>
 								</select>
 							</div>
@@ -606,6 +619,18 @@
 								</div>
 							</div>
 							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Kategori</label>
+										<p class="form-control-plaintext">
+											<span class="badge badge-primary px-3 py-2">
+												<?php echo $a->kategori ?: 'Belum ditentukan'; ?>
+											</span>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
@@ -764,6 +789,24 @@
 								<option value="Aktif">Aktif</option>
 								<option value="Nonaktif">Nonaktif</option>
 								<option value="Alumni">Alumni</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Kategori</label>
+							<select class="form-control" name="kategori" required>
+								<option value="">Pilih Kategori</option>
+								<option value="Yatim">Yatim</option>
+								<option value="Piatu">Piatu</option>
+								<option value="Yatim Piatu">Yatim Piatu</option>
+								<option value="Dhuafa">Dhuafa</option>
+								<option value="Fakir dan Miskin">Fakir dan Miskin</option>
+								<option value="Ibnu Sabil">Ibnu Sabil</option>
+								<option value="Laqith">Laqith</option>
 							</select>
 						</div>
 					</div>

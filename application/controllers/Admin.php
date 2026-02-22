@@ -36,7 +36,17 @@ class Admin extends CI_Controller
 		$pendidikan_smp = 0;
 		$pendidikan_sma = 0;
 		$pendidikan_pt = 0;
+		$pendidikan_tk = 0;
 		$anak_baru = 0;
+
+		// Category counts
+		$kategori_yatim = 0;
+		$kategori_piatu = 0;
+		$kategori_yatim_piatu = 0;
+		$kategori_dhuafa = 0;
+		$kategori_fakir_miskin = 0;
+		$kategori_ibnu_sabil = 0;
+		$kategori_laqith = 0;
 
 		$today = new DateTime();
 		$one_month_ago = $today->modify('-1 month');
@@ -65,7 +75,9 @@ class Admin extends CI_Controller
 				$anak_nonaktif++;
 
 			$pend = strtolower($a->pendidikan);
-			if (strpos($pend, 'sd') !== false || strpos($pend, 'mi') !== false)
+			if ($pend == 'tk')
+				$pendidikan_tk++;
+			elseif (strpos($pend, 'sd') !== false || strpos($pend, 'mi') !== false)
 				$pendidikan_sd++;
 			elseif (strpos($pend, 'smp') !== false || strpos($pend, 'mts') !== false)
 				$pendidikan_smp++;
@@ -73,6 +85,31 @@ class Admin extends CI_Controller
 				$pendidikan_sma++;
 			elseif (strpos($pend, 'pt') !== false || strpos($pend, 'univ') !== false || strpos($pend, 'd3') !== false || strpos($pend, 's1') !== false)
 				$pendidikan_pt++;
+
+			// Category counting
+			switch ($a->kategori) {
+				case 'Yatim':
+					$kategori_yatim++;
+					break;
+				case 'Piatu':
+					$kategori_piatu++;
+					break;
+				case 'Yatim Piatu':
+					$kategori_yatim_piatu++;
+					break;
+				case 'Dhuafa':
+					$kategori_dhuafa++;
+					break;
+				case 'Fakir dan Miskin':
+					$kategori_fakir_miskin++;
+					break;
+				case 'Ibnu Sabil':
+					$kategori_ibnu_sabil++;
+					break;
+				case 'Laqith':
+					$kategori_laqith++;
+					break;
+			}
 
 			if (!empty($a->tanggal_masuk)) {
 				$tanggal_masuk = new DateTime($a->tanggal_masuk);
@@ -97,9 +134,24 @@ class Admin extends CI_Controller
 			'pendidikan_smp' => $pendidikan_smp,
 			'pendidikan_sma' => $pendidikan_sma,
 			'pendidikan_pt' => $pendidikan_pt,
+			'pendidikan_tk' => $pendidikan_tk,
 			'anak_baru' => $anak_baru,
 			'anak_terbaru' => array_slice($anak, 0, 5),
-			'pengurus_terbaru' => array_slice($pengurus, 0, 5)
+			'pengurus_terbaru' => array_slice($pengurus, 0, 5),
+			// Category counts
+			'kategori_yatim' => $kategori_yatim,
+			'kategori_piatu' => $kategori_piatu,
+			'kategori_yatim_piatu' => $kategori_yatim_piatu,
+			'kategori_dhuafa' => $kategori_dhuafa,
+			'kategori_fakir_miskin' => $kategori_fakir_miskin,
+			'kategori_ibnu_sabil' => $kategori_ibnu_sabil,
+			'kategori_laqith' => $kategori_laqith,
+			// Chart data for education
+			'chart_pendidikan_labels' => ['TK', 'SD/MI', 'SMP/MTS', 'SMA/SMK', 'Perguruan Tinggi'],
+			'chart_pendidikan_data' => [$pendidikan_tk, $pendidikan_sd, $pendidikan_smp, $pendidikan_sma, $pendidikan_pt],
+			// Chart data for categories
+			'chart_kategori_labels' => ['Yatim', 'Piatu', 'Yatim Piatu', 'Dhuafa', 'Fakir dan Miskin', 'Ibnu Sabil', 'Laqith'],
+			'chart_kategori_data' => [$kategori_yatim, $kategori_piatu, $kategori_yatim_piatu, $kategori_dhuafa, $kategori_fakir_miskin, $kategori_ibnu_sabil, $kategori_laqith]
 		);
 
 		$data = array(
@@ -466,6 +518,7 @@ class Admin extends CI_Controller
 			$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'required');
 			$this->form_validation->set_rules('pendidikan', 'Pendidikan', 'required');
 			$this->form_validation->set_rules('status_anak', 'Status Anak', 'required');
+			$this->form_validation->set_rules('kategori', 'Kategori', 'required');
 			$this->form_validation->set_rules('status_tinggal', 'Status Tinggal', 'required');
 			$this->form_validation->set_rules('tanggal_masuk', 'Tanggal Masuk', 'required');
 
@@ -481,6 +534,7 @@ class Admin extends CI_Controller
 					'tanggal_lahir' => $this->input->post('tanggal_lahir'),
 					'pendidikan' => $this->input->post('pendidikan'),
 					'status_anak' => $this->input->post('status_anak'),
+					'kategori' => $this->input->post('kategori'),
 					'status_tinggal' => $this->input->post('status_tinggal'),
 					'tanggal_masuk' => $this->input->post('tanggal_masuk')
 				);
@@ -1623,6 +1677,124 @@ class Admin extends CI_Controller
 		}
 
 		redirect('admin/hero');
+	}
+
+	public function facilities()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+			redirect('admin');
+		}
+
+		$this->load->model('Fasilitas_model');
+		$data['facilities'] = $this->Fasilitas_model->get_all_facilities();
+		$data['title'] = 'Kelola Fasilitas Landing Page - LKSA Harapan Bangsa';
+		$data['page_title'] = 'Kelola Fasilitas';
+		$data['content'] = $this->load->view('admin/facilities', $data, TRUE);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function facilities_upload()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupload fasilitas!');
+			redirect('admin/facilities');
+		}
+
+		$this->load->model('Fasilitas_model');
+		$this->load->library('upload');
+
+		$upload_path = FCPATH . 'assets/uploads/facilities/';
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		$config['upload_path'] = $upload_path;
+		$config['allowed_types'] = 'jpg|jpeg|png';
+		$config['max_size'] = 2048;
+		$config['file_name'] = 'facility_' . time();
+		$config['detect_mime'] = TRUE;
+		$config['xss_clean'] = TRUE;
+
+		$this->upload->initialize($config);
+
+		$facility_data = array(
+			'nama_fasilitas' => $this->input->post('nama_fasilitas'),
+			'deskripsi' => $this->input->post('deskripsi'),
+			'icon' => $this->input->post('icon'),
+			'sort_order' => $this->input->post('sort_order') ?: 0,
+			'is_active' => 1
+		);
+
+		if ($this->upload->do_upload('facility_image')) {
+			$data = $this->upload->data();
+			$facility_data['gambar'] = $data['file_name'];
+		}
+
+		$this->Fasilitas_model->insert_facility($facility_data);
+		$description = 'Menambahkan fasilitas: ' . $facility_data['nama_fasilitas'];
+		log_activity('add_facility', $description);
+		$this->session->set_flashdata('success', 'Fasilitas berhasil ditambahkan!');
+
+		redirect('admin/facilities');
+	}
+
+	public function facilities_update()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupdate fasilitas!');
+			redirect('admin/facilities');
+		}
+
+		$this->load->model('Fasilitas_model');
+
+		$id = $this->input->post('id_fasilitas');
+
+		$update_data = array(
+			'nama_fasilitas' => $this->input->post('nama_fasilitas'),
+			'deskripsi' => $this->input->post('deskripsi'),
+			'icon' => $this->input->post('icon'),
+			'sort_order' => $this->input->post('sort_order'),
+			'is_active' => $this->input->post('is_active') ? 1 : 0
+		);
+
+		$this->Fasilitas_model->update_facility($id, $update_data);
+		$description = 'Mengupdate fasilitas ID: ' . $id;
+		log_activity('update_facility', $description);
+		$this->session->set_flashdata('success', 'Fasilitas berhasil diperbarui!');
+
+		redirect('admin/facilities');
+	}
+
+	public function facilities_delete($id)
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus fasilitas!');
+			redirect('admin/facilities');
+		}
+
+		$this->load->model('Fasilitas_model');
+		$facility = $this->Fasilitas_model->get_facility_by_id($id);
+
+		if ($facility) {
+			// Delete file from server
+			if (!empty($facility->gambar)) {
+				$file_path = FCPATH . 'assets/uploads/facilities/' . $facility->gambar;
+				if (file_exists($file_path)) {
+					unlink($file_path);
+				}
+			}
+
+			// Delete from database
+			$this->Fasilitas_model->delete_facility($id);
+			$description = 'Menghapus fasilitas: ' . $facility->nama_fasilitas;
+			log_activity('delete_facility', $description);
+			$this->session->set_flashdata('success', 'Fasilitas berhasil dihapus!');
+		} else {
+			$this->session->set_flashdata('error', 'Fasilitas tidak ditemukan!');
+		}
+
+		redirect('admin/facilities');
 	}
 
 

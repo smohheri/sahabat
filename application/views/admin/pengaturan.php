@@ -151,16 +151,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel-footer">
-				<button type="reset" class="btn btn-secondary">
-					<i class="fas fa-undo mr-1"></i>Reset
-				</button>
-				<button type="submit" class="btn btn-primary">
-					<i class="fas fa-save mr-1"></i>Simpan Perubahan
-				</button>
-			</div>
-			<?php echo form_close(); ?>
 		</div>
+		<div class="panel-footer">
+			<button type="reset" class="btn btn-secondary">
+				<i class="fas fa-undo mr-1"></i>Reset
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<i class="fas fa-save mr-1"></i>Simpan Perubahan
+			</button>
+		</div>
+		<?php echo form_close(); ?>
 	</div>
 
 	<!-- Upload Panels -->
