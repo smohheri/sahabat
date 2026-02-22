@@ -299,7 +299,46 @@ class Admin extends CI_Controller
 		$this->load->view('templates/admin_layout', $data);
 	}
 
+	public function upload_hero_image()
+	{
+		$this->load->model('User_model');
+		$this->load->library('upload');
 
+		$pengaturan = $this->User_model->get_pengaturan();
+		if (!empty($pengaturan->hero_image)) {
+			$old_image_path = FCPATH . 'assets/uploads/landing/' . $pengaturan->hero_image;
+			if (file_exists($old_image_path)) {
+				unlink($old_image_path);
+			}
+		}
+
+		$upload_path = FCPATH . 'assets/uploads/landing/';
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		$config['upload_path'] = $upload_path;
+		$config['allowed_types'] = 'jpg|jpeg|png';
+		$config['max_size'] = 2048;
+		$config['file_name'] = 'hero_' . time();
+		$config['detect_mime'] = TRUE;
+		$config['xss_clean'] = TRUE;
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('hero_image')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors());
+		} else {
+			$data = $this->upload->data();
+			$image_name = $data['file_name'];
+			$this->User_model->update_pengaturan(['hero_image' => $image_name]);
+			$description = 'Mengupload gambar hero landing page: ' . $image_name;
+			log_activity('upload_hero_image', $description);
+			$this->session->set_flashdata('success', 'Gambar hero berhasil diupload!');
+		}
+
+		redirect('admin/landing');
+	}
 
 	public function upload_about_image()
 	{
@@ -1369,261 +1408,140 @@ class Admin extends CI_Controller
 			redirect('admin/backup');
 		}
 	}
+}
+public function carousel()
+{
+if ($this->session->userdata('role') != 'admin') {
+$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+redirect('admin');
+}
 
-	public function carousel()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
-			redirect('admin');
-		}
+$this->load->model('Carousel_model');
+$data['carousel_images'] = $this->Carousel_model->get_all_carousel_images();
+$data['title'] = 'Kelola Carousel Landing Page - LKSA Harapan Bangsa';
+$data['page_title'] = 'Kelola Carousel';
+$data['content'] = $this->load->view('admin/carousel', $data, TRUE);
+$this->load->view('templates/admin_layout', $data);
+}
 
-		$this->load->model('Carousel_model');
-		$data['carousel_images'] = $this->Carousel_model->get_all_carousel_images_admin();
-		$data['title'] = 'Kelola Carousel Landing Page - LKSA Harapan Bangsa';
-		$data['page_title'] = 'Kelola Carousel';
-		$data['content'] = $this->load->view('admin/carousel', $data, TRUE);
-		$this->load->view('templates/admin_layout', $data);
-	}
+public function upload_carousel_image()
+{
+if ($this->session->userdata('role') != 'admin') {
+$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupload gambar!');
+redirect('admin/carousel');
+}
 
-	public function upload_carousel_image()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupload gambar!');
-			redirect('admin/carousel');
-		}
+$this->load->model('Carousel_model');
+$this->load->library('upload');
 
-		$this->load->model('Carousel_model');
-		$this->load->library('upload');
+$upload_path = FCPATH . 'assets/uploads/landing/';
+if (!is_dir($upload_path)) {
+mkdir($upload_path, 0755, TRUE);
+}
 
-		$upload_path = FCPATH . 'assets/uploads/landing/';
-		if (!is_dir($upload_path)) {
-			mkdir($upload_path, 0755, TRUE);
-		}
+$config['upload_path'] = $upload_path;
+$config['allowed_types'] = 'jpg|jpeg|png';
+$config['max_size'] = 2048;
+$config['file_name'] = 'carousel_' . time();
+$config['detect_mime'] = TRUE;
+$config['xss_clean'] = TRUE;
 
-		$config['upload_path'] = $upload_path;
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048;
-		$config['file_name'] = 'carousel_' . time();
-		$config['detect_mime'] = TRUE;
-		$config['xss_clean'] = TRUE;
+$this->upload->initialize($config);
 
-		$this->upload->initialize($config);
+if (!$this->upload->do_upload('carousel_image')) {
+$this->session->set_flashdata('error', $this->upload->display_errors());
+} else {
+$data = $this->upload->data();
+$image_name = $data['file_name'];
 
-		if (!$this->upload->do_upload('carousel_image')) {
-			$this->session->set_flashdata('error', $this->upload->display_errors());
-		} else {
-			$data = $this->upload->data();
-			$image_name = $data['file_name'];
+$carousel_data = array(
+'image_name' => $image_name,
+'title' => $this->input->post('title'),
+'description' => $this->input->post('description'),
+'sort_order' => $this->input->post('sort_order') ?: 0,
+'is_active' => 1
+);
 
-			$carousel_data = array(
-				'image_name' => $image_name,
-				'title' => $this->input->post('title'),
-				'description' => $this->input->post('description'),
-				'sort_order' => $this->input->post('sort_order') ?: 0,
-				'is_active' => 1
-			);
+$this->Carousel_model->insert_carousel_image($carousel_data);
+$description = 'Mengupload gambar carousel: ' . $image_name;
+log_activity('upload_carousel_image', $description);
+$this->session->set_flashdata('success', 'Gambar carousel berhasil diupload!');
+}
 
-			$this->Carousel_model->insert_carousel_image($carousel_data);
-			$description = 'Mengupload gambar carousel: ' . $image_name;
-			log_activity('upload_carousel_image', $description);
-			$this->session->set_flashdata('success', 'Gambar carousel berhasil diupload!');
-		}
+redirect('admin/carousel');
+}
 
-		redirect('admin/carousel');
-	}
+public function update_carousel_image($id)
+{
+if ($this->session->userdata('role') != 'admin') {
+$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupdate gambar!');
+redirect('admin/carousel');
+}
 
-	public function update_carousel_image()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupdate gambar!');
-			redirect('admin/carousel');
-		}
+$this->load->model('Carousel_model');
 
-		$this->load->model('Carousel_model');
+$update_data = array(
+'title' => $this->input->post('title'),
+'description' => $this->input->post('description'),
+'sort_order' => $this->input->post('sort_order') ?: 0,
+'is_active' => $this->input->post('is_active') ? 1 : 0
+);
 
-		$id = $this->input->post('id_carousel');
+$this->Carousel_model->update_carousel_image($id, $update_data);
+$description = 'Mengupdate gambar carousel ID: ' . $id;
+log_activity('update_carousel_image', $description);
+$this->session->set_flashdata('success', 'Gambar carousel berhasil diperbarui!');
 
-		$update_data = array(
-			'title' => $this->input->post('title'),
-			'description' => $this->input->post('description'),
-			'sort_order' => $this->input->post('sort_order') ?: 0,
-			'is_active' => $this->input->post('is_active') ? 1 : 0
-		);
+redirect('admin/carousel');
+}
 
-		$this->Carousel_model->update_carousel_image($id, $update_data);
-		$description = 'Mengupdate gambar carousel ID: ' . $id;
-		log_activity('update_carousel_image', $description);
-		$this->session->set_flashdata('success', 'Gambar carousel berhasil diperbarui!');
+public function delete_carousel_image($id)
+{
+if ($this->session->userdata('role') != 'admin') {
+$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus gambar!');
+redirect('admin/carousel');
+}
 
-		redirect('admin/carousel');
-	}
+$this->load->model('Carousel_model');
+$image = $this->Carousel_model->get_carousel_image_by_id($id);
 
-	public function delete_carousel_image($id)
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus gambar!');
-			redirect('admin/carousel');
-		}
+if ($image) {
+// Delete file from server
+$file_path = FCPATH . 'assets/uploads/landing/' . $image->image_name;
+if (file_exists($file_path)) {
+unlink($file_path);
+}
 
-		$this->load->model('Carousel_model');
-		$image = $this->Carousel_model->get_carousel_image_by_id($id);
+// Delete from database
+$this->Carousel_model->delete_carousel_image($id);
+$description = 'Menghapus gambar carousel: ' . $image->image_name;
+log_activity('delete_carousel_image', $description);
+$this->session->set_flashdata('success', 'Gambar carousel berhasil dihapus!');
+} else {
+$this->session->set_flashdata('error', 'Gambar carousel tidak ditemukan!');
+}
 
-		if ($image) {
-			// Delete file from server
-			$file_path = FCPATH . 'assets/uploads/landing/' . $image->image_name;
-			if (file_exists($file_path)) {
-				unlink($file_path);
-			}
+redirect('admin/carousel');
+}
 
-			// Delete from database
-			$this->Carousel_model->delete_carousel_image($id);
-			$description = 'Menghapus gambar carousel: ' . $image->image_name;
-			log_activity('delete_carousel_image', $description);
-			$this->session->set_flashdata('success', 'Gambar carousel berhasil dihapus!');
-		} else {
-			$this->session->set_flashdata('error', 'Gambar carousel tidak ditemukan!');
-		}
+public function update_carousel_sort_order()
+{
+if ($this->session->userdata('role') != 'admin') {
+echo json_encode(['success' => false, 'message' => 'Access denied']);
+return;
+}
 
-		redirect('admin/carousel');
-	}
+$this->load->model('Carousel_model');
 
-	public function update_carousel_sort_order()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			echo json_encode(['success' => false, 'message' => 'Access denied']);
-			return;
-		}
-
-		$this->load->model('Carousel_model');
-
-		$sort_data = $this->input->post('sort_data');
-		if (!empty($sort_data)) {
-			foreach ($sort_data as $id => $sort_order) {
-				$this->Carousel_model->update_sort_order($id, $sort_order);
-			}
-			log_activity('update_carousel_sort_order', 'Mengupdate urutan gambar carousel');
-			echo json_encode(['success' => true]);
-		} else {
-			echo json_encode(['success' => false, 'message' => 'No data provided']);
-		}
-	}
-
-	public function hero()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
-			redirect('admin');
-		}
-
-		$this->load->model('Hero_model');
-		$data['hero_images'] = $this->Hero_model->get_all_hero_images();
-		$data['title'] = 'Kelola Hero Landing Page - LKSA Harapan Bangsa';
-		$data['page_title'] = 'Kelola Hero Images';
-		$data['content'] = $this->load->view('admin/hero', $data, TRUE);
-		$this->load->view('templates/admin_layout', $data);
-	}
-
-	public function upload_hero_image()
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupload gambar!');
-			redirect('admin/hero');
-		}
-
-		$this->load->model('Hero_model');
-		$this->load->library('upload');
-
-		$upload_path = FCPATH . 'assets/uploads/landing/';
-		if (!is_dir($upload_path)) {
-			mkdir($upload_path, 0755, TRUE);
-		}
-
-		$config['upload_path'] = $upload_path;
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048;
-		$config['file_name'] = 'hero_' . time();
-		$config['detect_mime'] = TRUE;
-		$config['xss_clean'] = TRUE;
-
-		$this->upload->initialize($config);
-
-		if (!$this->upload->do_upload('hero_image')) {
-			$this->session->set_flashdata('error', $this->upload->display_errors());
-		} else {
-			$data = $this->upload->data();
-			$image_name = $data['file_name'];
-
-			$hero_data = array(
-				'image_name' => $image_name,
-				'title' => $this->input->post('title'),
-				'subtitle' => $this->input->post('subtitle'),
-				'description' => $this->input->post('description'),
-				'sort_order' => $this->input->post('sort_order') ?: 0,
-				'is_active' => 1
-			);
-
-			$this->Hero_model->insert_hero_image($hero_data);
-			$description = 'Mengupload gambar hero: ' . $image_name;
-			log_activity('upload_hero_image', $description);
-			$this->session->set_flashdata('success', 'Gambar hero berhasil diupload!');
-		}
-
-		redirect('admin/hero');
-	}
-
-	public function update_hero_image($id)
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengupdate gambar!');
-			redirect('admin/hero');
-		}
-
-		$this->load->model('Hero_model');
-
-		$update_data = array(
-			'title' => $this->input->post('title'),
-			'subtitle' => $this->input->post('subtitle'),
-			'description' => $this->input->post('description'),
-			'sort_order' => $this->input->post('sort_order') ?: 0,
-			'is_active' => $this->input->post('is_active') ? 1 : 0
-		);
-
-		$this->Hero_model->update_hero_image($id, $update_data);
-		$description = 'Mengupdate gambar hero ID: ' . $id;
-		log_activity('update_hero_image', $description);
-		$this->session->set_flashdata('success', 'Gambar hero berhasil diperbarui!');
-
-		redirect('admin/hero');
-	}
-
-	public function delete_hero_image($id)
-	{
-		if ($this->session->userdata('role') != 'admin') {
-			$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus gambar!');
-			redirect('admin/hero');
-		}
-
-		$this->load->model('Hero_model');
-		$image = $this->Hero_model->get_hero_image_by_id($id);
-
-		if ($image) {
-			// Delete file from server
-			$file_path = FCPATH . 'assets/uploads/landing/' . $image->image_name;
-			if (file_exists($file_path)) {
-				unlink($file_path);
-			}
-
-			// Delete from database
-			$this->Hero_model->delete_hero_image($id);
-			$description = 'Menghapus gambar hero: ' . $image->image_name;
-			log_activity('delete_hero_image', $description);
-			$this->session->set_flashdata('success', 'Gambar hero berhasil dihapus!');
-		} else {
-			$this->session->set_flashdata('error', 'Gambar hero tidak ditemukan!');
-		}
-
-		redirect('admin/hero');
-	}
-
-
+$sort_data = $this->input->post('sort_data');
+if (!empty($sort_data)) {
+foreach ($sort_data as $id => $sort_order) {
+$this->Carousel_model->update_sort_order($id, $sort_order);
+}
+log_activity('update_carousel_sort_order', 'Mengupdate urutan gambar carousel');
+echo json_encode(['success' => true]);
+} else {
+echo json_encode(['success' => false, 'message' => 'No data provided']);
+}
+}
 }

@@ -248,6 +248,8 @@
 			animation: float 6s ease-in-out infinite;
 		}
 
+
+
 		/* Features Section */
 		.features-section {
 			padding: 100px 0;
@@ -598,10 +600,7 @@
 						<a class="nav-link" href="#kontak">Kontak</a>
 					</li>
 					<li class="nav-item ms-lg-3">
-						<a href="<?php echo base_url('auth/login'); ?>" class="btn btn-outline-custom">Masuk</a>
-					</li>
-					<li class="nav-item ms-2">
-						<a href="<?php echo base_url('auth/register'); ?>" class="btn btn-primary-custom">Daftar</a>
+						<a href="<?php echo base_url('auth/login'); ?>" class="btn btn-primary-custom">Masuk</a>
 					</li>
 				</ul>
 			</div>
@@ -626,22 +625,44 @@
 							Wujudkan masa depan yang lebih baik untuk anak-anak Indonesia.
 						</p>
 						<div class="hero-buttons">
-							<a href="<?php echo base_url('auth/register'); ?>" class="btn btn-primary-custom">
-								<i class="fas fa-user-plus me-2"></i> Mulai Gratis
-							</a>
-							<a href="#fitur" class="btn btn-outline-custom">
-								<i class="fas fa-play me-2"></i> Pelajari Lebih Lanjut
+							<a href="<?php echo base_url('auth/login'); ?>" class="btn btn-primary-custom">
+								<i class="fas fa-sign-in-alt me-2"></i> Masuk Sistem
 							</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-6">
 					<div class="hero-image" data-aos="fade-left">
-						<img src="<?php echo !empty($settings->hero_image) ? base_url('assets/uploads/landing/' . $settings->hero_image) : 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&h=400&fit=crop'; ?>"
-							alt="Anak-anak dalam program kesejahteraan">
+						<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+							<div class="carousel-inner">
+								<?php
+								$is_first = true;
+								if (!empty($carousel_images)):
+									foreach ($carousel_images as $image):
+										?>
+										<div class="carousel-item <?php echo $is_first ? 'active' : ''; ?>">
+											<img src="<?php echo base_url('assets/uploads/landing/' . $image->image_name); ?>"
+												class="d-block w-100"
+												alt="<?php echo htmlspecialchars($image->title ?? 'Carousel Image'); ?>"
+												style="border-radius: 20px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);">
+										</div>
+										<?php
+										$is_first = false;
+									endforeach;
+								else:
+									?>
+									<div class="carousel-item active">
+										<img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&h=400&fit=crop"
+											class="d-block w-100" alt="Anak-anak belajar bersama"
+											style="border-radius: 20px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);">
+									</div>
+								<?php endif; ?>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 	</section>
 
@@ -660,7 +681,8 @@
 							<i class="fas fa-child"></i>
 						</div>
 						<h3>Data Anak</h3>
-						<p>Kelola data lengkap anak asuh, riwayat kesehatan, pendidikan, dan perkembangan dengan sistem
+						<p>Kelola data lengkap anak asuh, riwayat pendidikan, status tinggal, dan perkembangan dengan
+							sistem
 							terintegrasi.</p>
 					</div>
 				</div>
@@ -676,30 +698,30 @@
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-map-marked-alt"></i>
+							<i class="fas fa-file-alt"></i>
 						</div>
-						<h3>Data Wilayah</h3>
-						<p>Organisasi data berdasarkan provinsi, kabupaten, dan wilayah untuk program yang lebih
-							terarah.</p>
+						<h3>Manajemen Dokumen</h3>
+						<p>Upload dan kelola dokumen anak (KK, Akta, KTP) serta dokumen pengurus dengan sistem yang
+							aman.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-file-alt"></i>
+							<i class="fas fa-chart-bar"></i>
 						</div>
-						<h3>Laporan & Monitoring</h3>
-						<p>Generate laporan program, monitoring perkembangan anak, dan evaluasi kegiatan secara
+						<h3>Laporan & Statistik</h3>
+						<p>Generate laporan data anak, pengurus, dokumen, dan statistik dengan export PDF/Excel
 							otomatis.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-mobile-alt"></i>
+							<i class="fas fa-eye"></i>
 						</div>
-						<h3>Akses Mobile</h3>
-						<p>Akses data anak dan program kesejahteraan kapan saja melalui aplikasi mobile yang responsif.
+						<h3>Monitoring & Tracking</h3>
+						<p>Monitor status anak aktif/nonaktif, tracking pendidikan, dan evaluasi program kesejahteraan.
 						</p>
 					</div>
 				</div>
@@ -708,9 +730,9 @@
 						<div class="feature-icon">
 							<i class="fas fa-shield-alt"></i>
 						</div>
-						<h3>Keamanan Data</h3>
-						<p>Data anak dan program dilindungi dengan enkripsi tinggi dan backup otomatis untuk privasi
-							maksimal.</p>
+						<h3>Backup & Keamanan</h3>
+						<p>Data anak dan program dilindungi dengan backup database otomatis dan sistem keamanan
+							terintegrasi.</p>
 					</div>
 				</div>
 			</div>
@@ -785,6 +807,156 @@
 		</div>
 	</section>
 
+	<!-- Detailed Stats Section -->
+	<section class="detailed-stats-section" style="padding: 80px 0; background: var(--bg-light);">
+		<div class="container">
+			<div class="section-title" data-aos="fade-up">
+				<h2>Data Statistik Anak</h2>
+				<p>Informasi detail tentang profil anak-anak dalam program kesejahteraan</p>
+			</div>
+			<div class="row g-4">
+				<!-- Gender Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #3498DB, #2980B9); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-venus-mars"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Jenis Kelamin</h3>
+						<div class="row text-center">
+							<div class="col-6">
+								<div style="font-size: 36px; font-weight: 700; color: #3498DB; margin-bottom: 5px;">
+									<?php echo $stats['anak_laki']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">Laki-laki</div>
+							</div>
+							<div class="col-6">
+								<div style="font-size: 36px; font-weight: 700; color: #E74C3C; margin-bottom: 5px;">
+									<?php echo $stats['anak_perempuan']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">Perempuan</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Education Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #9B59B6, #8E44AD); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-graduation-cap"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Tingkat Pendidikan</h3>
+						<div class="education-stats">
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">SD/MI</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['pendidikan_sd']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['pendidikan_sd'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">SMP/MTs</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['pendidikan_smp']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['pendidikan_smp'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+							<div style="margin-bottom: 15px;">
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">SMA/SMK/MA</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['pendidikan_sma']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['pendidikan_sma'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+							<div>
+								<div
+									style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+									<span style="font-size: 14px; color: var(--text-light);">PT/Universitas</span>
+									<span
+										style="font-size: 18px; font-weight: 600; color: var(--primary-color);"><?php echo $stats['pendidikan_pt']; ?></span>
+								</div>
+								<div style="width: 100%; height: 6px; background: #eee; border-radius: 3px;">
+									<div
+										style="width: <?php echo $stats['total_anak'] > 0 ? ($stats['pendidikan_pt'] / $stats['total_anak'] * 100) : 0; ?>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); border-radius: 3px;">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Age Stats -->
+				<div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+					<div class="stats-card"
+						style="background: var(--white); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+						<div
+							style="width: 80px; height: 80px; background: linear-gradient(135deg, #E67E22, #D35400); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 24px;">
+							<i class="fas fa-birthday-cake"></i>
+						</div>
+						<h3
+							style="font-size: 24px; font-weight: 700; color: var(--secondary-color); margin-bottom: 20px;">
+							Kelompok Usia</h3>
+						<div class="age-stats">
+							<div
+								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
+								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
+									<?php echo $stats['usia_dibawah5']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">Dibawah 5 Tahun</div>
+							</div>
+							<div
+								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
+								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
+									<?php echo $stats['usia_5_12']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">5 - 12 Tahun</div>
+							</div>
+							<div
+								style="margin-bottom: 20px; padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
+								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
+									<?php echo $stats['usia_13_17']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">13 - 17 Tahun</div>
+							</div>
+							<div style="padding: 15px; background: rgba(230, 126, 34, 0.1); border-radius: 10px;">
+								<div style="font-size: 28px; font-weight: 700; color: #E67E22; margin-bottom: 5px;">
+									<?php echo $stats['usia_diatas17']; ?>
+								</div>
+								<div style="font-size: 14px; color: var(--text-light);">Diatas 17 Tahun</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
 	<!-- CTA Section -->
 	<section class="cta-section">
 		<div class="container">
@@ -792,10 +964,10 @@
 				<div class="col-lg-10">
 					<div class="cta-box" data-aos="zoom-in">
 						<h2>Bergabung Bersama Kami</h2>
-						<p>Mari bersama-sama berkontribusi untuk kesejahteraan anak Indonesia. Daftar sekarang dan mulai
-							mengelola program kesejahteraan anak.</p>
-						<a href="<?php echo base_url('auth/register'); ?>" class="btn btn-white">
-							<i class="fas fa-heart me-2"></i> Bergabung Sekarang
+						<p>Mari bersama-sama berkontribusi untuk kesejahteraan anak Indonesia. Hubungi kami untuk
+							informasi lebih lanjut tentang program kesejahteraan anak.</p>
+						<a href="#kontak" class="btn btn-white">
+							<i class="fas fa-envelope me-2"></i> Hubungi Kami
 						</a>
 					</div>
 				</div>
@@ -809,8 +981,7 @@
 			<div class="row g-4">
 				<div class="col-lg-4">
 					<div class="footer-about">
-						<a href="#" class="footer-brand"><?php echo $settings->nama_lksa ?? 'LKSA'; ?><span> Harapan
-								Bangsa</span></a>
+						<a href="#" class="footer-brand"><?php echo $settings->nama_lksa ?? 'LKSA'; ?><span></span></a>
 						<p>Lembaga kesejahteraan sosial anak yang berkomitmen untuk memberikan perlindungan dan
 							pendidikan bagi anak-anak Indonesia.</p>
 						<div class="social-links">
@@ -847,30 +1018,29 @@
 					</div>
 				</div>
 				<div class="col-lg-2 col-md-4">
-					<h4 class="footer-title">Produk</h4>
+					<h4 class="footer-title">Program</h4>
 					<ul class="footer-links">
-						<li><a href="#">Fitur</a></li>
-						<li><a href="#">Harga</a></li>
-						<li><a href="#">Demo</a></li>
-						<li><a href="#">API</a></li>
+						<li><a href="#fitur">Fitur Utama</a></li>
+						<li><a href="#tentang">Tentang LKSA</a></li>
+						<li><a href="#kontak">Kontak Kami</a></li>
+						<li><a href="<?php echo base_url('auth/login'); ?>">Login Admin</a></li>
 					</ul>
 				</div>
 				<div class="col-lg-2 col-md-4">
-					<h4 class="footer-title">Perusahaan</h4>
+					<h4 class="footer-title">Data & Laporan</h4>
 					<ul class="footer-links">
-						<li><a href="#">Tentang Kami</a></li>
-						<li><a href="#">Karir</a></li>
-						<li><a href="#">Blog</a></li>
-						<li><a href="#">Press</a></li>
+						<li><a href="#fitur">Data Anak</a></li>
+						<li><a href="#fitur">Data Pengurus</a></li>
+						<li><a href="#fitur">Laporan Statistik</a></li>
+						<li><a href="#fitur">Manajemen Dokumen</a></li>
 					</ul>
 				</div>
 				<div class="col-lg-2 col-md-4">
 					<h4 class="footer-title">Dukungan</h4>
 					<ul class="footer-links">
-						<li><a href="#">Pusat Bantuan</a></li>
-						<li><a href="#">Kontak</a></li>
-						<li><a href="#">Status</a></li>
-						<li><a href="#">Privacy Policy</a></li>
+						<li><a href="#kontak">Kontak Developer</a></li>
+						<li><a href="#">Changelog</a></li>
+						<li><a href="#">Lisensi</a></li>
 					</ul>
 				</div>
 				<div class="col-lg-2 col-md-4">

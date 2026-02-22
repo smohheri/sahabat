@@ -5,6 +5,52 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-02-22
+
+### Added
+- 🖼️ **Kelola Carousel Landing Page**
+  - Halaman admin untuk mengelola gambar carousel hero section
+  - Upload, edit, delete gambar carousel dengan validasi
+  - Tampilan grid gambar dengan overlay actions
+  - Urutan gambar dapat disesuaikan
+  - Status aktif/nonaktif untuk setiap gambar
+  - Folder upload: assets/uploads/landing/
+
+### Fixed
+- 🐛 **Perbaikan Route Carousel**
+  - Memperbaiki URL form upload, update, delete carousel
+  - Update route admin/carousel/update tanpa parameter ID
+  - Controller method update_carousel_image() menggunakan POST data
+
+- 🐛 **Perbaikan Tampilan Gambar Carousel**
+  - Menghapus pengecekan file_exists untuk menghindari placeholder
+  - Gambar ditampilkan langsung dari database path
+  - Perbaikan JavaScript error tooltip tidak ditemukan
+
+### Changed
+- 🔄 **Update `application/config/routes.php`**
+  - Route carousel update diubah ke POST-based
+
+- 🔄 **Update `application/controllers/Admin.php`**
+  - Method update_carousel_image() menggunakan $id dari POST
+
+- 🔄 **Update `application/views/admin/carousel.php`**
+  - Form action menggunakan route yang benar
+  - Hapus data-toggle tooltip untuk menghindari error JS
+  - Tampilan gambar tanpa file_exists check
+
+### Technical
+- 🔧 **Model Baru**
+  - application/models/Carousel_model.php - CRUD operasi carousel
+
+- 🔧 **View Baru**
+  - application/views/admin/carousel.php - Halaman kelola carousel
+
+- 🔧 **File Database Baru**
+  - database/alter_table_add_carousel_images.sql - Tabel carousel_images
+
+---
+
 ## [1.5.0] - 2025-02-22
 
 ### Added

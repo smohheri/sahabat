@@ -32,51 +32,6 @@
 	<div class="content-grid">
 		<!-- Main Content -->
 		<div class="content-main">
-			<!-- Hero Image Section -->
-			<div class="data-panel">
-				<div class="panel-header">
-					<h3><i class="fas fa-image"></i> Gambar Hero Section</h3>
-					<span class="data-count">Landing Page</span>
-				</div>
-				<div class="panel-body">
-					<div class="image-upload-section">
-						<div class="current-image">
-							<?php if (!empty($pengaturan->hero_image)): ?>
-								<img src="<?php echo base_url('assets/uploads/landing/' . $pengaturan->hero_image); ?>"
-									alt="Gambar Hero" class="img-fluid">
-								<div class="image-info">
-									<i class="fas fa-check-circle text-green"></i>
-									<span>Gambar hero aktif</span>
-								</div>
-							<?php else: ?>
-								<div class="no-image">
-									<i class="fas fa-image fa-3x text-muted"></i>
-									<p>Belum ada gambar hero</p>
-									<small class="text-muted">Menggunakan gambar default dari Unsplash</small>
-								</div>
-							<?php endif; ?>
-						</div>
-						<div class="upload-form">
-							<?php echo form_open_multipart('admin/upload_hero_image'); ?>
-							<div class="form-group">
-								<label class="form-label">Pilih Gambar Baru</label>
-								<div class="custom-file">
-									<input type="file" class="custom-file-input" id="hero_image" name="hero_image"
-										accept="image/*">
-									<label class="custom-file-label" for="hero_image">Pilih gambar hero...</label>
-								</div>
-								<small class="form-text text-muted">Format: JPG, PNG. Maksimal 2MB. Ukuran disarankan:
-									600x400px</small>
-							</div>
-							<button type="submit" class="btn btn-primary">
-								<i class="fas fa-upload mr-2"></i>Upload Gambar Hero
-							</button>
-							<?php echo form_close(); ?>
-						</div>
-					</div>
-				</div>
-			</div>
-
 			<!-- About Image Section -->
 			<div class="data-panel">
 				<div class="panel-header">
@@ -135,10 +90,10 @@
 						<div class="info-section">
 							<h4><i class="fas fa-lightbulb text-warning"></i> Cara Penggunaan</h4>
 							<ul class="info-list">
-								<li>Upload gambar hero untuk mengganti gambar di bagian atas landing page</li>
 								<li>Upload gambar about untuk mengganti gambar di bagian "Tentang Kami"</li>
 								<li>Gambar akan langsung aktif setelah diupload</li>
 								<li>Jika belum ada gambar, sistem akan menggunakan gambar default</li>
+								<li>Konten hero section dikelola melalui menu "Kelola Hero Images"</li>
 							</ul>
 						</div>
 						<div class="info-section">

@@ -142,9 +142,9 @@
 				<li class="nav-header">PENGATURAN</li>
 
 				<li
-					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'logs', 'backup')) ? 'menu-open' : ''; ?>">
+					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'carousel', 'logs', 'backup')) ? 'menu-open' : ''; ?>">
 					<a href="#"
-						class="nav-link <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'logs', 'backup')) ? 'active' : ''; ?>">
+						class="nav-link <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'carousel', 'logs', 'backup')) ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-cogs"></i>
 						<p>
 							Pengaturan
@@ -152,7 +152,7 @@
 						</p>
 					</a>
 					<ul class="nav nav-treeview"
-						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'logs', 'backup')) ? 'display: block;' : ''; ?>">
+						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'landing', 'carousel', 'logs', 'backup')) ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/pengaturan'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'pengaturan' ? 'active' : ''; ?>">
@@ -165,6 +165,13 @@
 								class="nav-link <?php echo $this->uri->segment(2) == 'landing' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Landing Page</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/carousel'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'carousel' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Kelola Carousel</p>
 							</a>
 						</li>
 						<li class="nav-item">

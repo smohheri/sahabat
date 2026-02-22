@@ -1,30 +1,39 @@
-# TODO: Implementasi DataTables Server-Side Pagination untuk Log Aktivitas
+# TODO: Sinkronisasi Tabel Carousel Hero Section dengan Landing Page
 
-## Progress
-- [x] Tambah method get_logs_datatable() di User_log_model.php
-- [x] Tambah method logs_ajax() di Admin.php untuk return JSON data
-- [x] Ubah konfigurasi DataTables di logs.php view untuk server-side processing
-- [x] Tambah DataTables CSS dan JS libraries ke logs.php view
-- [x] Fix DataTables loading order dengan dynamic script loading
-- [x] Disable CSRF protection untuk development environment
-- [x] Ubah stats cards untuk menampilkan data langsung tanpa "Loading..."
-- [x] Tambah margin dan padding untuk navigasi DataTables
-- [x] Tambah margin dan padding untuk search bar dan pagination numbers
-- [x] Update CHANGELOG.md dengan versi 1.5.0
-- [x] Update APP_VERSION ke 1.5.0 di constants.php
-- [x] Tambah .gitignore untuk application/sessions
-- [x] Test implementasi pagination dan search (versi aplikasi updated, gitignore updated, siap untuk testing browser)
-- [x] Stage all changes, commit dengan pesan changelog, dan push ke repository
+## Tugas Utama
+- Sinkronkan tabel yang digunakan di carousel hero section dengan landing page
+- Hapus fungsi yang tidak digunakan di admin
+- Lengkapi fungsi yang sudah sinkron dengan landing page
 
-## Summary
-Implementasi DataTables server-side pagination telah selesai. Fitur yang ditambahkan:
-- Server-side pagination untuk performa yang lebih baik
-- Search functionality di semua kolom
-- Sorting berdasarkan waktu
-- Stats cards yang diupdate secara AJAX
-- Responsive design dengan Bootstrap styling
+## Langkah-langkah Implementasi
 
-## Files yang perlu diubah:
-1. application/models/User_log_model.php - method baru untuk DataTables
-2. application/controllers/Admin.php - method AJAX baru
-3. application/views/admin/logs.php - konfigurasi DataTables server-side
+### 1. Modifikasi Controller Landing
+- [x] Tambahkan load Hero_model di Landing.php
+- [x] Ambil data hero_images aktif di method index()
+
+### 2. Modifikasi View Landing Page
+- [x] Update application/views/landingpage/home.php untuk menggunakan data hero_images
+- [x] Ganti teks statis hero dengan data dinamis dari hero_images
+
+### 3. Hapus Fungsi Tidak Digunakan di Admin
+- [x] Hapus method upload_landing_hero_image dari Admin.php
+- [x] Update view admin/landing.php untuk menghapus section upload hero image
+
+### 4. Verifikasi Sinkronisasi
+- [x] Pastikan landing page menggunakan carousel_images dan hero_images
+- [x] Test admin hero management berfungsi dengan landing page
+
+### 5. Buat Halaman Upload Hero
+- [x] Tambahkan method upload_hero() dan process_upload_hero() di Admin.php
+- [x] Buat view application/views/admin/upload_hero.php untuk halaman upload dedicated
+
+### 6. Tambahkan ke Menu Sidebar
+- [x] Tambahkan menu "Upload Hero Images", "Kelola Hero Images", dan "Kelola Carousel" ke sidebar admin dalam kelompok Pengaturan
+
+### 7. Cleanup
+- [x] Hapus referensi hero_image dari settings karena tidak digunakan lagi
+- [x] Hapus file dan model yang tidak digunakan (Hero_model.php, hero.php, upload_hero.php)
+- [x] Update dokumentasi jika diperlukan
+
+## Status: SELESAI
+Semua tugas telah diselesaikan. Landing page sekarang menggunakan tabel carousel_images untuk carousel dan hero_images untuk konten hero dinamis. Fungsi admin yang tidak digunakan telah dihapus, dan menu sidebar telah diperbarui.

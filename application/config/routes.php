@@ -59,3 +59,12 @@ $route['admin/backup'] = 'admin/backup';
 $route['admin/download_backup/(:any)/(:any)'] = 'admin/download_backup/$1/$2';
 $route['admin/restore_database'] = 'admin/restore_database';
 $route['admin/restore_files'] = 'admin/restore_files';
+
+$route['admin/carousel'] = 'admin/carousel';
+$route['admin/carousel/upload'] = 'admin/upload_carousel_image';
+$route['admin/carousel/update'] = 'admin/update_carousel_image';
+$route['admin/carousel/delete/(:num)'] = 'admin/delete_carousel_image/$1';
+$route['admin/carousel/update_sort_order'] = 'admin/update_carousel_sort_order';
+
+$route['admin/landing'] = 'admin/landing';
+$route['admin/landing/upload_about_image'] = 'admin/upload_about_image';
