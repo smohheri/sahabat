@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.8.0-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -60,6 +60,47 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Fallback otomatis ke gambar Unsplash jika belum ada upload
 - Interface admin untuk manajemen gambar landing page
 - Optimasi gambar untuk performa website
+
+### 🏢 Manajemen Fasilitas Landing Page
+- Halaman admin untuk mengelola fasilitas yang ditampilkan di landing page
+- Add, edit, delete fasilitas dengan gambar, deskripsi, dan icon
+- Grid display dengan card fasilitas
+
+### 🎠 Kelola Carousel Landing Page
+- Halaman admin untuk mengelola gambar carousel hero section
+- Upload, edit, delete gambar dengan validasi
+- Urutan gambar dapat disesuaikan dan status aktif/nonaktif
+
+### ❤️ Halaman Donasi Landing Page
+- Halaman donasi dengan informasi rekening Bank BSI dan BRI
+- Fitur copy to clipboard untuk nomor rekening
+- QRIS payment dengan kode QR
+
+### 📄 Halaman Lisensi Landing Page
+- Informasi lisensi gratis aplikasi SAHABAT
+- Kebijakan penggunaan dan persyaratan
+- Link ke halaman donasi dan GitHub repository
+
+### 📊 DataTables Server-Side Pagination
+- Implementasi pagination server-side untuk performa yang lebih baik
+- Untuk halaman Data Anak dan Log Aktivitas
+- Filter fungsional dan sorting berdasarkan kolom
+
+### 🔤 Sorting Data Anak berdasarkan Nama
+- Data anak diurutkan berdasarkan nama secara ascending secara default
+- Konfigurasi sorting di database level
+
+### 📈 Dashboard Substats Update
+- Mengganti baris kedua substats dengan Laki-laki, Perempuan, Anak Baru
+- Mengganti Pendidikan TK dengan Anak Asrama di baris pertama
+
+### 🎨 Efek 3D pada Sidebar Brand
+- Menambahkan text-shadow untuk efek 3D pada teks "SAHABAT"
+
+### 📑 Laporan Ekspor Eksternal
+- Laporan data anak untuk keperluan eksternal panti
+- Filter berdasarkan status, jenis kelamin, kategori
+- Export PDF dan Excel dengan informasi dasar anak
 
 ## 🛠️ Teknologi
 

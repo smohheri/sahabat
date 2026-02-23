@@ -8,11 +8,11 @@ class Anak_model extends CI_Model
 		parent::__construct();
 	}
 
-	public function get_all_anak()
+	public function get_all_anak($sort_by = 'nama_anak', $sort_order = 'ASC')
 	{
 		$this->db->select('anak.*');
 		$this->db->from('anak');
-		$this->db->order_by('anak.nama_anak', 'ASC');
+		$this->db->order_by('anak.' . $sort_by, $sort_order);
 		return $this->db->get()->result();
 	}
 

@@ -20,6 +20,7 @@ class Admin extends CI_Controller
 		$this->load->model('User_model');
 
 		$anak = $this->Anak_model->get_all_anak();
+		$anak_terbaru = $this->Anak_model->get_all_anak('created_at', 'DESC');
 		$pengurus = $this->Pengurus_model->get_all_pengurus();
 
 		$total_anak = count($anak);
@@ -136,7 +137,7 @@ class Admin extends CI_Controller
 			'pendidikan_pt' => $pendidikan_pt,
 			'pendidikan_tk' => $pendidikan_tk,
 			'anak_baru' => $anak_baru,
-			'anak_terbaru' => array_slice($anak, 0, 5),
+			'anak_terbaru' => array_slice($anak_terbaru, 0, 5),
 			'pengurus_terbaru' => array_slice($pengurus, 0, 5),
 			// Category counts
 			'kategori_yatim' => $kategori_yatim,

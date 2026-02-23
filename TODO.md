@@ -53,3 +53,15 @@
 - Made Nama Anak column orderable: true
 - Updated get_all_anak() and get_anak_datatable() to default to nama_anak ASC
 - Removed "order" configuration from DataTable to rely on database sorting
+
+# TODO: Fix Dashboard Latest Anak Sorting
+
+## Tasks
+- [x] Modify Anak_model.php get_all_anak() to accept sorting parameters
+- [x] Update dashboard controller to get latest anak sorted by created_at DESC
+- [x] Ensure data anak page still uses default nama_anak ASC sorting
+
+## Notes
+- Added optional parameters to get_all_anak($sort_by = 'nama_anak', $sort_order = 'ASC')
+- Dashboard calls get_all_anak('created_at', 'DESC') for anak_terbaru
+- Data anak page calls without parameters, maintaining nama_anak ASC
