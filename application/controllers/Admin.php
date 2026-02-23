@@ -57,11 +57,11 @@ class Admin extends CI_Controller
 			else
 				$anak_perempuan++;
 
-			if (strpos(strtolower($a->status_tinggal), 'sekolah') !== false)
+			if (strtolower($a->status_tinggal) == 'sekolah')
 				$anak_sekolah++;
-			elseif (strpos(strtolower($a->status_tinggal), 'asrama') !== false)
+			elseif (strtolower($a->status_tinggal) == 'tinggal di lksa')
 				$anak_asrama++;
-			elseif (strpos(strtolower($a->status_tinggal), 'perawatan') !== false)
+			elseif (strtolower($a->status_tinggal) == 'perawatan')
 				$anak_perawatan++;
 
 			if (!empty($a->file_kk) && !empty($a->file_akta))
@@ -536,7 +536,9 @@ class Admin extends CI_Controller
 					'status_anak' => $this->input->post('status_anak'),
 					'kategori' => $this->input->post('kategori'),
 					'status_tinggal' => $this->input->post('status_tinggal'),
-					'tanggal_masuk' => $this->input->post('tanggal_masuk')
+					'tanggal_masuk' => $this->input->post('tanggal_masuk'),
+					'nama_sekolah' => $this->input->post('nama_sekolah'),
+					'biaya_spp' => $this->input->post('biaya_spp')
 				);
 
 				if ($id) {
@@ -961,6 +963,12 @@ class Admin extends CI_Controller
 				$data['content'] = $this->load->view('admin/laporan/statistik', $data, TRUE);
 				break;
 
+			case 'ekspor_eksternal':
+				$data['page_subtitle'] = 'Ekspor Eksternal';
+				$data['anak'] = $this->Anak_model->get_all_anak();
+				$data['content'] = $this->load->view('admin/laporan/ekspor_eksternal', $data, TRUE);
+				break;
+
 			default:
 				$data['page_subtitle'] = 'Pilih Jenis Laporan';
 				$data['content'] = $this->load->view('admin/laporan/index', $data, TRUE);
@@ -976,6 +984,24 @@ class Admin extends CI_Controller
 		$this->load->library('Pdf_export');
 
 		$data['anak'] = $this->Anak_model->get_all_anak();
+
+		// Sort by category order: Yatim Piatu, Yatim, Piatu, Dhuafa, Fakir dan Miskin, Ibnu Sabil, Laqith
+		$category_order = [
+			'Yatim Piatu' => 1,
+			'Yatim' => 2,
+			'Piatu' => 3,
+			'Dhuafa' => 4,
+			'Fakir dan Miskin' => 5,
+			'Ibnu Sabil' => 6,
+			'Laqith' => 7
+		];
+
+		usort($data['anak'], function ($a, $b) use ($category_order) {
+			$a_order = $category_order[$a->kategori] ?? 99;
+			$b_order = $category_order[$b->kategori] ?? 99;
+			return $a_order <=> $b_order;
+		});
+
 		$data['settings'] = $this->config->item('settings');
 
 		$html = $this->pdf_export->generate_laporan_anak($data);
@@ -989,6 +1015,24 @@ class Admin extends CI_Controller
 		$this->load->library('Excel_export');
 
 		$data['anak'] = $this->Anak_model->get_all_anak();
+
+		// Sort by category order: Yatim Piatu, Yatim, Piatu, Dhuafa, Fakir dan Miskin, Ibnu Sabil, Laqith
+		$category_order = [
+			'Yatim Piatu' => 1,
+			'Yatim' => 2,
+			'Piatu' => 3,
+			'Dhuafa' => 4,
+			'Fakir dan Miskin' => 5,
+			'Ibnu Sabil' => 6,
+			'Laqith' => 7
+		];
+
+		usort($data['anak'], function ($a, $b) use ($category_order) {
+			$a_order = $category_order[$a->kategori] ?? 99;
+			$b_order = $category_order[$b->kategori] ?? 99;
+			return $a_order <=> $b_order;
+		});
+
 		$this->excel_export->export_laporan_anak($data, 'laporan_data_anak_' . date('Ymd') . '.xlsx');
 		log_activity('export_excel', 'Mengekspor laporan Excel data anak');
 	}
@@ -1001,8 +1045,7 @@ class Admin extends CI_Controller
 		$data['pengurus'] = $this->Pengurus_model->get_all_pengurus();
 		$data['settings'] = $this->config->item('settings');
 
-		$html = $this->pdf_export->generate_laporan_pengurus($data);
-		$this->pdf_export->generate($html, 'laporan_pengurus_' . date('Ymd') . '.pdf', 'D');
+		$this->pdf_export->generate_laporan_pengurus($data);
 		log_activity('export_pdf_pengurus', 'Mengekspor laporan PDF data pengurus');
 	}
 
@@ -1024,8 +1067,7 @@ class Admin extends CI_Controller
 		$data['anak'] = $this->Anak_model->get_all_anak();
 		$data['settings'] = $this->config->item('settings');
 
-		$html = $this->pdf_export->generate_laporan_dokumen($data);
-		$this->pdf_export->generate($html, 'laporan_dokumen_' . date('Ymd') . '.pdf', 'D');
+		$this->pdf_export->generate_laporan_dokumen($data);
 		log_activity('export_pdf_dokumen', 'Mengekspor laporan PDF data dokumen');
 	}
 
@@ -1110,6 +1152,28 @@ class Admin extends CI_Controller
 		$data['anak'] = $this->Anak_model->get_all_anak();
 		$this->excel_export->export_laporan_dokumen($data, 'laporan_dokumen_' . date('Ymd') . '.xlsx');
 		log_activity('export_excel_dokumen', 'Mengekspor laporan Excel data dokumen');
+	}
+
+	public function export_pdf_eksternal()
+	{
+		$this->load->model('Anak_model');
+		$this->load->library('Pdf_export');
+
+		$data['anak'] = $this->Anak_model->get_all_anak();
+		$data['settings'] = $this->config->item('settings');
+
+		$this->pdf_export->generate_laporan_eksternal($data);
+		log_activity('export_pdf_eksternal', 'Mengekspor laporan PDF eksternal');
+	}
+
+	public function export_excel_eksternal()
+	{
+		$this->load->model('Anak_model');
+		$this->load->library('Excel_export');
+
+		$data['anak'] = $this->Anak_model->get_all_anak();
+		$this->excel_export->export_laporan_eksternal($data, 'laporan_eksternal_' . date('Ymd') . '.xlsx');
+		log_activity('export_excel_eksternal', 'Mengekspor laporan Excel eksternal');
 	}
 
 	public function kontak()
@@ -1214,6 +1278,89 @@ class Admin extends CI_Controller
 				$log->description,
 				$log->ip_address,
 				date('d/m/Y H:i:s', strtotime($log->created_at))
+			];
+		}
+
+		// Response
+		$response = [
+			'draw' => $draw,
+			'recordsTotal' => $total_records,
+			'recordsFiltered' => $filtered_records,
+			'data' => $data
+		];
+
+		echo json_encode($response);
+	}
+
+	public function anak_ajax()
+	{
+		$this->load->model('Anak_model');
+		$this->load->helper('tanggal');
+
+		// DataTables parameters
+		$draw = intval($this->input->post('draw'));
+		$start = intval($this->input->post('start'));
+		$length = intval($this->input->post('length'));
+		$search = $this->input->post('search')['value'];
+
+		// Ordering
+		$order_column_index = $this->input->post('order')[0]['column'];
+		$order_dir = $this->input->post('order')[0]['dir'];
+		$columns = ['nama_anak', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
+		$order_column = $columns[$order_column_index] ?? 'created_at';
+
+		// Additional filters
+		$filters = array();
+		if ($this->input->post('status_anak')) {
+			$filters['status_anak'] = $this->input->post('status_anak');
+		}
+		if ($this->input->post('jenis_kelamin')) {
+			$filters['jenis_kelamin'] = $this->input->post('jenis_kelamin');
+		}
+		if ($this->input->post('pendidikan')) {
+			$filters['pendidikan'] = $this->input->post('pendidikan');
+		}
+
+		// Get data
+		$anak = $this->Anak_model->get_anak_datatable($start, $length, $search, $order_column, $order_dir, $filters);
+		$total_records = $this->Anak_model->count_all_anak();
+		$filtered_records = $this->Anak_model->count_filtered_anak($search, $filters);
+
+		// Format data for DataTables
+		$data = [];
+		$no = $start + 1;
+		foreach ($anak as $a) {
+			$data[] = [
+				$no++,
+				'<div class="user-cell">
+					<div class="user-avatar bg-' . ($a->jenis_kelamin == 'L' ? 'blue' : 'pink') . '">' .
+				strtoupper(substr($a->nama_anak, 0, 1)) . '
+					</div>
+					<div>
+						<span>' . $a->nama_anak . '</span><br>
+						<small>' . ($a->nik ?: '-') . '</small>
+					</div>
+				</div>',
+				'<span class="badge-jk badge-' . ($a->jenis_kelamin == 'L' ? 'blue' : 'pink') . '">' .
+				($a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</span>',
+				$a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir),
+				$a->kategori ?: '-',
+				$a->nama_sekolah ?: '-',
+				$a->biaya_spp ? 'Rp ' . number_format($a->biaya_spp, 0, ',', '.') : '-',
+				'<div class="btn-group">
+					<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalView' . $a->id_anak . '">
+						<i class="fas fa-eye"></i>
+					</button>
+					<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalEdit' . $a->id_anak . '">
+						<i class="fas fa-edit"></i>
+					</button>
+					<button class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalUpload' . $a->id_anak . '">
+						<i class="fas fa-upload"></i>
+					</button>
+					<button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalDelete' . $a->id_anak . '">
+						<i class="fas fa-trash"></i>
+					</button>
+				</div>'
 			];
 		}
 

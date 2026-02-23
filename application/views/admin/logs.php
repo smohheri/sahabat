@@ -602,7 +602,7 @@
 						{ "data": 5, "orderable": true }  // Time
 					],
 					"order": [[5, 'desc']],
-					"pageLength": 25,
+					"pageLength": 10,
 					"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
 					"language": {
 						"processing": "Memproses...",

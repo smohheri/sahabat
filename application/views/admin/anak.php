@@ -1,4 +1,9 @@
 <!-- Data Anak - Redesain Modern -->
+
+<!-- DataTables CSS -->
+<link rel="stylesheet"
+	href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
+
 <div class="laporan-page">
 	<!-- Page Header -->
 	<div class="page-header">
@@ -138,68 +143,16 @@
 					<thead>
 						<tr>
 							<th>No</th>
-							<th>NIK</th>
 							<th>Nama Anak</th>
 							<th>Jenis Kelamin</th>
 							<th>Tempat/Tgl Lahir</th>
-							<th>Pendidikan</th>
 							<th>Kategori</th>
+							<th>Nama Sekolah</th>
+							<th>Biaya SPP</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php $no = 1;
-						foreach ($anak as $a): ?>
-							<tr>
-								<td><?php echo $no++; ?></td>
-								<td><?php echo $a->nik ?: '-'; ?></td>
-								<td>
-									<div class="user-cell">
-										<div
-											class="user-avatar bg-<?php echo $a->jenis_kelamin == 'L' ? 'blue' : 'pink'; ?>">
-											<?php echo strtoupper(substr($a->nama_anak, 0, 1)); ?>
-										</div>
-										<span><?php echo $a->nama_anak; ?></span>
-									</div>
-								</td>
-								<td>
-									<span class="badge-jk badge-<?php echo $a->jenis_kelamin == 'L' ? 'blue' : 'pink'; ?>">
-										<?php echo $a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
-									</span>
-								</td>
-								<td><?php echo $a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir); ?></td>
-								<td><?php echo $a->pendidikan; ?></td>
-								<td><?php echo $a->kategori ?: '-'; ?></td>
-								<td>
-									<div class="btn-group">
-										<button class="btn btn-sm btn-info" data-toggle="modal"
-											data-target="#modalView<?php echo $a->id_anak; ?>">
-											<i class="fas fa-eye"></i>
-										</button>
-										<button class="btn btn-sm btn-warning" data-toggle="modal"
-											data-target="#modalEdit<?php echo $a->id_anak; ?>">
-											<i class="fas fa-edit"></i>
-										</button>
-										<button class="btn btn-sm btn-secondary" data-toggle="modal"
-											data-target="#modalUpload<?php echo $a->id_anak; ?>">
-											<i class="fas fa-upload"></i>
-										</button>
-										<button class="btn btn-sm btn-danger" data-toggle="modal"
-											data-target="#modalDelete<?php echo $a->id_anak; ?>">
-											<i class="fas fa-trash"></i>
-										</button>
-									</div>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-						<?php if (empty($anak)): ?>
-							<tr>
-								<td colspan="8" class="text-center text-muted py-4">
-									<i class="fas fa-inbox fa-2x mb-2"></i><br>
-									Belum ada data anak
-								</td>
-							</tr>
-						<?php endif; ?>
 					</tbody>
 				</table>
 			</div>
@@ -327,6 +280,23 @@
 								<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
 								<input type="date" class="form-control" name="tanggal_masuk"
 									value="<?php echo $a->tanggal_masuk; ?>" required>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
+								<input type="text" class="form-control" name="nama_sekolah"
+									value="<?php echo $a->nama_sekolah; ?>" placeholder="Masukkan nama sekolah">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
+								<input type="number" class="form-control" name="biaya_spp"
+									value="<?php echo $a->biaya_spp; ?>" placeholder="Masukkan biaya SPP" min="0"
+									step="0.01">
 							</div>
 						</div>
 					</div>
@@ -539,7 +509,7 @@
 						</div>
 						<div class="card-body">
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-12">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
 										<p class="form-control-plaintext font-weight-semibold h5">
@@ -547,7 +517,9 @@
 										</p>
 									</div>
 								</div>
-								<div class="col-md-6">
+							</div>
+							<div class="row">
+								<div class="col-md-3">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">NIK</label>
 										<p class="form-control-plaintext">
@@ -555,9 +527,7 @@
 										</p>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
 										<p class="form-control-plaintext">
@@ -570,13 +540,13 @@
 										</p>
 									</div>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
 										<p class="form-control-plaintext"><?php echo $a->tempat_lahir; ?></p>
 									</div>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
 										<p class="form-control-plaintext"><?php echo tanggal_indo($a->tanggal_lahir); ?>
@@ -588,24 +558,14 @@
 						</div>
 					</div>
 
-					<!-- Education and Status -->
+					<!-- Status & Informasi Tambahan -->
 					<div class="card border-0 shadow-sm mb-4">
 						<div class="card-header bg-light">
-							<h6 class="font-weight-bold text-success mb-0"><i
-									class="fas fa-graduation-cap mr-2"></i>Pendidikan & Status</h6>
+							<h6 class="font-weight-bold text-success mb-0"><i class="fas fa-info-circle mr-2"></i>Status &
+								Informasi Tambahan</h6>
 						</div>
 						<div class="card-body">
 							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group mb-3">
-										<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
-										<p class="form-control-plaintext">
-											<span class="badge badge-info px-3 py-2">
-												<i class="fas fa-graduation-cap mr-1"></i><?php echo $a->pendidikan; ?>
-											</span>
-										</p>
-									</div>
-								</div>
 								<div class="col-md-6">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Status Anak</label>
@@ -617,9 +577,7 @@
 										</p>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
+								<div class="col-md-6">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Kategori</label>
 										<p class="form-control-plaintext">
@@ -646,6 +604,24 @@
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
 										<p class="form-control-plaintext"><?php echo tanggal_indo($a->tanggal_masuk); ?></p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->nama_sekolah ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->biaya_spp ? 'Rp ' . number_format($a->biaya_spp, 0, ',', '.') : 'Belum diisi'; ?>
+										</p>
 									</div>
 								</div>
 							</div>
@@ -827,6 +803,22 @@
 						<div class="form-group mb-3">
 							<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
 							<input type="date" class="form-control" name="tanggal_masuk" required>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
+							<input type="text" class="form-control" name="nama_sekolah"
+								placeholder="Masukkan nama sekolah">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group mb-3">
+							<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
+							<input type="number" class="form-control" name="biaya_spp" placeholder="Masukkan biaya SPP"
+								min="0" step="0.01">
 						</div>
 					</div>
 				</div>
@@ -1496,18 +1488,141 @@
 	body.dark-mode .border {
 		border-color: #0f3460 !important;
 	}
+
+	/* DataTables Pagination Styling */
+	.dataTables_wrapper .dataTables_paginate {
+		padding: 20px 25px 15px 15px;
+		margin-right: 15px;
+	}
+
+	.dataTables_wrapper .dataTables_info {
+		padding: 25px 15px 15px 25px;
+	}
+
+	.dataTables_wrapper .dataTables_length {
+		padding: 20px 15px 10px 25px;
+	}
+
+	.dataTables_wrapper .dataTables_filter {
+		padding: 20px 25px 10px 15px;
+		text-align: right;
+	}
+
+	.dataTables_wrapper .dataTables_filter input {
+		padding: 6px 12px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 14px;
+	}
+
+	.dataTables_wrapper .dataTables_filter label {
+		font-weight: 500;
+		color: #2d3748;
+	}
+
+	/* Dark mode for DataTables controls */
+	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+		color: #e0e0e0 !important;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+		color: #fff !important;
+		background: #0f3460 !important;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+		color: #fff !important;
+		background: #4e73df !important;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_info {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_length select {
+		background-color: #16213e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_filter input {
+		background-color: #16213e;
+		color: #e0e0e0;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_filter input::placeholder {
+		color: #a0a0a0;
+	}
+
+	body.dark-mode .dataTables_wrapper .dataTables_filter label {
+		color: #e0e0e0;
+	}
 </style>
 
 <script>
+	// Load DataTables JS dynamically to ensure jQuery is loaded
+	$.getScript("<?php echo base_url('assets/plugins/datatables/jquery.dataTables.min.js'); ?>", function () {
+		$.getScript("<?php echo base_url('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'); ?>", function () {
+			$(document).ready(function () {
+				// Initialize DataTable with server-side processing
+				tableAnak = $('#tableAnak').DataTable({
+					"processing": true,
+					"serverSide": true,
+					"ajax": {
+						"url": "<?php echo site_url('admin/anak_ajax'); ?>",
+						"type": "POST",
+						"data": function (d) {
+							d.status_anak = $('#filterStatus').val();
+							d.jenis_kelamin = $('#filterJenisKelamin').val();
+							d.pendidikan = $('#filterPendidikan').val();
+						}
+					},
+					"columns": [
+						{ "data": 0, "orderable": false }, // No
+						{ "data": 1, "orderable": true }, // Nama Anak
+						{ "data": 2, "orderable": false }, // Jenis Kelamin
+						{ "data": 3, "orderable": false }, // Tempat/Tgl Lahir
+						{ "data": 4, "orderable": false }, // Kategori
+						{ "data": 5, "orderable": false }, // Nama Sekolah
+						{ "data": 6, "orderable": true },  // Biaya SPP
+						{ "data": 7, "orderable": false }  // Aksi
+					],
+					"pageLength": 10,
+					"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+					"language": {
+						"processing": "Memproses...",
+						"search": "Cari:",
+						"lengthMenu": "Tampilkan _MENU_ data per halaman",
+						"zeroRecords": "Tidak ada data anak",
+						"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+						"infoEmpty": "Tidak ada data yang tersedia",
+						"infoFiltered": "(difilter dari _MAX_ total data)",
+						"paginate": {
+							"first": "Pertama",
+							"last": "Terakhir",
+							"next": "Selanjutnya",
+							"previous": "Sebelumnya"
+						}
+					}
+				});
+			});
+		});
+	});
+
+	var tableAnak;
+
 	function filterData() {
-		// Implement filter logic here
-		alert('Filter functionality will be implemented');
+		if (tableAnak) {
+			tableAnak.ajax.reload();
+		}
 	}
 
 	function resetFilter() {
 		document.getElementById('filterStatus').value = '';
 		document.getElementById('filterJenisKelamin').value = '';
 		document.getElementById('filterPendidikan').value = '';
+		filterData();
 	}
 
 	// Custom file input label update

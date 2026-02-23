@@ -187,4 +187,20 @@ class Landing extends CI_Controller
 
 		$this->load->view('landingpage/home', $data);
 	}
+
+	public function license()
+	{
+		// Get settings
+		$data['settings'] = $this->config->item('settings');
+
+		$this->load->view('landingpage/license', $data);
+	}
+
+	public function donasi()
+	{
+		// Get settings
+		$data['settings'] = $this->config->item('settings');
+
+		$this->load->view('landingpage/donasi', $data);
+	}
 }

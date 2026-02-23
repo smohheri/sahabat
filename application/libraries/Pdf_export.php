@@ -15,12 +15,12 @@ class Pdf_export
 		$this->mpdf = new Mpdf([
 			'mode' => 'utf-8',
 			'format' => 'A4',
-			'orientation' => 'P',
-			'margin_left' => 15,
-			'margin_right' => 15,
-			'margin_top' => 15,
-			'margin_bottom' => 20,
-			'margin_footer' => 10
+			'orientation' => 'L',
+			'margin_left' => 10,
+			'margin_right' => 10,
+			'margin_top' => 10,
+			'margin_bottom' => 15,
+			'margin_footer' => 5
 		]);
 	}
 
@@ -115,20 +115,27 @@ class Pdf_export
 		$html = '
         <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN DATA ANAK ASUH</h3>
         <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
-        
-        <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+
+        <table border="1" cellpadding="3" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 9px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 15%;">NIK</th>
-                    <th style="width: 20%;">Nama Anak</th>
-                    <th style="width: 10%;">JK</th>
-                    <th style="width: 15%;">Tempat/Tgl Lahir</th>
-                    <th style="width: 8%;">Usia</th>
-                    <th style="width: 12%;">Pendidikan</th>
-                    <th style="width: 10%;">Kategori</th>
-                    <th style="width: 10%;">Status</th>
-                    <th style="width: 15%;">Tgl Masuk</th>
+                    <th style="width: 3%;">No</th>
+                    <th style="width: 8%;">NIK</th>
+                    <th style="width: 12%;">Nama Anak</th>
+                    <th style="width: 5%;">JK</th>
+                    <th style="width: 10%;">Tempat/Tgl Lahir</th>
+                    <th style="width: 4%;">Usia</th>
+                    <th style="width: 6%;">Pendidikan</th>
+                    <th style="width: 6%;">Kategori</th>
+                    <th style="width: 5%;">Status</th>
+                    <th style="width: 7%;">Status Tinggal</th>
+                    <th style="width: 7%;">Tgl Masuk</th>
+                    <th style="width: 6%;">Nama Sekolah</th>
+                    <th style="width: 6%;">Biaya SPP</th>
+                    <th style="width: 4%;">KK</th>
+                    <th style="width: 4%;">Akta</th>
+                    <th style="width: 6%;">Dok Pendukung</th>
+                    <th style="width: 4%;">Foto</th>
                 </tr>
             </thead>
             <tbody>';
@@ -140,23 +147,30 @@ class Pdf_export
                     <td style="text-align: center;">' . $no++ . '</td>
                     <td>' . ($a->nik ?: '-') . '</td>
                     <td>' . $a->nama_anak . '</td>
-                    <td style="text-align: center;">' . ($a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</td>
+                    <td style="text-align: center;">' . ($a->jenis_kelamin == 'L' ? 'L' : 'P') . '</td>
                     <td>' . $a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir) . '</td>
                     <td style="text-align: center;">' . umur($a->tanggal_lahir) . '</td>
                     <td>' . $a->pendidikan . '</td>
                     <td>' . ($a->kategori ?: '-') . '</td>
                     <td style="text-align: center;">' . $a->status_anak . '</td>
+                    <td>' . ($a->status_tinggal ?: '-') . '</td>
                     <td style="text-align: center;">' . tanggal_indo($a->tanggal_masuk) . '</td>
+                    <td>' . ($a->nama_sekolah ?: '-') . '</td>
+                    <td style="text-align: center;">' . ($a->biaya_spp ? 'Rp ' . number_format($a->biaya_spp, 0, ',', '.') : '-') . '</td>
+                    <td style="text-align: center;">' . (!empty($a->file_kk) ? 'Ada' : 'Tidak') . '</td>
+                    <td style="text-align: center;">' . (!empty($a->file_akta) ? 'Ada' : 'Tidak') . '</td>
+                    <td style="text-align: center;">' . (!empty($a->file_pendukung) ? 'Ada' : 'Tidak') . '</td>
+                    <td style="text-align: center;">' . (!empty($a->foto) ? 'Ada' : 'Tidak') . '</td>
                 </tr>';
 		}
 
 		$html .= '
             </tbody>
         </table>
-        
-        <div style="margin-top: 30px; text-align: right;">
+
+        <div style="margin-top: 20px; text-align: right;">
             <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>
-            <p style="margin-top: 60px;"><strong>' . ($data['settings']->nama_kepala ?? 'Kepala LKSA') . '</strong></p>
+            <p style="margin-top: 40px;"><strong>' . ($data['settings']->nama_kepala ?? 'Kepala LKSA') . '</strong></p>
             <p>Kepala ' . ($data['settings']->nama_lksa ?? 'LKSA') . '</p>
         </div>';
 
@@ -168,20 +182,53 @@ class Pdf_export
 		$CI =& get_instance();
 		$CI->load->helper('tanggal');
 
-		$html = '
+		// Create new Mpdf instance with portrait orientation
+		$mpdf = new Mpdf([
+			'mode' => 'utf-8',
+			'format' => 'A4',
+			'orientation' => 'P', // Portrait
+			'margin_left' => 15,
+			'margin_right' => 15,
+			'margin_top' => 15,
+			'margin_bottom' => 15,
+			'margin_footer' => 5
+		]);
+
+		$settings = $CI->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+
+		$kop_html = '';
+		if (!empty($settings->kop_surat)) {
+			$kop_path = FCPATH . 'assets/uploads/kop/' . $settings->kop_surat;
+			if (file_exists($kop_path)) {
+				$kop_data = base64_encode(file_get_contents($kop_path));
+				$kop_ext = pathinfo($kop_path, PATHINFO_EXTENSION);
+				$mime = ($kop_ext == 'png') ? 'image/png' : 'image/jpeg';
+
+				$kop_html = '<div style="text-align: center; margin-bottom: 10px;">
+                    <img src="data:' . $mime . ';base64,' . $kop_data . '" style="max-width: 100%; height: auto;" />
+                </div>';
+			} else {
+				$kop_html = $this->get_text_header($settings, $nama_lksa);
+			}
+		} else {
+			$kop_html = $this->get_text_header($settings, $nama_lksa);
+		}
+
+		$html = $kop_html . '
         <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN DATA PENGURUS</h3>
         <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
-        
+
         <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 11px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th style="width: 5%;">No</th>
+                    <th style="width: 5%; text-align: center;">No</th>
                     <th style="width: 25%;">Nama Pengurus</th>
                     <th style="width: 20%;">Jabatan</th>
                     <th style="width: 15%;">No HP</th>
                     <th style="width: 20%;">Email</th>
-                    <th style="width: 10%;">KTP</th>
-                    <th style="width: 15%;">Tgl Bergabung</th>
+                    <th style="width: 10%; text-align: center;">KTP</th>
+                    <th style="width: 15%; text-align: center;">Tgl Bergabung</th>
                 </tr>
             </thead>
             <tbody>';
@@ -202,9 +249,22 @@ class Pdf_export
 
 		$html .= '
             </tbody>
-        </table>';
+        </table>
 
-		return $html;
+        <div style="margin-top: 30px; text-align: right;">
+            <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>
+            <p style="margin-top: 50px;"><strong>' . ($data['settings']->nama_kepala ?? 'Kepala LKSA') . '</strong></p>
+            <p>Kepala ' . ($data['settings']->nama_lksa ?? 'LKSA') . '</p>
+        </div>';
+
+		$mpdf->SetHTMLFooter('
+        <div style="text-align: center; font-size: 9px;">
+            Halaman {PAGENO} dari {nbpg} | Dicetak pada ' . tanggal_indo(date('Y-m-d H:i:s')) . '
+        </div>');
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output('laporan_pengurus_' . date('Ymd') . '.pdf', 'D');
+		exit;
 	}
 
 	public function generate_laporan_dokumen($data)
@@ -212,20 +272,53 @@ class Pdf_export
 		$CI =& get_instance();
 		$CI->load->helper('tanggal');
 
-		$html = '
+		// Create new Mpdf instance with portrait orientation
+		$mpdf = new Mpdf([
+			'mode' => 'utf-8',
+			'format' => 'A4',
+			'orientation' => 'P', // Portrait
+			'margin_left' => 15,
+			'margin_right' => 15,
+			'margin_top' => 15,
+			'margin_bottom' => 15,
+			'margin_footer' => 5
+		]);
+
+		$settings = $CI->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+
+		$kop_html = '';
+		if (!empty($settings->kop_surat)) {
+			$kop_path = FCPATH . 'assets/uploads/kop/' . $settings->kop_surat;
+			if (file_exists($kop_path)) {
+				$kop_data = base64_encode(file_get_contents($kop_path));
+				$kop_ext = pathinfo($kop_path, PATHINFO_EXTENSION);
+				$mime = ($kop_ext == 'png') ? 'image/png' : 'image/jpeg';
+
+				$kop_html = '<div style="text-align: center; margin-bottom: 10px;">
+                    <img src="data:' . $mime . ';base64,' . $kop_data . '" style="max-width: 100%; height: auto;" />
+                </div>';
+			} else {
+				$kop_html = $this->get_text_header($settings, $nama_lksa);
+			}
+		} else {
+			$kop_html = $this->get_text_header($settings, $nama_lksa);
+		}
+
+		$html = $kop_html . '
         <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN KELENGKAPAN DOKUMEN ANAK</h3>
         <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
-        
+
         <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 11px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th style="width: 5%;">No</th>
+                    <th style="width: 5%; text-align: center;">No</th>
                     <th style="width: 25%;">Nama Anak</th>
                     <th style="width: 20%;">NIK</th>
-                    <th style="width: 15%;">KK</th>
-                    <th style="width: 15%;">Akta</th>
-                    <th style="width: 15%;">Pendukung</th>
-                    <th style="width: 15%;">Status</th>
+                    <th style="width: 15%; text-align: center;">KK</th>
+                    <th style="width: 15%; text-align: center;">Akta</th>
+                    <th style="width: 15%; text-align: center;">Pendukung</th>
+                    <th style="width: 15%; text-align: center;">Status</th>
                 </tr>
             </thead>
             <tbody>';
@@ -247,9 +340,22 @@ class Pdf_export
 
 		$html .= '
             </tbody>
-        </table>';
+        </table>
 
-		return $html;
+        <div style="margin-top: 30px; text-align: right;">
+            <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>
+            <p style="margin-top: 50px;"><strong>' . ($data['settings']->nama_kepala ?? 'Kepala LKSA') . '</strong></p>
+            <p>Kepala ' . ($data['settings']->nama_lksa ?? 'LKSA') . '</p>
+        </div>';
+
+		$mpdf->SetHTMLFooter('
+        <div style="text-align: center; font-size: 9px;">
+            Halaman {PAGENO} dari {nbpg} | Dicetak pada ' . tanggal_indo(date('Y-m-d H:i:s')) . '
+        </div>');
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output('laporan_dokumen_' . date('Ymd') . '.pdf', 'D');
+		exit;
 	}
 
 	public function generate_laporan_statistik($data)
@@ -565,5 +671,114 @@ class Pdf_export
         </div>';
 
 		return $html;
+	}
+
+	public function generate_laporan_eksternal($data)
+	{
+		$CI =& get_instance();
+		$CI->load->helper('tanggal');
+
+		// Sort by category order: Yatim, Piatu, Yatim Piatu, Dhuafa, Fakir dan Miskin, Ibnu Sabil, Laqith
+		$category_order = [
+			'Yatim' => 1,
+			'Piatu' => 2,
+			'Yatim Piatu' => 3,
+			'Dhuafa' => 4,
+			'Fakir dan Miskin' => 5,
+			'Ibnu Sabil' => 6,
+			'Laqith' => 7
+		];
+
+		usort($data['anak'], function ($a, $b) use ($category_order) {
+			$a_order = $category_order[$a->kategori] ?? 99;
+			$b_order = $category_order[$b->kategori] ?? 99;
+			return $a_order <=> $b_order;
+		});
+
+		// Create new Mpdf instance with portrait orientation
+		$mpdf = new Mpdf([
+			'mode' => 'utf-8',
+			'format' => 'A4',
+			'orientation' => 'P', // Portrait
+			'margin_left' => 15,
+			'margin_right' => 15,
+			'margin_top' => 15,
+			'margin_bottom' => 15,
+			'margin_footer' => 5
+		]);
+
+		$settings = $CI->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+
+		$kop_html = '';
+		if (!empty($settings->kop_surat)) {
+			$kop_path = FCPATH . 'assets/uploads/kop/' . $settings->kop_surat;
+			if (file_exists($kop_path)) {
+				$kop_data = base64_encode(file_get_contents($kop_path));
+				$kop_ext = pathinfo($kop_path, PATHINFO_EXTENSION);
+				$mime = ($kop_ext == 'png') ? 'image/png' : 'image/jpeg';
+
+				$kop_html = '<div style="text-align: center; margin-bottom: 10px;">
+                    <img src="data:' . $mime . ';base64,' . $kop_data . '" style="max-width: 100%; height: auto;" />
+                </div>';
+			} else {
+				$kop_html = $this->get_text_header($settings, $nama_lksa);
+			}
+		} else {
+			$kop_html = $this->get_text_header($settings, $nama_lksa);
+		}
+
+		$html = $kop_html . '
+        <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN EKSTERNAL DATA ANAK</h3>
+        <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
+
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px;">
+            <thead style="background-color: #f0f0f0;">
+                <tr>
+                    <th style="width: 4%; text-align: center;">No</th>
+                    <th style="width: 18%;">Nama Anak</th>
+                    <th style="width: 6%; text-align: center;">Usia</th>
+                    <th style="width: 10%; text-align: center;">Jenis Kelamin</th>
+                    <th style="width: 14%;">Pendidikan</th>
+                    <th style="width: 14%;">Nama Sekolah</th>
+                    <th style="width: 14%;">Status Tinggal</th>
+                    <th style="width: 14%;">Kategori</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+		$no = 1;
+		foreach ($data['anak'] as $a) {
+			$html .= '
+                <tr>
+                    <td style="text-align: center;">' . $no++ . '</td>
+                    <td>' . $a->nama_anak . '</td>
+                    <td style="text-align: center;">' . umur($a->tanggal_lahir) . '</td>
+                    <td style="text-align: center;">' . ($a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</td>
+                    <td>' . $a->pendidikan . '</td>
+                    <td>' . ($a->nama_sekolah ?: '-') . '</td>
+                    <td>' . ($a->status_tinggal ?: '-') . '</td>
+                    <td>' . ($a->kategori ?: '-') . '</td>
+                </tr>';
+		}
+
+		$html .= '
+            </tbody>
+        </table>
+
+        <div style="margin-top: 30px; text-align: right;">
+            <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>
+            <p style="margin-top: 50px;"><strong>' . ($data['settings']->nama_kepala ?? 'Kepala LKSA') . '</strong></p>
+            <p>Kepala ' . ($data['settings']->nama_lksa ?? 'LKSA') . '</p>
+        </div>';
+
+		$mpdf->SetHTMLFooter('
+        <div style="text-align: center; font-size: 9px;">
+            Halaman {PAGENO} dari {nbpg} | Dicetak pada ' . tanggal_indo(date('Y-m-d H:i:s')) . '
+        </div>');
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output('laporan_eksternal_' . date('Ymd') . '.pdf', 'D');
+		exit;
 	}
 }

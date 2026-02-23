@@ -521,9 +521,9 @@
 			background: var(--white);
 			color: var(--primary-color);
 			border: none;
-			padding: 15px 40px;
+			padding: 20px 50px;
 			border-radius: 50px;
-			font-size: 18px;
+			font-size: 20px;
 			font-weight: 600;
 			transition: all 0.3s ease;
 		}
@@ -1294,9 +1294,21 @@
 						<h2>Bergabung Bersama Kami</h2>
 						<p>Mari bersama-sama berkontribusi untuk kesejahteraan anak Indonesia. Hubungi kami untuk
 							informasi lebih lanjut tentang program kesejahteraan anak.</p>
-						<a href="#kontak" class="btn btn-white">
-							<i class="fas fa-envelope me-2"></i> Hubungi Kami
-						</a>
+						<?php if (!empty($settings->whatsapp)): ?>
+							<?php
+							$wa_number = $settings->whatsapp;
+							// Jika sudah ada URL, gunakan langsung; jika hanya nomor, gunakan wa.me
+							$wa_link = (strpos($wa_number, 'http') === 0) ? $wa_number : 'https://wa.me/' . $wa_number;
+							?>
+							<a href="<?php echo $wa_link; ?>" target="_blank" rel="noopener noreferrer"
+								class="btn btn-white">
+								<i class="fab fa-whatsapp me-2"></i> Hubungi via WhatsApp
+							</a>
+						<?php else: ?>
+							<a href="#kontak" class="btn btn-white">
+								<i class="fas fa-envelope me-2"></i> Hubungi Kami
+							</a>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>
@@ -1366,9 +1378,9 @@
 				<div class="col-lg-2 col-md-4">
 					<h4 class="footer-title">Dukungan</h4>
 					<ul class="footer-links">
-						<li><a href="#kontak">Kontak Developer</a></li>
-						<li><a href="#">Changelog</a></li>
-						<li><a href="#">Lisensi</a></li>
+						<li><a href="https://chat.whatsapp.com/LNBtMziI9FYKmMM6Mh9H8V?mode=gi_t" target="_blank"
+								rel="noopener noreferrer">Kontak Developer</a></li>
+						<li><a href="<?php echo base_url('lisensi'); ?>">Lisensi</a></li>
 					</ul>
 				</div>
 				<div class="col-lg-2 col-md-4">

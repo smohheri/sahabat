@@ -67,44 +67,50 @@
 
 		<div class="substat-item">
 			<div class="substat-icon bg-blue-light">
-				<i class="fas fa-child text-blue"></i>
+				<i class="fas fa-home text-blue"></i>
 			</div>
 			<div class="substat-info">
-				<span class="substat-value"><?php echo $pendidikan_sd; ?></span>
-				<span class="substat-label">Pendidikan SD/MI</span>
+				<span class="substat-value">
+					<?php echo $anak_asrama; ?>
+				</span>
+				<span class="substat-label">Anak Asrama</span>
 			</div>
 		</div>
 	</div>
 
-	<!-- Secondary Stats - Baris 2: Pendidikan -->
+	<!-- Secondary Stats - Baris 2: Gender dan Anak Baru -->
 	<div class="substats-row">
 		<div class="substat-item">
-			<div class="substat-icon bg-purple-light">
-				<i class="fas fa-book text-purple"></i>
+			<div class="substat-icon bg-blue-light">
+				<i class="fas fa-mars text-blue"></i>
 			</div>
 			<div class="substat-info">
-				<span class="substat-value"><?php echo $pendidikan_smp; ?></span>
-				<span class="substat-label">Pendidikan SMP/MTS</span>
-			</div>
-		</div>
-
-		<div class="substat-item">
-			<div class="substat-icon bg-orange-light">
-				<i class="fas fa-graduation-cap text-orange"></i>
-			</div>
-			<div class="substat-info">
-				<span class="substat-value"><?php echo $pendidikan_sma; ?></span>
-				<span class="substat-label">Pendidikan SMA/SMK</span>
+				<span class="substat-value"><?php echo $anak_laki; ?></span>
+				<span class="substat-label">Laki-laki</span>
 			</div>
 		</div>
 
 		<div class="substat-item">
 			<div class="substat-icon bg-pink-light">
-				<i class="fas fa-university text-pink"></i>
+				<i class="fas fa-venus text-pink"></i>
 			</div>
 			<div class="substat-info">
-				<span class="substat-value"><?php echo $pendidikan_pt; ?></span>
-				<span class="substat-label">Perguruan Tinggi</span>
+				<span class="substat-value">
+					<?php echo $anak_perempuan; ?>
+				</span>
+				<span class="substat-label">Perempuan</span>
+			</div>
+		</div>
+
+		<div class="substat-item">
+			<div class="substat-icon bg-green-light">
+				<i class="fas fa-baby text-green"></i>
+			</div>
+			<div class="substat-info">
+				<span class="substat-value">
+					<?php echo $anak_baru; ?>
+				</span>
+				<span class="substat-label">Anak Baru</span>
 			</div>
 		</div>
 	</div>

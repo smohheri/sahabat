@@ -5,7 +5,8 @@
 		<?php $settings = get_instance()->config->item('settings'); ?>
 		<img src="<?php echo base_url('assets/uploads/logos/' . ($settings->logo ?? 'AdminLTELogo.png')); ?>"
 			alt="Logo LKSA" class="brand-image img-circle elevation-3" style="opacity: .8">
-		<span class="brand-text font-weight-light">SAHABAT</span>
+		<span class="brand-text font-weight-light"
+			style="text-shadow: 1px 1px 0px #666, 2px 2px 0px #555, 3px 3px 0px #444, 4px 4px 0px #333, 5px 5px 5px rgba(0,0,0,0.5);">SAHABAT</span>
 	</a>
 
 	<!-- Sidebar -->
@@ -103,6 +104,13 @@
 								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'statistik' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Statistik</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/laporan/ekspor_eksternal'); ?>"
+								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'ekspor_eksternal' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Ekspor Eksternal</p>
 							</a>
 						</li>
 					</ul>

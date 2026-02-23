@@ -5,6 +5,80 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-02-24
+
+### Added
+- ✨ **Halaman Laporan Ekspor Eksternal**
+  - Laporan data anak untuk keperluan eksternal panti
+  - Filter berdasarkan status, jenis kelamin, kategori
+  - Export PDF dan Excel dengan informasi dasar anak
+  - File: `application/views/admin/laporan/ekspor_eksternal.php`
+
+- 🌐 **Halaman Donasi Landing Page**
+  - Halaman donasi dengan informasi rekening Bank BSI dan BRI
+  - Fitur copy to clipboard untuk nomor rekening
+  - QRIS payment dengan kode QR
+  - File: `application/views/landingpage/donasi.php`
+
+- 📄 **Halaman Lisensi Landing Page**
+  - Informasi lisensi gratis aplikasi SAHABAT
+  - Kebijakan penggunaan dan persyaratan
+  - Link ke halaman donasi dan GitHub repository
+  - File: `application/views/landingpage/license.php`
+
+- 📊 **DataTables Server-Side Pagination untuk Data Anak**
+  - Implementasi pagination server-side untuk performa yang lebih baik
+  - Filter fungsional untuk Status Anak, Jenis Kelamin, Pendidikan
+  - AJAX endpoint: `admin/anak_ajax`
+  - Styling konsisten dengan halaman logs
+
+- 🔤 **Sorting Data Anak berdasarkan Nama Ascending**
+  - Data anak diurutkan berdasarkan nama secara ascending secara default
+  - Konfigurasi sorting di database level dan DataTable
+  - Kolom Nama Anak dapat di-order
+
+### Changed
+- 🔄 **Dashboard Substats Update**
+  - Mengganti baris kedua substats dengan Laki-laki, Perempuan, Anak Baru
+  - Mengganti Pendidikan TK dengan Anak Asrama di baris pertama
+  - Update logika penghitungan berdasarkan status_tinggal (sekolah/asrama/perawatan)
+
+- 🎨 **Efek 3D pada Sidebar Brand**
+  - Menambahkan text-shadow untuk efek 3D pada teks "SAHABAT"
+  - Update `application/views/templates/sidebar_lksa.php`
+
+- 🔄 **Mapping Aktivitas Log**
+  - Menambahkan mapping untuk aktivitas export PDF/Excel pengurus, dokumen, eksternal, statistik
+  - Mapping untuk operasi CRUD fasilitas (add, update, delete)
+  - Update `application/helpers/logging_helper.php`
+
+### Technical
+- 🔧 **File Database Baru**
+  - `database/alter_table_add_nama_sekolah_biaya_spp.sql` - Kolom nama_sekolah dan biaya_spp pada tabel anak
+  - `database/dump_anak_50_records.sql` - Data dump untuk testing dengan 50 records anak
+
+- 🔧 **Update Controller dan Model**
+  - `application/controllers/Admin.php` - Method anak_ajax, update dashboard stats
+  - `application/models/Anak_model.php` - Sorting nama_anak ASC, method datatable dengan filter
+
+- 🔧 **Update Libraries**
+  - `application/libraries/Excel_export.php` - Perbaikan export data anak
+  - `application/libraries/Pdf_export.php` - Perbaikan generate laporan
+
+- 🔧 **Update Views**
+  - `application/views/admin/dashboard.php` - Substats baru
+  - `application/views/admin/anak.php` - DataTables pagination dan sorting
+  - `application/views/admin/carousel.php` - Perbaikan modal
+  - `application/views/admin/facilities.php` - Perbaikan modal
+  - `application/views/admin/logs.php` - Perbaikan display
+  - `application/views/landingpage/home.php` - Update konten
+  - `application/views/templates/sidebar_lksa.php` - Efek 3D brand
+
+- 🔧 **Update Routes**
+  - `application/config/routes.php` - Route anak_ajax
+
+---
+
 ## [1.7.0] - 2025-02-23
 
 ### Removed

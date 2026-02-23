@@ -5,6 +5,10 @@ $route['default_controller'] = 'landing';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+// Landing
+$route['lisensi'] = 'landing/license';
+$route['donasi'] = 'landing/donasi';
+
 // Auth
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
@@ -43,6 +47,8 @@ $route['admin/export_pdf_dokumen'] = 'admin/export_pdf_dokumen';
 $route['admin/export_excel_dokumen'] = 'admin/export_excel_dokumen';
 $route['admin/export_pdf_statistik'] = 'admin/export_pdf_statistik';
 $route['admin/generate_pdf_statistik'] = 'admin/generate_pdf_statistik';
+$route['admin/export_pdf_eksternal'] = 'admin/export_pdf_eksternal';
+$route['admin/export_excel_eksternal'] = 'admin/export_excel_eksternal';
 $route['admin/delete_temp_file'] = 'admin/delete_temp_file';
 
 $route['admin/pengaturan'] = 'admin/pengaturan';
@@ -55,6 +61,7 @@ $route['admin/kontak'] = 'admin/kontak';
 $route['admin/changelog'] = 'admin/changelog';
 $route['admin/logs'] = 'admin/logs';
 $route['admin/logs_ajax'] = 'admin/logs_ajax';
+$route['admin/anak_ajax'] = 'admin/anak_ajax';
 $route['admin/backup'] = 'admin/backup';
 $route['admin/download_backup/(:any)/(:any)'] = 'admin/download_backup/$1/$2';
 $route['admin/restore_database'] = 'admin/restore_database';

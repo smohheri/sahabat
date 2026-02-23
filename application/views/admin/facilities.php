@@ -55,7 +55,7 @@
 					<?php if (!empty($facilities)): ?>
 						<div class="row">
 							<?php foreach ($facilities as $facility): ?>
-								<div class="col-md-6 mb-4">
+								<div class="col-md-4 mb-4">
 									<div class="card">
 										<div class="card-body p-0 position-relative">
 											<?php
@@ -63,7 +63,7 @@
 											?>
 											<a href="<?php echo base_url($image_path); ?>" data-toggle="lightbox"
 												data-title="<?php echo $facility->nama_fasilitas; ?>">
-												<img src="<?php echo base_url($image_path); ?>" class="img-fluid"
+												<img src="<?php echo base_url($image_path); ?>" class="uniform-preview-img"
 													alt="<?php echo $facility->nama_fasilitas; ?>">
 											</a>
 											<div class="position-absolute" style="top: 10px; right: 10px; z-index: 10;">
@@ -1219,6 +1219,15 @@
 		/* Modal Backdrop Fix */
 		.modal-backdrop {
 			background-color: rgba(0, 0, 0, 0.5) !important;
+		}
+
+		/* Uniform Preview Image Sizing */
+		.uniform-preview-img {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			border-radius: 12px 12px 0 0;
+			display: block;
 		}
 
 		/* Responsive */

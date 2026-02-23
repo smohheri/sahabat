@@ -50,11 +50,21 @@ if (!function_exists('get_activity_color')) {
 			'upload_pendukung' => 'primary',
 			'export_pdf' => 'success',
 			'export_excel' => 'success',
+			'export_pdf_pengurus' => 'success',
+			'export_excel_pengurus' => 'success',
+			'export_pdf_dokumen' => 'success',
+			'export_pdf_statistik' => 'success',
+			'export_excel_dokumen' => 'success',
+			'export_pdf_eksternal' => 'success',
+			'export_excel_eksternal' => 'success',
 			'backup_database' => 'warning',
 			'backup_files' => 'warning',
 			'restore_database' => 'danger',
 			'restore_files' => 'danger',
-			'download_backup' => 'info'
+			'download_backup' => 'info',
+			'add_facility' => 'primary',
+			'update_facility' => 'info',
+			'delete_facility' => 'danger'
 		];
 		return $colors[$activity] ?? 'secondary';
 	}
@@ -91,11 +101,21 @@ if (!function_exists('get_activity_icon')) {
 			'upload_pendukung' => 'folder-open',
 			'export_pdf' => 'file-pdf',
 			'export_excel' => 'file-excel',
+			'export_pdf_pengurus' => 'file-pdf',
+			'export_excel_pengurus' => 'file-excel',
+			'export_pdf_dokumen' => 'file-pdf',
+			'export_pdf_statistik' => 'file-pdf',
+			'export_excel_dokumen' => 'file-excel',
+			'export_pdf_eksternal' => 'file-pdf',
+			'export_excel_eksternal' => 'file-excel',
 			'backup_database' => 'database',
 			'backup_files' => 'folder',
 			'restore_database' => 'undo',
 			'restore_files' => 'undo',
-			'download_backup' => 'download'
+			'download_backup' => 'download',
+			'add_facility' => 'plus',
+			'update_facility' => 'edit',
+			'delete_facility' => 'trash'
 		];
 		return $icons[$activity] ?? 'circle';
 	}

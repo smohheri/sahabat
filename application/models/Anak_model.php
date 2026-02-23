@@ -12,7 +12,7 @@ class Anak_model extends CI_Model
 	{
 		$this->db->select('anak.*');
 		$this->db->from('anak');
-		$this->db->order_by('anak.created_at', 'DESC');
+		$this->db->order_by('anak.nama_anak', 'ASC');
 		return $this->db->get()->result();
 	}
 
@@ -63,6 +63,91 @@ class Anak_model extends CI_Model
 	{
 		$this->db->where('id_anak', $id);
 		return $this->db->update('anak', ['foto' => $filename]);
+	}
+
+	public function get_anak_datatable($start, $length, $search = '', $order_column = 'created_at', $order_dir = 'desc', $filters = array())
+	{
+		$this->db->select('anak.*');
+		$this->db->from('anak');
+
+		// Filters
+		if (!empty($filters)) {
+			if (isset($filters['status_anak']) && !empty($filters['status_anak'])) {
+				$this->db->where('anak.status_anak', $filters['status_anak']);
+			}
+			if (isset($filters['jenis_kelamin']) && !empty($filters['jenis_kelamin'])) {
+				$this->db->where('anak.jenis_kelamin', $filters['jenis_kelamin']);
+			}
+			if (isset($filters['pendidikan']) && !empty($filters['pendidikan'])) {
+				$this->db->where('anak.pendidikan', $filters['pendidikan']);
+			}
+		}
+
+		// Search functionality
+		if (!empty($search)) {
+			$this->db->group_start();
+			$this->db->like('anak.nama_anak', $search);
+			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.tempat_lahir', $search);
+			$this->db->or_like('anak.kategori', $search);
+			$this->db->or_like('anak.nama_sekolah', $search);
+			$this->db->or_like('anak.status_anak', $search);
+			$this->db->or_like('anak.pendidikan', $search);
+			$this->db->group_end();
+		}
+
+		// Ordering
+		$valid_columns = ['nama_anak', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
+		if (in_array($order_column, $valid_columns)) {
+			$this->db->order_by('anak.' . $order_column, $order_dir);
+		} else {
+			$this->db->order_by('anak.nama_anak', 'ASC');
+		}
+
+		// Pagination
+		if ($length != -1) {
+			$this->db->limit($length, $start);
+		}
+
+		return $this->db->get()->result();
+	}
+
+	public function count_all_anak()
+	{
+		return $this->db->count_all('anak');
+	}
+
+	public function count_filtered_anak($search = '', $filters = array())
+	{
+		$this->db->select('anak.id_anak');
+		$this->db->from('anak');
+
+		// Filters
+		if (!empty($filters)) {
+			if (isset($filters['status_anak']) && !empty($filters['status_anak'])) {
+				$this->db->where('anak.status_anak', $filters['status_anak']);
+			}
+			if (isset($filters['jenis_kelamin']) && !empty($filters['jenis_kelamin'])) {
+				$this->db->where('anak.jenis_kelamin', $filters['jenis_kelamin']);
+			}
+			if (isset($filters['pendidikan']) && !empty($filters['pendidikan'])) {
+				$this->db->where('anak.pendidikan', $filters['pendidikan']);
+			}
+		}
+
+		if (!empty($search)) {
+			$this->db->group_start();
+			$this->db->like('anak.nama_anak', $search);
+			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.tempat_lahir', $search);
+			$this->db->or_like('anak.kategori', $search);
+			$this->db->or_like('anak.nama_sekolah', $search);
+			$this->db->or_like('anak.status_anak', $search);
+			$this->db->or_like('anak.pendidikan', $search);
+			$this->db->group_end();
+		}
+
+		return $this->db->count_all_results();
 	}
 
 }

@@ -47,7 +47,7 @@
 					<?php if (!empty($carousel_images)): ?>
 						<div class="row">
 							<?php foreach ($carousel_images as $image): ?>
-								<div class="col-md-6 mb-4">
+								<div class="col-md-4 mb-4">
 									<div class="card">
 										<div class="card-body p-0 position-relative">
 											<?php
@@ -55,7 +55,7 @@
 											?>
 											<a href="<?php echo base_url($image_path); ?>" data-toggle="lightbox"
 												data-title="<?php echo $image->title; ?>">
-												<img src="<?php echo base_url($image_path); ?>" class="img-fluid"
+												<img src="<?php echo base_url($image_path); ?>" class="carousel-preview-img"
 													alt="<?php echo $image->title; ?>">
 											</a>
 											<div class="position-absolute" style="top: 10px; right: 10px; z-index: 10;">
@@ -930,6 +930,15 @@
 	.text-muted {
 		color: #a0aec0 !important;
 		font-weight: 500;
+	}
+
+	/* Carousel Preview Image Uniform Sizing */
+	.carousel-preview-img {
+		width: 100%;
+		height: 200px;
+		object-fit: cover;
+		border-radius: 12px 12px 0 0;
+		display: block;
 	}
 
 	/* Responsive */
