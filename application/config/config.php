@@ -273,7 +273,7 @@ $config['csrf_token_name'] = env('csrf_token_name', 'csrf_token');
 $config['csrf_cookie_name'] = env('csrf_cookie_name', 'csrf_cookie');
 $config['csrf_expire'] = env('csrf_expire', 7200);
 $config['csrf_regenerate'] = env('csrf_regenerate', TRUE);
-$config['csrf_exclude_uris'] = array('admin/logs_ajax', 'admin/anak_ajax');
+$config['csrf_exclude_uris'] = array('admin/logs_ajax', 'admin/anak_ajax', 'admin/delete_backup');
 
 /*
 |--------------------------------------------------------------------------

@@ -44,6 +44,8 @@
 		$db_count = 0;
 		$file_count = 0;
 		$total_size = 0;
+		$db_size = 0;
+		$file_size = 0;
 
 		foreach ($backup_dirs as $type => $dir) {
 			if (is_dir($dir)) {
@@ -54,13 +56,20 @@
 					$file_count = count($files);
 				}
 				foreach ($files as $file) {
-					$total_size += filesize($dir . $file);
+					$file_size_bytes = filesize($dir . $file);
+					$total_size += $file_size_bytes;
+					if ($type == 'database') {
+						$db_size += $file_size_bytes;
+					} else {
+						$file_size += $file_size_bytes;
+					}
 				}
 			}
 		}
 
 		$total_backups = $db_count + $file_count;
-		$size_formatted = $total_size >= 1048576 ? number_format($total_size / 1048576, 1) . ' MB' : number_format($total_size / 1024, 1) . ' KB';
+		$db_size_formatted = $db_size >= 1048576 ? number_format($db_size / 1048576, 1) . ' MB' : number_format($db_size / 1024, 1) . ' KB';
+		$file_size_formatted = $file_size >= 1048576 ? number_format($file_size / 1048576, 1) . ' MB' : number_format($file_size / 1024, 1) . ' KB';
 		?>
 		<div class="stat-card stat-blue">
 			<div class="stat-icon">
@@ -84,21 +93,21 @@
 
 		<div class="stat-card stat-orange">
 			<div class="stat-icon">
-				<i class="fas fa-weight"></i>
+				<i class="fas fa-database"></i>
 			</div>
 			<div class="stat-info">
-				<span class="stat-number"><?php echo $size_formatted; ?></span>
-				<span class="stat-label">Total Ukuran</span>
+				<span class="stat-number"><?php echo $db_size_formatted; ?></span>
+				<span class="stat-label">Ukuran Database</span>
 			</div>
 		</div>
 
 		<div class="stat-card stat-purple">
 			<div class="stat-icon">
-				<i class="fas fa-shield-alt"></i>
+				<i class="fas fa-file-archive"></i>
 			</div>
 			<div class="stat-info">
-				<span class="stat-number"><?php echo $total_backups; ?></span>
-				<span class="stat-label">Total Backup</span>
+				<span class="stat-number"><?php echo $file_size_formatted; ?></span>
+				<span class="stat-label">Ukuran File</span>
 			</div>
 		</div>
 	</div>
@@ -117,14 +126,16 @@
 			</div>
 			<div class="action-buttons">
 				<?php echo form_open('admin/backup', ['class' => 'd-inline']); ?>
-				<button type="submit" name="backup_database" class="btn btn-primary btn-action" id="backup-db-btn">
+				<input type="hidden" name="backup_database" value="1">
+				<button type="submit" class="btn btn-primary btn-action" id="backup-db-btn">
 					<i class="fas fa-database mr-2"></i>Backup Database
 					<span class="spinner-border spinner-border-sm d-none" role="status"></span>
 				</button>
 				<?php echo form_close(); ?>
 
 				<?php echo form_open('admin/backup', ['class' => 'd-inline ml-2']); ?>
-				<button type="submit" name="backup_files" class="btn btn-success btn-action" id="backup-files-btn">
+				<input type="hidden" name="backup_files" value="1">
+				<button type="submit" class="btn btn-success btn-action" id="backup-files-btn">
 					<i class="fas fa-file-archive mr-2"></i>Backup Files
 					<span class="spinner-border spinner-border-sm d-none" role="status"></span>
 				</button>
@@ -248,6 +259,12 @@
 		</div>
 	</div>
 </div>
+
+<!-- Hidden form for delete backup -->
+<?php echo form_open('admin/delete_backup', ['id' => 'deleteBackupForm', 'method' => 'post']); ?>
+<input type="hidden" name="type" id="deleteType">
+<input type="hidden" name="filename" id="deleteFilename">
+</form>
 
 <!-- Modal Restore Database -->
 <div class="modal fade" id="modalRestoreDB" tabindex="-1">
@@ -799,13 +816,19 @@
 
 		// Backup button loading state
 		$('#backup-db-btn').on('click', function () {
-			$(this).prop('disabled', true);
-			$(this).find('.spinner-border').removeClass('d-none');
+			var btn = $(this);
+			setTimeout(function () {
+				btn.prop('disabled', true);
+				btn.find('.spinner-border').removeClass('d-none');
+			}, 100);
 		});
 
 		$('#backup-files-btn').on('click', function () {
-			$(this).prop('disabled', true);
-			$(this).find('.spinner-border').removeClass('d-none');
+			var btn = $(this);
+			setTimeout(function () {
+				btn.prop('disabled', true);
+				btn.find('.spinner-border').removeClass('d-none');
+			}, 100);
 		});
 
 		// Restore confirmation
@@ -830,9 +853,9 @@
 
 	function deleteBackup(type, filename) {
 		if (confirm('Apakah Anda yakin ingin menghapus file backup ini?')) {
-			// Implement delete functionality if needed
-			// For now, just show alert
-			alert('Fitur hapus backup belum diimplementasikan. Hapus manual dari folder assets/backups/' + type + '/');
+			$('#deleteType').val(type);
+			$('#deleteFilename').val(filename);
+			$('#deleteBackupForm').submit();
 		}
 	}
 </script>

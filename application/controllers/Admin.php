@@ -517,6 +517,7 @@ class Admin extends CI_Controller
 			$this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'required');
 			$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
 			$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'required');
+			$this->form_validation->set_rules('agama', 'Agama', 'required');
 			$this->form_validation->set_rules('pendidikan', 'Pendidikan', 'required');
 			$this->form_validation->set_rules('status_anak', 'Status Anak', 'required');
 			$this->form_validation->set_rules('kategori', 'Kategori', 'required');
@@ -530,15 +531,35 @@ class Admin extends CI_Controller
 				$data = array(
 					'nama_anak' => $this->input->post('nama_anak'),
 					'nik' => $this->input->post('nik'),
+					'no_registrasi' => $this->input->post('no_registrasi'),
 					'jenis_kelamin' => $this->input->post('jenis_kelamin'),
 					'tempat_lahir' => $this->input->post('tempat_lahir'),
 					'tanggal_lahir' => $this->input->post('tanggal_lahir'),
+					'agama' => $this->input->post('agama'),
+					'kewarganegaraan' => $this->input->post('kewarganegaraan'),
+					'anak_ke' => $this->input->post('anak_ke'),
+					'jumlah_saudara_kandung' => $this->input->post('jumlah_saudara_kandung'),
+					'jumlah_saudara_tiri' => $this->input->post('jumlah_saudara_tiri'),
+					'nama_wali' => $this->input->post('nama_wali'),
+					'no_telp_wali' => $this->input->post('no_telp_wali'),
+					'alamat_wali' => $this->input->post('alamat_wali'),
+					'nama_ayah_kandung' => $this->input->post('nama_ayah_kandung'),
+					'nama_ayah_tiri' => $this->input->post('nama_ayah_tiri'),
+					'nama_ibu_kandung' => $this->input->post('nama_ibu_kandung'),
+					'nama_ibu_tiri' => $this->input->post('nama_ibu_tiri'),
+					'pekerjaan_ayah' => $this->input->post('pekerjaan_ayah'),
+					'pekerjaan_ibu' => $this->input->post('pekerjaan_ibu'),
+					'no_telp_orang_tua' => $this->input->post('no_telp_orang_tua'),
+					'alamat_orang_tua' => $this->input->post('alamat_orang_tua'),
 					'pendidikan' => $this->input->post('pendidikan'),
 					'status_anak' => $this->input->post('status_anak'),
 					'kategori' => $this->input->post('kategori'),
 					'status_tinggal' => $this->input->post('status_tinggal'),
 					'tanggal_masuk' => $this->input->post('tanggal_masuk'),
 					'nama_sekolah' => $this->input->post('nama_sekolah'),
+					'kelas' => $this->input->post('kelas'),
+					'alamat_sekolah' => $this->input->post('alamat_sekolah'),
+					'no_telp_sekolah' => $this->input->post('no_telp_sekolah'),
 					'biaya_spp' => $this->input->post('biaya_spp')
 				);
 
@@ -1397,27 +1418,32 @@ class Admin extends CI_Controller
 
 	private function backup_database()
 	{
-		$this->load->dbutil();
 		$this->load->helper('file');
-
-		$backup = $this->dbutil->backup(array(
-			'format' => 'zip',
-			'filename' => 'db_lksa_backup_' . date('Y-m-d_H-i-s') . '.sql'
-		));
 
 		$backup_path = FCPATH . 'assets/backups/database/';
 		if (!is_dir($backup_path)) {
 			mkdir($backup_path, 0755, TRUE);
 		}
 
-		$filename = 'db_lksa_backup_' . date('Y-m-d_H-i-s') . '.zip';
+		$filename = 'db_lksa_backup_' . date('Y-m-d_H-i-s') . '.sql';
 		$filepath = $backup_path . $filename;
 
-		if (write_file($filepath, $backup)) {
+		// Check if shell_exec is enabled
+		$test_output = shell_exec('echo test');
+		if ($test_output === null) {
+			$this->session->set_flashdata('error', 'shell_exec is disabled in PHP configuration');
+			redirect('admin/backup');
+		}
+
+		// Use mysqldump command
+		$command = 'mysqldump -u root db_lksa > "' . $filepath . '" 2>&1';
+		$output = shell_exec($command);
+		if (file_exists($filepath) && filesize($filepath) > 0) {
 			log_activity('backup_database', 'Database backup berhasil: ' . $filename);
 			$this->session->set_flashdata('success', 'Database backup berhasil! File: ' . $filename);
 		} else {
-			$this->session->set_flashdata('error', 'Gagal membuat database backup!');
+			log_activity('backup_database', 'Gagal membuat database backup. Output: ' . $output);
+			$this->session->set_flashdata('error', 'Gagal membuat database backup! Output: ' . $output);
 		}
 
 		redirect('admin/backup');
@@ -1453,18 +1479,22 @@ class Admin extends CI_Controller
 	public function download_backup($type, $filename)
 	{
 		if ($this->session->userdata('role') != 'admin') {
+			log_activity('download_error', 'Access denied for download');
 			show_error('Access denied', 403);
 		}
 
 		$backup_path = FCPATH . 'assets/backups/' . $type . '/' . $filename;
-
 		if (!file_exists($backup_path)) {
+			log_activity('download_error', 'File not found: ' . $backup_path);
 			show_error('File tidak ditemukan', 404);
 		}
 
+		$file_info = pathinfo($backup_path);
+		$file_name = $file_info['basename'];
 		$this->load->helper('download');
 		force_download($backup_path, NULL);
-		log_activity('download_backup', 'Download backup: ' . $type . '/' . $filename);
+		log_activity('download_backup', 'Download completed: ' . $type . '/' . $filename);
+		exit;
 	}
 
 	public function restore_database()
@@ -1570,6 +1600,41 @@ class Admin extends CI_Controller
 
 			redirect('admin/backup');
 		}
+	}
+
+	public function delete_backup()
+	{
+		if ($this->session->userdata('role') != 'admin') {
+			$this->session->set_flashdata('error', 'Akses ditolak!');
+			redirect('admin/backup');
+		}
+
+		$type = $this->input->post('type');
+		$filename = $this->input->post('filename');
+
+		// Validate type
+		if (!in_array($type, ['database', 'files'])) {
+			$this->session->set_flashdata('error', 'Tipe backup tidak valid!');
+			redirect('admin/backup');
+		}
+
+		// Sanitize filename to prevent directory traversal
+		$filename = basename($filename);
+		$file_path = FCPATH . 'assets/backups/' . $type . '/' . $filename;
+
+		if (!file_exists($file_path)) {
+			$this->session->set_flashdata('error', 'File backup tidak ditemukan!');
+			redirect('admin/backup');
+		}
+
+		if (unlink($file_path)) {
+			log_activity('delete_backup', 'Menghapus file backup: ' . $type . '/' . $filename);
+			$this->session->set_flashdata('success', 'File backup berhasil dihapus!');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal menghapus file backup!');
+		}
+
+		redirect('admin/backup');
 	}
 
 	public function carousel()

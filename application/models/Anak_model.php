@@ -88,9 +88,13 @@ class Anak_model extends CI_Model
 			$this->db->group_start();
 			$this->db->like('anak.nama_anak', $search);
 			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.no_registrasi', $search);
 			$this->db->or_like('anak.tempat_lahir', $search);
 			$this->db->or_like('anak.kategori', $search);
 			$this->db->or_like('anak.nama_sekolah', $search);
+			$this->db->or_like('anak.nama_wali', $search);
+			$this->db->or_like('anak.nama_ayah_kandung', $search);
+			$this->db->or_like('anak.nama_ibu_kandung', $search);
 			$this->db->or_like('anak.status_anak', $search);
 			$this->db->or_like('anak.pendidikan', $search);
 			$this->db->group_end();
@@ -139,9 +143,13 @@ class Anak_model extends CI_Model
 			$this->db->group_start();
 			$this->db->like('anak.nama_anak', $search);
 			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.no_registrasi', $search);
 			$this->db->or_like('anak.tempat_lahir', $search);
 			$this->db->or_like('anak.kategori', $search);
 			$this->db->or_like('anak.nama_sekolah', $search);
+			$this->db->or_like('anak.nama_wali', $search);
+			$this->db->or_like('anak.nama_ayah_kandung', $search);
+			$this->db->or_like('anak.nama_ibu_kandung', $search);
 			$this->db->or_like('anak.status_anak', $search);
 			$this->db->or_like('anak.pendidikan', $search);
 			$this->db->group_end();

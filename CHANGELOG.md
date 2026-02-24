@@ -5,6 +5,69 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-02-25
+
+### Added
+- ✨ **Penambahan Field Data Anak Lengkap**
+  - Kolom `no_registrasi` - Nomor registrasi anak
+  - Kolom `agama` - Agama anak
+  - Kolom `kewarganegaraan` - Kewarganegaraan anak (default Indonesia)
+  - Kolom `anak_ke` - Anak keberapa dalam keluarga
+  - Kolom `jumlah_saudara_kandung` - Jumlah saudara kandung
+  - Kolom `jumlah_saudara_tiri` - Jumlah saudara tiri
+  - Kolom `nama_wali` - Nama wali anak
+  - Kolom `no_telp_wali` - Nomor telepon wali
+  - Kolom `alamat_wali` - Alamat wali
+  - Kolom `nama_ayah_kandung` - Nama ayah kandung
+  - Kolom `nama_ayah_tiri` - Nama ayah tiri
+  - Kolom `nama_ibu_kandung` - Nama ibu kandung
+  - Kolom `nama_ibu_tiri` - Nama ibu tiri
+  - Kolom `pekerjaan_ayah` - Pekerjaan ayah
+  - Kolom `pekerjaan_ibu` - Pekerjaan ibu
+  - Kolom `no_telp_orang_tua` - Nomor telepon orang tua
+  - Kolom `alamat_orang_tua` - Alamat orang tua
+  - Kolom `kelas` - Kelas anak di sekolah
+  - Kolom `alamat_sekolah` - Alamat sekolah
+  - Kolom `no_telp_sekolah` - Nomor telepon sekolah
+  - File SQL: `database/alter_table_add_new_anak_fields.sql`
+  - Update form input di `application/views/admin/anak.php`
+  - Update model `application/models/Anak_model.php` untuk handle field baru
+
+### Fixed
+- 🐛 **Perbaikan Fungsi Hapus Backup**
+  - Menambahkan method `delete_backup()` di controller Admin untuk menghapus file backup
+  - Menambahkan route `admin/delete_backup` untuk endpoint penghapusan
+  - Menambahkan `delete_backup` ke daftar exclude CSRF
+  - Menambahkan logging aktivitas untuk penghapusan backup
+  - Update UI tombol hapus di halaman backup dengan AJAX call
+  - File: `application/controllers/Admin.php`, `application/config/routes.php`, `application/config/config.php`, `application/helpers/logging_helper.php`, `application/views/admin/backup.php`
+
+- 🐛 **Perbaikan Tombol Backup Database dan Files**
+  - Memperbaiki fungsi backup database menggunakan mysqldump command
+  - Memperbaiki fungsi backup files menggunakan Zip library
+  - Menambahkan validasi keberhasilan backup dengan pengecekan file output
+  - Menambahkan logging aktivitas untuk backup berhasil/gagal
+  - Update UI dengan indikator loading state pada tombol backup
+  - File: `application/controllers/Admin.php`, `application/views/admin/backup.php`
+
+### Changed
+- 🔄 **Pembersihan Logging Backup**
+  - Menghapus logging debug untuk operasi backup dan download
+  - Menghapus log_activity('backup_debug', ...), log_activity('download_start', ...), log_activity('download_path', ...), log_activity('download_info', ...)
+  - Logging tetap dilakukan untuk event penting seperti backup berhasil/gagal
+
+- 🔄 **Update Mapping Aktivitas Log**
+  - Menambahkan mapping untuk aktivitas `delete_backup` dengan warna danger dan ikon trash
+  - Update `application/helpers/logging_helper.php` dengan mapping lengkap untuk semua aktivitas backup
+
+### Technical
+- 🔧 **Update Controller Admin**
+  - Method `delete_backup()` dengan validasi dan keamanan
+  - Menggunakan POST data untuk menghindari parameter URL
+  - Flash messages untuk feedback user
+
+---
+
 ## [1.8.0] - 2025-02-24
 
 ### Added

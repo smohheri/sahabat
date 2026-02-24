@@ -1,0 +1,22 @@
+-- Add new columns to anak table for comprehensive data collection
+ALTER TABLE `anak`
+ADD COLUMN `no_registrasi` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `id_anak`,
+ADD COLUMN `agama` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `tanggal_lahir`,
+ADD COLUMN `kewarganegaraan` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT 'Indonesia' AFTER `agama`,
+ADD COLUMN `anak_ke` INT DEFAULT NULL AFTER `kewarganegaraan`,
+ADD COLUMN `jumlah_saudara_kandung` INT DEFAULT NULL AFTER `anak_ke`,
+ADD COLUMN `jumlah_saudara_tiri` INT DEFAULT NULL AFTER `jumlah_saudara_kandung`,
+ADD COLUMN `nama_wali` VARCHAR(150) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `jumlah_saudara_tiri`,
+ADD COLUMN `no_telp_wali` VARCHAR(20) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_wali`,
+ADD COLUMN `alamat_wali` TEXT COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `no_telp_wali`,
+ADD COLUMN `nama_ayah_kandung` VARCHAR(150) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `alamat_wali`,
+ADD COLUMN `nama_ayah_tiri` VARCHAR(150) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_ayah_kandung`,
+ADD COLUMN `nama_ibu_kandung` VARCHAR(150) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_ayah_tiri`,
+ADD COLUMN `nama_ibu_tiri` VARCHAR(150) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_ibu_kandung`,
+ADD COLUMN `pekerjaan_ayah` VARCHAR(100) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_ibu_tiri`,
+ADD COLUMN `pekerjaan_ibu` VARCHAR(100) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `pekerjaan_ayah`,
+ADD COLUMN `no_telp_orang_tua` VARCHAR(20) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `pekerjaan_ibu`,
+ADD COLUMN `alamat_orang_tua` TEXT COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `no_telp_orang_tua`,
+ADD COLUMN `kelas` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `nama_sekolah`,
+ADD COLUMN `alamat_sekolah` TEXT COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `kelas`,
+ADD COLUMN `no_telp_sekolah` VARCHAR(20) COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `alamat_sekolah`;

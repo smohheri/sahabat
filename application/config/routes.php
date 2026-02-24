@@ -64,6 +64,7 @@ $route['admin/logs_ajax'] = 'admin/logs_ajax';
 $route['admin/anak_ajax'] = 'admin/anak_ajax';
 $route['admin/backup'] = 'admin/backup';
 $route['admin/download_backup/(:any)/(:any)'] = 'admin/download_backup/$1/$2';
+$route['admin/delete_backup'] = 'admin/delete_backup';
 $route['admin/restore_database'] = 'admin/restore_database';
 $route['admin/restore_files'] = 'admin/restore_files';
 

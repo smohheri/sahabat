@@ -62,6 +62,10 @@ if (!function_exists('get_activity_color')) {
 			'restore_database' => 'danger',
 			'restore_files' => 'danger',
 			'download_backup' => 'info',
+			'delete_backup' => 'danger',
+			'update_hero_image' => 'info',
+			'delete_hero_image' => 'danger',
+			'update_carousel_image' => 'info',
 			'add_facility' => 'primary',
 			'update_facility' => 'info',
 			'delete_facility' => 'danger'
@@ -113,6 +117,10 @@ if (!function_exists('get_activity_icon')) {
 			'restore_database' => 'undo',
 			'restore_files' => 'undo',
 			'download_backup' => 'download',
+			'delete_backup' => 'trash',
+			'update_hero_image' => 'edit',
+			'delete_hero_image' => 'trash',
+			'update_carousel_image' => 'edit',
 			'add_facility' => 'plus',
 			'update_facility' => 'edit',
 			'delete_facility' => 'trash'

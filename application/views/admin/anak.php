@@ -164,139 +164,350 @@
 
 	<!-- Modal Edit -->
 	<div class="modal fade" id="modalEdit<?php echo $a->id_anak; ?>" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
 			<div class="modal-content border-0 shadow">
 				<div class="modal-header bg-warning text-white">
 					<h5 class="modal-title font-weight-bold"><i class="fas fa-edit mr-2"></i>Edit Data Anak</h5>
 					<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
 				</div>
 				<?php echo form_open('admin/anak', 'id="formEditAnak' . $a->id_anak . '"'); ?>
-				<div class="modal-body p-4">
+				<div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
 					<input type="hidden" name="id_anak" value="<?php echo $a->id_anak; ?>">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
-								<input type="text" class="form-control" name="nama_anak"
-									value="<?php echo $a->nama_anak; ?>" required>
+
+					<!-- Informasi Dasar -->
+					<div class="form-section mb-4">
+						<h6 class="section-title text-primary mb-3">
+							<i class="fas fa-user-circle mr-2"></i>Informasi Dasar
+						</h6>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Lengkap Anak</label>
+									<input type="text" class="form-control" name="nama_anak"
+										value="<?php echo $a->nama_anak; ?>" required>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">NIK</label>
+									<input type="text" class="form-control" name="nik" value="<?php echo $a->nik; ?>"
+										placeholder="Nomor Induk Kependudukan">
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">NIK</label>
-								<input type="text" class="form-control" name="nik" value="<?php echo $a->nik; ?>">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">No Registrasi</label>
+									<input type="text" class="form-control" name="no_registrasi"
+										value="<?php echo $a->no_registrasi; ?>" placeholder="Nomor registrasi unik">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
+									<select class="form-control" name="jenis_kelamin" required>
+										<option value="">Pilih Jenis Kelamin</option>
+										<option value="L" <?php echo $a->jenis_kelamin == 'L' ? 'selected' : ''; ?>>Laki-laki
+										</option>
+										<option value="P" <?php echo $a->jenis_kelamin == 'P' ? 'selected' : ''; ?>>Perempuan
+										</option>
+									</select>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
-								<select class="form-control" name="jenis_kelamin" required>
-									<option value="L" <?php echo $a->jenis_kelamin == 'L' ? 'selected' : ''; ?>>Laki-laki
-									</option>
-									<option value="P" <?php echo $a->jenis_kelamin == 'P' ? 'selected' : ''; ?>>Perempuan
-									</option>
-								</select>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
+									<input type="text" class="form-control" name="tempat_lahir"
+										value="<?php echo $a->tempat_lahir; ?>" required placeholder="Kota/Kabupaten">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
+									<input type="date" class="form-control" name="tanggal_lahir"
+										value="<?php echo $a->tanggal_lahir; ?>" required>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Agama</label>
+									<select class="form-control" name="agama" required>
+										<option value="">Pilih Agama</option>
+										<option value="Islam" <?php echo $a->agama == 'Islam' ? 'selected' : ''; ?>>Islam
+										</option>
+										<option value="Kristen Protestan" <?php echo $a->agama == 'Kristen Protestan' ? 'selected' : ''; ?>>Kristen Protestan</option>
+										<option value="Kristen Katolik" <?php echo $a->agama == 'Kristen Katolik' ? 'selected' : ''; ?>>Kristen Katolik</option>
+										<option value="Hindu" <?php echo $a->agama == 'Hindu' ? 'selected' : ''; ?>>Hindu
+										</option>
+										<option value="Buddha" <?php echo $a->agama == 'Buddha' ? 'selected' : ''; ?>>Buddha
+										</option>
+										<option value="Konghucu" <?php echo $a->agama == 'Konghucu' ? 'selected' : ''; ?>>
+											Konghucu</option>
+									</select>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
-								<input type="text" class="form-control" name="tempat_lahir"
-									value="<?php echo $a->tempat_lahir; ?>" required>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Kewarganegaraan</label>
+									<input type="text" class="form-control" name="kewarganegaraan"
+										value="<?php echo $a->kewarganegaraan ?: 'Indonesia'; ?>" placeholder="Indonesia">
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
-								<input type="date" class="form-control" name="tanggal_lahir"
-									value="<?php echo $a->tanggal_lahir; ?>" required>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
-								<select class="form-control" name="pendidikan" required>
-									<option value="TK" <?php echo $a->pendidikan == 'TK' ? 'selected' : ''; ?>>TK</option>
-									<option value="SD" <?php echo $a->pendidikan == 'SD' ? 'selected' : ''; ?>>SD</option>
-									<option value="SMP" <?php echo $a->pendidikan == 'SMP' ? 'selected' : ''; ?>>SMP</option>
-									<option value="SMA" <?php echo $a->pendidikan == 'SMA' ? 'selected' : ''; ?>>SMA</option>
-									<option value="PT" <?php echo $a->pendidikan == 'PT' ? 'selected' : ''; ?>>Perguruan
-										Tinggi</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Status Anak</label>
-								<select class="form-control" name="status_anak" required>
-									<option value="Aktif" <?php echo $a->status_anak == 'Aktif' ? 'selected' : ''; ?>>Aktif
-									</option>
-									<option value="Nonaktif" <?php echo $a->status_anak == 'Nonaktif' ? 'selected' : ''; ?>>
-										Nonaktif</option>
-									<option value="Alumni" <?php echo $a->status_anak == 'Alumni' ? 'selected' : ''; ?>>Alumni
-									</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Kategori</label>
-								<select class="form-control" name="kategori" required>
-									<option value="">Pilih Kategori</option>
-									<option value="Yatim" <?php echo $a->kategori == 'Yatim' ? 'selected' : ''; ?>>Yatim
-									</option>
-									<option value="Piatu" <?php echo $a->kategori == 'Piatu' ? 'selected' : ''; ?>>Piatu
-									</option>
-									<option value="Yatim Piatu" <?php echo $a->kategori == 'Yatim Piatu' ? 'selected' : ''; ?>>Yatim Piatu</option>
-									<option value="Dhuafa" <?php echo $a->kategori == 'Dhuafa' ? 'selected' : ''; ?>>Dhuafa
-									</option>
-									<option value="Fakir dan Miskin" <?php echo $a->kategori == 'Fakir dan Miskin' ? 'selected' : ''; ?>>Fakir dan Miskin</option>
-									<option value="Ibnu Sabil" <?php echo $a->kategori == 'Ibnu Sabil' ? 'selected' : ''; ?>>
-										Ibnu Sabil</option>
-									<option value="Laqith" <?php echo $a->kategori == 'Laqith' ? 'selected' : ''; ?>>Laqith
-									</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
-								<select class="form-control" name="status_tinggal" required>
-									<option value="Tinggal di LKSA" <?php echo $a->status_tinggal == 'Tinggal di LKSA' ? 'selected' : ''; ?>>Tinggal di LKSA</option>
-									<option value="Luar LKSA" <?php echo $a->status_tinggal == 'Luar LKSA' ? 'selected' : ''; ?>>Luar LKSA</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
-								<input type="date" class="form-control" name="tanggal_masuk"
-									value="<?php echo $a->tanggal_masuk; ?>" required>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Status Anak</label>
+									<select class="form-control" name="status_anak" required>
+										<option value="">Pilih Status</option>
+										<option value="Aktif" <?php echo $a->status_anak == 'Aktif' ? 'selected' : ''; ?>>
+											Aktif</option>
+										<option value="Nonaktif" <?php echo $a->status_anak == 'Nonaktif' ? 'selected' : ''; ?>>Nonaktif</option>
+										<option value="Alumni" <?php echo $a->status_anak == 'Alumni' ? 'selected' : ''; ?>>
+											Alumni</option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
-								<input type="text" class="form-control" name="nama_sekolah"
-									value="<?php echo $a->nama_sekolah; ?>" placeholder="Masukkan nama sekolah">
+
+					<!-- Informasi Keluarga -->
+					<div class="form-section mb-4">
+						<h6 class="section-title text-info mb-3">
+							<i class="fas fa-users mr-2"></i>Informasi Keluarga
+						</h6>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Anak Ke</label>
+									<input type="number" class="form-control" name="anak_ke"
+										value="<?php echo $a->anak_ke; ?>" min="1" placeholder="1">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Jumlah Saudara Kandung</label>
+									<input type="number" class="form-control" name="jumlah_saudara_kandung"
+										value="<?php echo $a->jumlah_saudara_kandung; ?>" min="0" placeholder="0">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Jumlah Saudara Tiri</label>
+									<input type="number" class="form-control" name="jumlah_saudara_tiri"
+										value="<?php echo $a->jumlah_saudara_tiri; ?>" min="0" placeholder="0">
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group mb-3">
-								<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
-								<input type="number" class="form-control" name="biaya_spp"
-									value="<?php echo $a->biaya_spp; ?>" placeholder="Masukkan biaya SPP" min="0"
-									step="0.01">
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Ayah Kandung</label>
+									<input type="text" class="form-control" name="nama_ayah_kandung"
+										value="<?php echo $a->nama_ayah_kandung; ?>" placeholder="Nama ayah kandung">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Ayah Tiri</label>
+									<input type="text" class="form-control" name="nama_ayah_tiri"
+										value="<?php echo $a->nama_ayah_tiri; ?>" placeholder="Nama ayah tiri (jika ada)">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Ibu Kandung</label>
+									<input type="text" class="form-control" name="nama_ibu_kandung"
+										value="<?php echo $a->nama_ibu_kandung; ?>" placeholder="Nama ibu kandung">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Ibu Tiri</label>
+									<input type="text" class="form-control" name="nama_ibu_tiri"
+										value="<?php echo $a->nama_ibu_tiri; ?>" placeholder="Nama ibu tiri (jika ada)">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Pekerjaan Ayah</label>
+									<input type="text" class="form-control" name="pekerjaan_ayah"
+										value="<?php echo $a->pekerjaan_ayah; ?>" placeholder="Pekerjaan ayah">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Pekerjaan Ibu</label>
+									<input type="text" class="form-control" name="pekerjaan_ibu"
+										value="<?php echo $a->pekerjaan_ibu; ?>" placeholder="Pekerjaan ibu">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">No Telp Orang Tua</label>
+									<input type="text" class="form-control" name="no_telp_orang_tua"
+										value="<?php echo $a->no_telp_orang_tua; ?>" placeholder="08123456789">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Alamat Orang Tua</label>
+									<textarea class="form-control" name="alamat_orang_tua" rows="2"
+										placeholder="Alamat lengkap orang tua"><?php echo $a->alamat_orang_tua; ?></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Informasi Wali -->
+					<div class="form-section mb-4">
+						<h6 class="section-title text-secondary mb-3">
+							<i class="fas fa-user-shield mr-2"></i>Informasi Wali (Opsional)
+						</h6>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Wali</label>
+									<input type="text" class="form-control" name="nama_wali"
+										value="<?php echo $a->nama_wali; ?>" placeholder="Nama wali (jika ada)">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">No Telp Wali</label>
+									<input type="text" class="form-control" name="no_telp_wali"
+										value="<?php echo $a->no_telp_wali; ?>" placeholder="08123456789">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Alamat Wali</label>
+									<textarea class="form-control" name="alamat_wali" rows="2"
+										placeholder="Alamat lengkap wali"><?php echo $a->alamat_wali; ?></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Informasi Sekolah -->
+					<div class="form-section mb-4">
+						<h6 class="section-title text-success mb-3">
+							<i class="fas fa-school mr-2"></i>Informasi Sekolah
+						</h6>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
+									<select class="form-control" name="pendidikan" required>
+										<option value="">Pilih Pendidikan</option>
+										<option value="TK" <?php echo $a->pendidikan == 'TK' ? 'selected' : ''; ?>>TK</option>
+										<option value="SD" <?php echo $a->pendidikan == 'SD' ? 'selected' : ''; ?>>SD</option>
+										<option value="SMP" <?php echo $a->pendidikan == 'SMP' ? 'selected' : ''; ?>>SMP
+										</option>
+										<option value="SMA" <?php echo $a->pendidikan == 'SMA' ? 'selected' : ''; ?>>SMA
+										</option>
+										<option value="PT" <?php echo $a->pendidikan == 'PT' ? 'selected' : ''; ?>>Perguruan
+											Tinggi</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Kelas</label>
+									<input type="text" class="form-control" name="kelas" value="<?php echo $a->kelas; ?>"
+										placeholder="Contoh: 1A, 2B, dll">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
+									<input type="text" class="form-control" name="nama_sekolah"
+										value="<?php echo $a->nama_sekolah; ?>" placeholder="Masukkan nama sekolah">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">No Telp Sekolah</label>
+									<input type="text" class="form-control" name="no_telp_sekolah"
+										value="<?php echo $a->no_telp_sekolah; ?>" placeholder="021-1234567">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Alamat Sekolah</label>
+									<textarea class="form-control" name="alamat_sekolah" rows="2"
+										placeholder="Alamat lengkap sekolah"><?php echo $a->alamat_sekolah; ?></textarea>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
+									<input type="number" class="form-control" name="biaya_spp"
+										value="<?php echo $a->biaya_spp; ?>" placeholder="0" min="0" step="0.01">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Informasi Lainnya -->
+					<div class="form-section mb-4">
+						<h6 class="section-title text-warning mb-3">
+							<i class="fas fa-info-circle mr-2"></i>Informasi Lainnya
+						</h6>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Kategori</label>
+									<select class="form-control" name="kategori" required>
+										<option value="">Pilih Kategori</option>
+										<option value="Yatim" <?php echo $a->kategori == 'Yatim' ? 'selected' : ''; ?>>Yatim
+										</option>
+										<option value="Piatu" <?php echo $a->kategori == 'Piatu' ? 'selected' : ''; ?>>Piatu
+										</option>
+										<option value="Yatim Piatu" <?php echo $a->kategori == 'Yatim Piatu' ? 'selected' : ''; ?>>Yatim Piatu</option>
+										<option value="Dhuafa" <?php echo $a->kategori == 'Dhuafa' ? 'selected' : ''; ?>>
+											Dhuafa</option>
+										<option value="Fakir dan Miskin" <?php echo $a->kategori == 'Fakir dan Miskin' ? 'selected' : ''; ?>>Fakir dan Miskin</option>
+										<option value="Ibnu Sabil" <?php echo $a->kategori == 'Ibnu Sabil' ? 'selected' : ''; ?>>Ibnu Sabil</option>
+										<option value="Laqith" <?php echo $a->kategori == 'Laqith' ? 'selected' : ''; ?>>
+											Laqith</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
+									<select class="form-control" name="status_tinggal" required>
+										<option value="">Pilih Status Tinggal</option>
+										<option value="Tinggal di LKSA" <?php echo $a->status_tinggal == 'Tinggal di LKSA' ? 'selected' : ''; ?>>Tinggal di LKSA</option>
+										<option value="Luar LKSA" <?php echo $a->status_tinggal == 'Luar LKSA' ? 'selected' : ''; ?>>Luar LKSA</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
+									<input type="date" class="form-control" name="tanggal_masuk"
+										value="<?php echo $a->tanggal_masuk; ?>" required>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -610,6 +821,163 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">No Registrasi</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->no_registrasi ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Agama</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->agama ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Informasi Keluarga -->
+					<div class="card border-0 shadow-sm mb-4">
+						<div class="card-header bg-light">
+							<h6 class="font-weight-bold text-info mb-0"><i class="fas fa-users mr-2"></i>Informasi Keluarga
+							</h6>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Anak Ke</label>
+										<p class="form-control-plaintext"><?php echo $a->anak_ke ?: '-'; ?></p>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Saudara Kandung</label>
+										<p class="form-control-plaintext"><?php echo $a->jumlah_saudara_kandung ?: '0'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Saudara Tiri</label>
+										<p class="form-control-plaintext"><?php echo $a->jumlah_saudara_tiri ?: '0'; ?></p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Nama Ayah Kandung</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->nama_ayah_kandung ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Nama Ayah Tiri</label>
+										<p class="form-control-plaintext"><?php echo $a->nama_ayah_tiri ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Nama Ibu Kandung</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->nama_ibu_kandung ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Nama Ibu Tiri</label>
+										<p class="form-control-plaintext"><?php echo $a->nama_ibu_tiri ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Pekerjaan Ayah</label>
+										<p class="form-control-plaintext"><?php echo $a->pekerjaan_ayah ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Pekerjaan Ibu</label>
+										<p class="form-control-plaintext"><?php echo $a->pekerjaan_ibu ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">No Telp Orang Tua</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->no_telp_orang_tua ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Alamat Orang Tua</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->alamat_orang_tua ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<?php if ($a->nama_wali): ?>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group mb-3">
+											<label class="font-weight-bold text-muted mb-2">Nama Wali</label>
+											<p class="form-control-plaintext">
+												<?php echo $a->nama_wali; ?>
+											</p>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group mb-3">
+											<label class="font-weight-bold text-muted mb-2">No Telp Wali</label>
+											<p class="form-control-plaintext">
+												<?php echo $a->no_telp_wali ?: 'Belum diisi'; ?>
+											</p>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group mb-3">
+											<label class="font-weight-bold text-muted mb-2">Alamat Wali</label>
+											<p class="form-control-plaintext">
+												<?php echo $a->alamat_wali ?: 'Belum diisi'; ?>
+											</p>
+										</div>
+									</div>
+								</div>
+							<?php endif; ?>
+						</div>
+					</div>
+
+					<!-- Informasi Sekolah -->
+					<div class="card border-0 shadow-sm mb-4">
+						<div class="card-header bg-light">
+							<h6 class="font-weight-bold text-warning mb-0"><i class="fas fa-school mr-2"></i>Informasi
+								Sekolah</h6>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
 										<p class="form-control-plaintext">
 											<?php echo $a->nama_sekolah ?: 'Belum diisi'; ?>
@@ -617,6 +985,34 @@
 									</div>
 								</div>
 								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Kelas</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->kelas ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">Alamat Sekolah</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->alamat_sekolah ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">No Telp Sekolah</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->no_telp_sekolah ?: 'Belum diisi'; ?>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
 										<p class="form-control-plaintext">
@@ -692,133 +1088,328 @@
 
 <!-- Modal Add -->
 <div class="modal fade" id="modalAdd" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered modal-lg">
+	<div class="modal-dialog modal-dialog-centered modal-xl">
 		<div class="modal-content border-0 shadow">
 			<div class="modal-header bg-success text-white">
 				<h5 class="modal-title font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Tambah Anak Baru</h5>
 				<button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
 			</div>
 			<?php echo form_open('admin/anak', 'id="formAddAnak"'); ?>
-			<div class="modal-body p-4">
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Nama Anak</label>
-							<input type="text" class="form-control" name="nama_anak" placeholder="Masukkan nama anak"
-								required>
+			<div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+				<!-- Informasi Dasar -->
+				<div class="form-section mb-4">
+					<h6 class="section-title text-primary mb-3">
+						<i class="fas fa-user-circle mr-2"></i>Informasi Dasar
+					</h6>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Lengkap Anak</label>
+								<input type="text" class="form-control" name="nama_anak"
+									placeholder="Masukkan nama anak" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">NIK</label>
+								<input type="text" class="form-control" name="nik"
+									placeholder="Nomor Induk Kependudukan (optional)">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">NIK</label>
-							<input type="text" class="form-control" name="nik"
-								placeholder="Nomor Induk Kependudukan (optional)">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">No Registrasi</label>
+								<input type="text" class="form-control" name="no_registrasi"
+									placeholder="Nomor registrasi unik">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
+								<select class="form-control" name="jenis_kelamin" required>
+									<option value="">Pilih Jenis Kelamin</option>
+									<option value="L">Laki-laki</option>
+									<option value="P">Perempuan</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
+								<input type="text" class="form-control" name="tempat_lahir" placeholder="Kota/Kabupaten"
+									required>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
+								<input type="date" class="form-control" name="tanggal_lahir" required>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Agama</label>
+								<select class="form-control" name="agama" required>
+									<option value="">Pilih Agama</option>
+									<option value="Islam">Islam</option>
+									<option value="Kristen Protestan">Kristen Protestan</option>
+									<option value="Kristen Katolik">Kristen Katolik</option>
+									<option value="Hindu">Hindu</option>
+									<option value="Buddha">Buddha</option>
+									<option value="Konghucu">Konghucu</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Kewarganegaraan</label>
+								<input type="text" class="form-control" name="kewarganegaraan" value="Indonesia"
+									placeholder="Indonesia">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Status Anak</label>
+								<select class="form-control" name="status_anak" required>
+									<option value="">Pilih Status</option>
+									<option value="Aktif">Aktif</option>
+									<option value="Nonaktif">Nonaktif</option>
+									<option value="Alumni">Alumni</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-md-4">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
-							<select class="form-control" name="jenis_kelamin" required>
-								<option value="">Pilih</option>
-								<option value="L">Laki-laki</option>
-								<option value="P">Perempuan</option>
-							</select>
+				<!-- Informasi Keluarga -->
+				<div class="form-section mb-4">
+					<h6 class="section-title text-info mb-3">
+						<i class="fas fa-users mr-2"></i>Informasi Keluarga
+					</h6>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Anak Ke</label>
+								<input type="number" class="form-control" name="anak_ke" min="1" placeholder="1">
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Jumlah Saudara Kandung</label>
+								<input type="number" class="form-control" name="jumlah_saudara_kandung" min="0"
+									placeholder="0">
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Jumlah Saudara Tiri</label>
+								<input type="number" class="form-control" name="jumlah_saudara_tiri" min="0"
+									placeholder="0">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
-							<input type="text" class="form-control" name="tempat_lahir" placeholder="Kota/Kabupaten"
-								required>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Ayah Kandung</label>
+								<input type="text" class="form-control" name="nama_ayah_kandung"
+									placeholder="Nama ayah kandung">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Ayah Tiri</label>
+								<input type="text" class="form-control" name="nama_ayah_tiri"
+									placeholder="Nama ayah tiri (jika ada)">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
-							<input type="date" class="form-control" name="tanggal_lahir" required>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Ibu Kandung</label>
+								<input type="text" class="form-control" name="nama_ibu_kandung"
+									placeholder="Nama ibu kandung">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Ibu Tiri</label>
+								<input type="text" class="form-control" name="nama_ibu_tiri"
+									placeholder="Nama ibu tiri (jika ada)">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Pekerjaan Ayah</label>
+								<input type="text" class="form-control" name="pekerjaan_ayah"
+									placeholder="Pekerjaan ayah">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Pekerjaan Ibu</label>
+								<input type="text" class="form-control" name="pekerjaan_ibu"
+									placeholder="Pekerjaan ibu">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">No Telp Orang Tua</label>
+								<input type="text" class="form-control" name="no_telp_orang_tua"
+									placeholder="08123456789">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Alamat Orang Tua</label>
+								<textarea class="form-control" name="alamat_orang_tua" rows="2"
+									placeholder="Alamat lengkap orang tua"></textarea>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
-							<select class="form-control" name="pendidikan" required>
-								<option value="">Pilih Pendidikan</option>
-								<option value="TK">TK</option>
-								<option value="SD">SD</option>
-								<option value="SMP">SMP</option>
-								<option value="SMA">SMA</option>
-								<option value="PT">Perguruan Tinggi</option>
-							</select>
+				<!-- Informasi Wali -->
+				<div class="form-section mb-4">
+					<h6 class="section-title text-secondary mb-3">
+						<i class="fas fa-user-shield mr-2"></i>Informasi Wali (Opsional)
+					</h6>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Wali</label>
+								<input type="text" class="form-control" name="nama_wali"
+									placeholder="Nama wali (jika ada)">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">No Telp Wali</label>
+								<input type="text" class="form-control" name="no_telp_wali" placeholder="08123456789">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Status Anak</label>
-							<select class="form-control" name="status_anak" required>
-								<option value="">Pilih Status</option>
-								<option value="Aktif">Aktif</option>
-								<option value="Nonaktif">Nonaktif</option>
-								<option value="Alumni">Alumni</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Kategori</label>
-							<select class="form-control" name="kategori" required>
-								<option value="">Pilih Kategori</option>
-								<option value="Yatim">Yatim</option>
-								<option value="Piatu">Piatu</option>
-								<option value="Yatim Piatu">Yatim Piatu</option>
-								<option value="Dhuafa">Dhuafa</option>
-								<option value="Fakir dan Miskin">Fakir dan Miskin</option>
-								<option value="Ibnu Sabil">Ibnu Sabil</option>
-								<option value="Laqith">Laqith</option>
-							</select>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Alamat Wali</label>
+								<textarea class="form-control" name="alamat_wali" rows="2"
+									placeholder="Alamat lengkap wali"></textarea>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
-							<select class="form-control" name="status_tinggal" required>
-								<option value="">Pilih Status Tinggal</option>
-								<option value="Tinggal di LKSA">Tinggal di LKSA</option>
-								<option value="Luar LKSA">Luar LKSA</option>
-							</select>
+				<!-- Informasi Sekolah -->
+				<div class="form-section mb-4">
+					<h6 class="section-title text-success mb-3">
+						<i class="fas fa-school mr-2"></i>Informasi Sekolah
+					</h6>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Pendidikan</label>
+								<select class="form-control" name="pendidikan" required>
+									<option value="">Pilih Pendidikan</option>
+									<option value="TK">TK</option>
+									<option value="SD">SD</option>
+									<option value="SMP">SMP</option>
+									<option value="SMA">SMA</option>
+									<option value="PT">Perguruan Tinggi</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Kelas</label>
+								<input type="text" class="form-control" name="kelas" placeholder="Contoh: 1A, 2B, dll">
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
-							<input type="date" class="form-control" name="tanggal_masuk" required>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
+								<input type="text" class="form-control" name="nama_sekolah"
+									placeholder="Masukkan nama sekolah">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">No Telp Sekolah</label>
+								<input type="text" class="form-control" name="no_telp_sekolah"
+									placeholder="021-1234567">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Alamat Sekolah</label>
+								<textarea class="form-control" name="alamat_sekolah" rows="2"
+									placeholder="Alamat lengkap sekolah"></textarea>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
+								<input type="number" class="form-control" name="biaya_spp" placeholder="0" min="0"
+									step="0.01">
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Nama Sekolah</label>
-							<input type="text" class="form-control" name="nama_sekolah"
-								placeholder="Masukkan nama sekolah">
+
+				<!-- Informasi Lainnya -->
+				<div class="form-section mb-4">
+					<h6 class="section-title text-warning mb-3">
+						<i class="fas fa-info-circle mr-2"></i>Informasi Lainnya
+					</h6>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Kategori</label>
+								<select class="form-control" name="kategori" required>
+									<option value="">Pilih Kategori</option>
+									<option value="Yatim">Yatim</option>
+									<option value="Piatu">Piatu</option>
+									<option value="Yatim Piatu">Yatim Piatu</option>
+									<option value="Dhuafa">Dhuafa</option>
+									<option value="Fakir dan Miskin">Fakir dan Miskin</option>
+									<option value="Ibnu Sabil">Ibnu Sabil</option>
+									<option value="Laqith">Laqith</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Status Tinggal</label>
+								<select class="form-control" name="status_tinggal" required>
+									<option value="">Pilih Status Tinggal</option>
+									<option value="Tinggal di LKSA">Tinggal di LKSA</option>
+									<option value="Luar LKSA">Luar LKSA</option>
+								</select>
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group mb-3">
-							<label class="font-weight-bold text-muted mb-2">Biaya SPP</label>
-							<input type="number" class="form-control" name="biaya_spp" placeholder="Masukkan biaya SPP"
-								min="0" step="0.01">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">Tanggal Masuk</label>
+								<input type="date" class="form-control" name="tanggal_masuk" required>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1556,6 +2147,53 @@
 	}
 
 	body.dark-mode .dataTables_wrapper .dataTables_filter label {
+		color: #e0e0e0;
+	}
+
+	/* Form Section Styles */
+	.form-section {
+		border: 1px solid #e2e8f0;
+		border-radius: 8px;
+		padding: 20px;
+		margin-bottom: 20px;
+		background: #f8fafc;
+	}
+
+	.form-section .section-title {
+		font-size: 16px;
+		font-weight: 600;
+		margin-bottom: 15px;
+		border-bottom: 2px solid;
+		padding-bottom: 8px;
+	}
+
+	.form-section .section-title.text-primary {
+		border-bottom-color: #4e73df;
+	}
+
+	.form-section .section-title.text-info {
+		border-bottom-color: #17a2b8;
+	}
+
+	.form-section .section-title.text-secondary {
+		border-bottom-color: #6c757d;
+	}
+
+	.form-section .section-title.text-success {
+		border-bottom-color: #28a745;
+	}
+
+	.form-section .section-title.text-warning {
+		border-bottom-color: #ffc107;
+	}
+
+	/* Dark mode for form sections */
+	body.dark-mode .form-section {
+		background-color: #16213e;
+		border-color: #0f3460;
+	}
+
+	body.dark-mode .form-section .section-title {
 		color: #e0e0e0;
 	}
 </style>
