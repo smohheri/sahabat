@@ -876,7 +876,8 @@
 										alt="<?php echo htmlspecialchars($facility->nama_fasilitas); ?>" class="facility-image">
 								<?php else: ?>
 									<img src="https://source.unsplash.com/random/600x400/?<?php echo urlencode(strtolower($facility->nama_fasilitas)); ?>"
-										alt="<?php echo htmlspecialchars($facility->nama_fasilitas); ?>" class="facility-image">
+										alt="<?php echo htmlspecialchars($facility->nama_fasilitas); ?>" class="facility-image"
+										onerror="this.onerror=null;this.src='<?php echo base_url('assets/img/logo_sahabat.png'); ?>';">
 								<?php endif; ?>
 								<div class="facility-icon">
 									<i class="fas <?php echo !empty($facility->icon) ? $facility->icon : 'fa-star'; ?>"></i>
@@ -905,7 +906,8 @@
 						<div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
 							<div class="facility-card">
 								<img src="https://source.unsplash.com/random/600x400/?<?php echo $facility['img']; ?>"
-									alt="<?php echo $facility['name']; ?>" class="facility-image">
+									alt="<?php echo $facility['name']; ?>" class="facility-image"
+									onerror="this.onerror=null;this.src='<?php echo base_url('assets/img/logo_sahabat.png'); ?>';">
 								<div class="facility-icon">
 									<i class="fas <?php echo $facility['icon']; ?>"></i>
 								</div>
@@ -1410,9 +1412,6 @@
 
 	<!-- AOS Animation -->
 	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-	<!-- Custom JS -->
-	<script src="<?php echo base_url('assets/landing/js/app.js'); ?>"></script>
 
 	<script>
 		// Initialize AOS

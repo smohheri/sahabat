@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'sahabat-pwa-v1';
+const CACHE_VERSION = 'sahabat-pwa-v2';
 const APP_SHELL = [
   './',
   './manifest.webmanifest',
@@ -34,8 +34,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  const requestUrl = new URL(request.url);
 
   if (request.method !== 'GET') {
+    return;
+  }
+
+  // Ignore browser-extension and other unsupported schemes.
+  if (requestUrl.protocol !== 'http:' && requestUrl.protocol !== 'https:') {
     return;
   }
 

@@ -99,7 +99,7 @@ $db['default'] = array(
 	'dbprefix' => env('db_prefix', ''),
 	'pconnect' => env('db_pconnect', FALSE),
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => (ENVIRONMENT === 'production') ? TRUE : env('db_cache_on', FALSE),
+	'cache_on' => env('db_cache_on', FALSE),
 	'cachedir' => env('db_cachedir', APPPATH . 'cache/db/'),
 	'char_set' => env('db_char_set', 'utf8'),
 	'dbcollat' => env('db_collation', 'utf8_general_ci'),

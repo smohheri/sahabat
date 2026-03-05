@@ -205,11 +205,11 @@ $config['encryption_key'] = env('encryption_key', 'your-32-character-encryption-
 | Session Variables
 |--------------------------------------------------------------------------
 */
-$config['sess_driver'] = env('sess_driver', 'files');
+$config['sess_driver'] = env('sess_driver', 'database');
 $config['sess_cookie_name'] = env('sess_cookie_name', 'ci_session');
 $config['sess_samesite'] = env('sess_samesite', 'Lax');
 $config['sess_expiration'] = env('sess_expiration', 7200);
-$config['sess_save_path'] = APPPATH . 'sessions/';
+$config['sess_save_path'] = env('sess_save_path', 'ci_sessions');
 $config['sess_match_ip'] = env('sess_match_ip', FALSE);
 $config['sess_time_to_update'] = env('sess_time_to_update', 300);
 $config['sess_regenerate_destroy'] = env('sess_regenerate_destroy', FALSE);

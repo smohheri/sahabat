@@ -29,11 +29,28 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
     - `application/views/templates/footer.php`
     - `application/views/auth/login.php`
     - `application/views/landingpage/home.php`
+- 🔄 **Stabilisasi Session Aplikasi**
+  - Migrasi session driver dari `files` ke `database` di `application/config/config.php`
+  - Penyesuaian `sess_save_path` ke tabel `ci_sessions`
+  - Menonaktifkan default `db cache_on` untuk kompatibilitas session database di `application/config/database.php`
+
+### Fixed
+- 🐛 **Perbaikan Error Runtime Landing Page**
+  - Menghapus pemanggilan script tidak relevan `assets/landing/js/app.js` yang menyebabkan error `$products is not defined`
+  - Menambahkan fallback gambar fasilitas saat Unsplash `503` ke `assets/img/logo_sahabat.png`
+  - File: `application/views/landingpage/home.php`
+
+- 🐛 **Perbaikan Error Service Worker**
+  - Menambahkan filter request non-HTTP/HTTPS agar tidak mencoba cache skema `chrome-extension://`
+  - Menaikkan versi cache service worker untuk invalidasi cache lama
+  - File: `service-worker.js`
 
 ### Technical
 - 🔧 **Sinkronisasi Versi Aplikasi**
   - Update `APP_VERSION` menjadi `1.10.0` di `application/config/constants.php`
   - Update tampilan versi login agar dinamis menggunakan `APP_VERSION`
+- 🔧 **Database Session Table**
+  - Menambahkan file SQL `database/create_table_ci_sessions.sql` untuk tabel session CodeIgniter 3
 
 ---
 
