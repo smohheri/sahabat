@@ -5,6 +5,38 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-03-05
+
+### Added
+- 🚀 **Progressive Web App (PWA) Support**
+  - Menambahkan file manifest: `manifest.webmanifest`
+  - Menambahkan service worker: `service-worker.js`
+  - Menambahkan ikon PWA:
+    - `assets/pwa/icon-192.png`
+    - `assets/pwa/icon-512.png`
+    - `assets/pwa/icon-maskable-512.png`
+  - Menambahkan partial template PWA:
+    - `application/views/templates/pwa_head.php`
+    - `application/views/templates/pwa_register.php`
+
+### Changed
+- 🔄 **Integrasi PWA ke Seluruh Entry Point Utama**
+  - Integrasi metadata manifest + theme color pada template:
+    - `application/views/templates/head.php`
+    - `application/views/templates/login_header.php`
+    - `application/views/landingpage/home.php`
+  - Integrasi registrasi service worker pada halaman:
+    - `application/views/templates/footer.php`
+    - `application/views/auth/login.php`
+    - `application/views/landingpage/home.php`
+
+### Technical
+- 🔧 **Sinkronisasi Versi Aplikasi**
+  - Update `APP_VERSION` menjadi `1.10.0` di `application/config/constants.php`
+  - Update tampilan versi login agar dinamis menggunakan `APP_VERSION`
+
+---
+
 ## [1.9.0] - 2025-02-25
 
 ### Added

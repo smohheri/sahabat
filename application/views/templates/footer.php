@@ -44,6 +44,7 @@
 
 <!-- Chart.js -->
 <script src="<?php echo base_url('assets/plugins/chart.js/Chart.js'); ?>"></script>
+<?php $this->load->view('templates/pwa_register'); ?>
 
 </body>
 

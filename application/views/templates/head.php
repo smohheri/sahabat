@@ -6,7 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $title ?? 'AdminLTE 4'; ?></title>
 
-	<!-- Favicon - Menggunakan logo dari pengaturan -->
+	<!-- Favicon - Menggunakan logo sahabat -->
+	<link rel="icon" type="image/png" href="<?php echo base_url('assets/img/logo_sahabat.png'); ?>" />
 	<?php
 	$logo = $this->config->item('settings')->logo ?? null;
 	$favicon_url = !empty($logo)
@@ -14,6 +15,7 @@
 		: base_url('assets/img/AdminLTELogo.png');
 	?>
 	<link rel="icon" type="image/png" href="<?php echo $favicon_url; ?>">
+	<?php $this->load->view('templates/pwa_head'); ?>
 
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet"

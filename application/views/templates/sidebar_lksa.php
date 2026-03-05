@@ -1,4 +1,5 @@
 <!-- Main Sidebar Container -->
+<link rel="icon" type="image/png" href="<?php echo base_url('assets/img/logo_sahabat.png'); ?>" />
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 	<!-- Brand Logo -->
 	<a href="<?php echo site_url('admin'); ?>" class="brand-link">
@@ -228,18 +229,13 @@
 								<p>Backup & Restore</p>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="<?php echo site_url('auth/logout'); ?>" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Logout</p>
-							</a>
-						</li>
-					</ul>
-				</li>
+				</ul>
+			</li>
 
-			</ul>
-		</nav>
-		<!-- /.sidebar-menu -->
-	</div>
-	<!-- /.sidebar -->
+			<!-- Logout (Main Menu) -->
+			<li class="nav-item">
+				<a href="<?php echo site_url('auth/logout'); ?>" class="nav-link">
+					<i class="nav-icon fas fa-sign-out-alt"></i>
+					<p>Logout</p>
+				</a>
 </aside>

@@ -6,6 +6,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $title ?? 'Login'; ?></title>
+	<link rel="icon" type="image/png" href="<?php echo base_url('assets/img/logo_sahabat.png'); ?>" />
+	<?php $this->load->view('templates/pwa_head'); ?>
 
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet"
@@ -16,6 +18,7 @@
 
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/adminlte.min.css'); ?>">
+	<link rel="stylesheet" href="<?php echo base_url('assets/css/landing.css'); ?>">
 
 	<style>
 		html,
@@ -27,7 +30,7 @@
 		}
 
 		.login-page {
-			background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+			background: var(--bg-light, #F8F9FA);
 			height: 100vh;
 			display: flex;
 			align-items: stretch;
@@ -42,12 +45,12 @@
 		}
 
 		.left-side {
-			background: linear-gradient(135deg, rgba(21, 101, 192, 0.9) 0%, rgba(100, 181, 246, 0.9) 100%);
+			background: var(--primary-color, #7AC64D);
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			padding: 2rem;
-			color: white;
+			color: var(--secondary-color, #2C3E50);
 		}
 
 		.info-content {
@@ -98,7 +101,7 @@
 			align-items: center;
 			justify-content: center;
 			padding: 2rem;
-			background: rgba(255, 255, 255, 0.1);
+			background: var(--bg-light, #F8F9FA);
 		}
 
 		.login-box {

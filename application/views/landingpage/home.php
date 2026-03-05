@@ -36,6 +36,7 @@
 	<!-- Custom CSS -->
 	<link rel="stylesheet" href="<?php echo base_url('assets/landing/css/style.css'); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/landing.css'); ?>">
+	<?php $this->load->view('templates/pwa_head'); ?>
 
 	<style>
 		:root {
@@ -1444,6 +1445,7 @@
 			});
 		});
 	</script>
+	<?php $this->load->view('templates/pwa_register'); ?>
 </body>
 
 </html>
