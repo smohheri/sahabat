@@ -85,6 +85,19 @@ if (!function_exists('env')) {
 		if ($value === false) {
 			return $default;
 		}
+		$lower = strtolower(trim($value));
+		if ($lower === 'true' || $lower === '(true)') {
+			return true;
+		}
+		if ($lower === 'false' || $lower === '(false)') {
+			return false;
+		}
+		if ($lower === 'null' || $lower === '(null)') {
+			return null;
+		}
+		if ($lower === 'empty' || $lower === '(empty)') {
+			return '';
+		}
 		return $value;
 	}
 }
@@ -99,7 +112,7 @@ $db['default'] = array(
 	'dbprefix' => env('db_prefix', ''),
 	'pconnect' => env('db_pconnect', FALSE),
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => env('db_cache_on', FALSE),
+	'cache_on' => env('db_cache_on', FALSE) === TRUE,
 	'cachedir' => env('db_cachedir', APPPATH . 'cache/db/'),
 	'char_set' => env('db_char_set', 'utf8'),
 	'dbcollat' => env('db_collation', 'utf8_general_ci'),

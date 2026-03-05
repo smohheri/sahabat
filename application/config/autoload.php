@@ -1,8 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// Load Composer autoload
-require_once FCPATH . 'vendor/autoload.php';
+// Load Composer autoload only if available on server.
+$composer_autoload = FCPATH . 'vendor/autoload.php';
+if (file_exists($composer_autoload)) {
+	require_once $composer_autoload;
+}
 
 
 /*

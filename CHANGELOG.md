@@ -5,6 +5,32 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2026-03-05
+
+### Fixed
+- 🐛 **Perbaikan Error 500 di Production (Session Database)**
+  - Memperbaiki parsing nilai environment (`TRUE/FALSE/NULL`) agar terbaca sebagai tipe data yang benar
+  - Mencegah `cache_on` aktif tidak sengaja pada koneksi database yang dipakai session
+  - Mengatasi exception: `Configured database connection has cache enabled. Aborting.`
+  - File: `application/config/database.php`, `application/config/config.php`
+
+- 🐛 **Perbaikan Fatal Error Saat `vendor/` Belum Tersedia di Hosting**
+  - Menambahkan pengecekan `file_exists()` sebelum memuat `vendor/autoload.php`
+  - Menambahkan fallback aman untuk `composer_autoload` agar tidak memicu fatal error
+  - File: `index.php`, `application/config/autoload.php`, `application/config/config.php`
+
+- 🐛 **Perbaikan Rewrite URL Login di Apache**
+  - Menyederhanakan rule rewrite agar route CodeIgniter lebih kompatibel di shared hosting
+  - Menjaga akses fallback melalui `index.php` saat rewrite friendly URL belum aktif penuh
+  - File: `.htaccess`
+
+### Changed
+- 🔄 **Penyesuaian Nilai Session Save Path di Environment**
+  - Mengubah `sess_save_path` dari `NULL` string menjadi nilai kosong pada `.env`
+  - File: `.env`
+
+---
+
 ## [1.10.0] - 2026-03-05
 
 ### Added

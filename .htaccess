@@ -25,10 +25,8 @@
 	#RewriteCond %{HTTPS} off
 	#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-	# Remove index.php from URL
-	RewriteCond %{HTTP:X-Requested-With}	!^XMLHttpRequest$
-	RewriteCond %{THE_REQUEST}				^[^/]*/index\.php [NC]
-	RewriteRule ^index\.php(.*)$			$1 [R=301,NS,L]
+	# Keep index.php accessible as a safe fallback route.
+	# (Do not force-remove index.php until rewrite is confirmed working on hosting.)
 
 	# Keep people out of codeigniter directory and Git/Mercurial data
 	RedirectMatch 403 ^/(system|\.git|\.hg|\.env).*$
@@ -37,12 +35,6 @@
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 
-	<IfModule mod_php5.c>
-		RewriteRule ^(.*)$ index.php/$1 [L]
-	</IfModule>
-
-	<IfModule !mod_php5.c>
-		RewriteRule ^(.*)$ index.php?/$1 [L]
-	</IfModule>
+	RewriteRule ^(.+)$ index.php/$1 [L,QSA]
 
 </IfModule>

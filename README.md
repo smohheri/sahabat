@@ -63,7 +63,7 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 
 ### 🏢 Manajemen Fasilitas Landing Page
 - Halaman admin untuk mengelola fasilitas yang ditampilkan di landing page
-- Add, edit, delete fasilitas dengan gambar, deskripsi, dan icon
+- Add dan delete fasilitas dengan gambar, deskripsi, dan icon
 - Grid display dengan card fasilitas
 
 ### 🎠 Kelola Carousel Landing Page
@@ -102,6 +102,17 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Filter berdasarkan status, jenis kelamin, kategori
 - Export PDF dan Excel dengan informasi dasar anak
 
+### 🚀 Progressive Web App (PWA)
+- Dukungan instalasi aplikasi ke perangkat (Add to Home Screen)
+- `manifest.webmanifest` untuk metadata aplikasi
+- `service-worker.js` untuk caching aset utama (app shell)
+- Ikon PWA (`192px`, `512px`, maskable) di `assets/pwa/`
+
+### 🔐 Session Database (Stabil)
+- Session menggunakan driver `database` (lebih stabil untuk penggunaan jangka panjang)
+- Tabel session `ci_sessions` disediakan di `database/create_table_ci_sessions.sql`
+- Konfigurasi disesuaikan agar kompatibel dengan CodeIgniter 3
+
 ## 🛠️ Teknologi
 
 - **Framework**: CodeIgniter 3.x
@@ -128,22 +139,24 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 
 1. **Clone atau download repository**
    ```bash
-   git clone https://github.com/username/sahabat.git
+   git clone https://github.com/smohheri/sahabat.git
    cd sahabat
    ```
 
 2. **Import database**
    ```bash
    mysql -u username -p database_name < database/db_lksa.sql
+   mysql -u username -p database_name < database/create_table_ci_sessions.sql
    ```
 
 3. **Konfigurasi database**
    - Buka `application/config/database.php`
    - Sesuaikan pengaturan koneksi database
 
-4. **Konfigurasi base URL**
+4. **Konfigurasi aplikasi (`application/config/config.php`)**
    - Buka `application/config/config.php`
-   - Sesuaikan `$config['base_url']`
+   - Pastikan `sess_driver` menggunakan `database`
+   - Pastikan `sess_save_path` mengarah ke tabel `ci_sessions`
 
 5. **Atur permission folder**
    ```bash
@@ -156,6 +169,10 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 6. **Akses aplikasi**
    - Buka browser dan akses URL instalasi
    - Login default: admin/admin
+
+7. **Opsional: Uji instalasi PWA**
+   - Buka halaman login atau landing page
+   - Pastikan browser menampilkan opsi install aplikasi
 
 ## 📁 Struktur Folder
 

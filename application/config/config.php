@@ -13,6 +13,19 @@ if (!function_exists('env')) {
 		if ($value === false) {
 			return $default;
 		}
+		$lower = strtolower(trim($value));
+		if ($lower === 'true' || $lower === '(true)') {
+			return true;
+		}
+		if ($lower === 'false' || $lower === '(false)') {
+			return false;
+		}
+		if ($lower === 'null' || $lower === '(null)') {
+			return null;
+		}
+		if ($lower === 'empty' || $lower === '(empty)') {
+			return '';
+		}
 		return $value;
 	}
 }
@@ -89,7 +102,8 @@ $config['subclass_prefix'] = env('subclass_prefix', 'MY_');
 | Composer auto-loading
 |--------------------------------------------------------------------------
 */
-$config['composer_autoload'] = FCPATH . 'vendor/autoload.php';
+$composer_autoload = FCPATH . 'vendor/autoload.php';
+$config['composer_autoload'] = file_exists($composer_autoload) ? $composer_autoload : FALSE;
 
 /*
 |--------------------------------------------------------------------------

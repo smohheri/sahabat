@@ -62,9 +62,14 @@ define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'producti
  */
 $dotenv_file = dirname(__FILE__) . '/.env';
 if (file_exists($dotenv_file)) {
-	require_once dirname(__FILE__) . '/vendor/autoload.php';
-	$dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__));
-	$dotenv->load();
+	$composer_autoload = dirname(__FILE__) . '/vendor/autoload.php';
+	if (file_exists($composer_autoload)) {
+		require_once $composer_autoload;
+		if (class_exists('Dotenv\\Dotenv')) {
+			$dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__));
+			$dotenv->load();
+		}
+	}
 }
 
 /*
