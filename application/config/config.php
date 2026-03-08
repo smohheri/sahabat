@@ -9,10 +9,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if (!function_exists('env')) {
 	function env($key, $default = null)
 	{
-		$value = getenv($key);
-		if ($value === false) {
+		$value = isset($_ENV[$key]) ? $_ENV[$key] : null;
+		if ($value === false || $value === null) {
 			return $default;
 		}
+		// Hilangkan tanda kutip ganda jika terbawa oleh dotenv
+		$value = trim($value, '"\'');
 		$lower = strtolower(trim($value));
 		if ($lower === 'true' || $lower === '(true)') {
 			return true;
@@ -60,42 +62,42 @@ $config['index_page'] = env('index_page', '');
 | URI PROTOCOL
 |--------------------------------------------------------------------------
 */
-$config['uri_protocol'] = env('uri_protocol', 'REQUEST_URI');
+$config['uri_protocol'] = 'REQUEST_URI';
 
 /*
 |--------------------------------------------------------------------------
 | URL suffix
 |--------------------------------------------------------------------------
 */
-$config['url_suffix'] = env('url_suffix', '');
+$config['url_suffix'] = '';
 
 /*
 |--------------------------------------------------------------------------
 | Default Language
 |--------------------------------------------------------------------------
 */
-$config['language'] = env('language', 'english');
+$config['language'] = 'english';
 
 /*
 |--------------------------------------------------------------------------
 | Default Character Set
 |--------------------------------------------------------------------------
 */
-$config['charset'] = env('charset', 'UTF-8');
+$config['charset'] = 'UTF-8';
 
 /*
 |--------------------------------------------------------------------------
 | Enable/Disable System Hooks
 |--------------------------------------------------------------------------
 */
-$config['enable_hooks'] = env('enable_hooks', TRUE);
+$config['enable_hooks'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
 | Class Extension Prefix
 |--------------------------------------------------------------------------
 */
-$config['subclass_prefix'] = env('subclass_prefix', 'MY_');
+$config['subclass_prefix'] = 'MY_';
 
 /*
 |--------------------------------------------------------------------------
@@ -110,24 +112,24 @@ $config['composer_autoload'] = file_exists($composer_autoload) ? $composer_autol
 | Allowed URL Characters
 |--------------------------------------------------------------------------
 */
-$config['permitted_uri_chars'] = env('permitted_uri_chars', 'a-z 0-9~%.:_\-');
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 
 /*
 |--------------------------------------------------------------------------
 | Enable Query Strings
 |--------------------------------------------------------------------------
 */
-$config['enable_query_strings'] = env('enable_query_strings', FALSE);
-$config['controller_trigger'] = env('controller_trigger', 'c');
-$config['function_trigger'] = env('function_trigger', 'm');
-$config['directory_trigger'] = env('directory_trigger', 'd');
+$config['enable_query_strings'] = FALSE;
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+$config['directory_trigger'] = 'd';
 
 /*
 |--------------------------------------------------------------------------
 | Allow $_GET array
 |--------------------------------------------------------------------------
 */
-$config['allow_get_array'] = env('allow_get_array', TRUE);
+$config['allow_get_array'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -184,21 +186,21 @@ $config['log_date_format'] = env('log_date_format', 'Y-m-d H:i:s');
 | Error Views Directory Path
 |--------------------------------------------------------------------------
 */
-$config['error_views_path'] = env('error_views_path', '');
+$config['error_views_path'] = '';
 
 /*
 |--------------------------------------------------------------------------
 | Cache Directory Path
 |--------------------------------------------------------------------------
 */
-$config['cache_path'] = env('cache_path', '');
+$config['cache_path'] = '';
 
 /*
 |--------------------------------------------------------------------------
 | Cache Include Query String
 |--------------------------------------------------------------------------
 */
-$config['cache_query_string'] = env('cache_query_string', FALSE);
+$config['cache_query_string'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -219,14 +221,14 @@ $config['encryption_key'] = env('encryption_key', 'your-32-character-encryption-
 | Session Variables
 |--------------------------------------------------------------------------
 */
-$config['sess_driver'] = env('sess_driver', 'database');
-$config['sess_cookie_name'] = env('sess_cookie_name', 'ci_session');
-$config['sess_samesite'] = env('sess_samesite', 'Lax');
-$config['sess_expiration'] = env('sess_expiration', 7200);
-$config['sess_save_path'] = env('sess_save_path', 'ci_sessions');
-$config['sess_match_ip'] = env('sess_match_ip', FALSE);
-$config['sess_time_to_update'] = env('sess_time_to_update', 300);
-$config['sess_regenerate_destroy'] = env('sess_regenerate_destroy', FALSE);
+$config['sess_driver'] = isset($_ENV['sess_driver']) ? $_ENV['sess_driver'] : 'files';
+$config['sess_cookie_name'] = isset($_ENV['sess_cookie_name']) ? $_ENV['sess_cookie_name'] : 'ci_session';
+$config['sess_samesite'] = isset($_ENV['sess_samesite']) ? $_ENV['sess_samesite'] : 'Lax';
+$config['sess_expiration'] = isset($_ENV['sess_expiration']) ? $_ENV['sess_expiration'] : 7200;
+$config['sess_save_path'] = isset($_ENV['sess_save_path']) && !empty($_ENV['sess_save_path']) ? $_ENV['sess_save_path'] : sys_get_temp_dir();
+$config['sess_match_ip'] = isset($_ENV['sess_match_ip']) ? ($_ENV['sess_match_ip'] === 'TRUE') : FALSE;
+$config['sess_time_to_update'] = isset($_ENV['sess_time_to_update']) ? $_ENV['sess_time_to_update'] : 300;
+$config['sess_regenerate_destroy'] = isset($_ENV['sess_regenerate_destroy']) ? ($_ENV['sess_regenerate_destroy'] === 'TRUE') : FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -238,19 +240,19 @@ $config['sess_regenerate_destroy'] = env('sess_regenerate_destroy', FALSE);
 | 'cookie_samesite' = 'None', 'Lax', or 'Strict' - CSRF protection
 |
 */
-$config['cookie_prefix'] = env('cookie_prefix', '');
-$config['cookie_domain'] = env('cookie_domain', '');
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = '';
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = FALSE;
-$config['cookie_samesite'] = env('cookie_samesite', 'Lax');
+$config['cookie_samesite'] = isset($_ENV['cookie_samesite']) ? $_ENV['cookie_samesite'] : 'Lax';
 
 /*
 |--------------------------------------------------------------------------
 | Standardize newlines
 |--------------------------------------------------------------------------
 */
-$config['standardize_newlines'] = env('standardize_newlines', FALSE);
+$config['standardize_newlines'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -309,7 +311,7 @@ $config['csrf_exclude_uris'] = array('admin/logs_ajax', 'admin/anak_ajax', 'admi
 | by the output class.  Do not 'echo' any values with compression enabled.
 |
 */
-$config['compress_output'] = (ENVIRONMENT === 'production') ? TRUE : env('compress_output', FALSE);
+$config['compress_output'] = (ENVIRONMENT === 'production') ? TRUE : FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -323,7 +325,7 @@ $config['time_reference'] = env('time_reference', 'local');
 | Rewrite PHP Short Tags
 |--------------------------------------------------------------------------
 */
-$config['rewrite_short_tags'] = env('rewrite_short_tags', FALSE);
+$config['rewrite_short_tags'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------

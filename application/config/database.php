@@ -81,10 +81,12 @@ $query_builder = TRUE;
 if (!function_exists('env')) {
 	function env($key, $default = null)
 	{
-		$value = getenv($key);
-		if ($value === false) {
+		$value = isset($_ENV[$key]) ? $_ENV[$key] : null;
+		if ($value === false || $value === null) {
 			return $default;
 		}
+		// Hilangkan tanda kutip ganda jika terbawa oleh dotenv
+		$value = trim($value, '"\'');
 		$lower = strtolower(trim($value));
 		if ($lower === 'true' || $lower === '(true)') {
 			return true;
@@ -103,23 +105,23 @@ if (!function_exists('env')) {
 }
 
 $db['default'] = array(
-	'dsn' => env('db_dsn', ''),
+	'dsn' => '',
 	'hostname' => env('db_hostname', 'localhost'),
 	'username' => env('db_username', 'root'),
 	'password' => env('db_password', ''),
 	'database' => env('db_database', 'db_lksa'),
 	'dbdriver' => env('db_driver', 'mysqli'),
-	'dbprefix' => env('db_prefix', ''),
-	'pconnect' => env('db_pconnect', FALSE),
+	'dbprefix' => '',
+	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => env('db_cache_on', FALSE) === TRUE,
-	'cachedir' => env('db_cachedir', APPPATH . 'cache/db/'),
-	'char_set' => env('db_char_set', 'utf8'),
-	'dbcollat' => env('db_collation', 'utf8_general_ci'),
-	'swap_pre' => env('db_swap_pre', ''),
-	'encrypt' => env('db_encrypt', FALSE),
-	'compress' => (ENVIRONMENT === 'production') ? TRUE : env('db_compress', FALSE),
-	'stricton' => env('db_stricton', FALSE),
+	'cache_on' => FALSE,
+	'cachedir' => APPPATH . 'cache/db/',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => (ENVIRONMENT === 'production') ? TRUE : FALSE,
+	'stricton' => FALSE,
 	'failover' => array(),
-	'save_queries' => env('db_save_queries', TRUE)
+	'save_queries' => TRUE
 );

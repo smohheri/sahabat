@@ -57,7 +57,9 @@
 	// Apply saved theme immediately to prevent flash
 	(function () {
 		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'dark') {
+		const osPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		
+		if (savedTheme === 'dark' || (!savedTheme && osPrefersDark)) {
 			document.write('<style>body { background-color: #1a1a2e !important; }</style>');
 		}
 	})();

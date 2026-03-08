@@ -439,28 +439,49 @@
 		const themeToggle = document.getElementById('theme-toggle');
 		const themeIcon = document.getElementById('theme-icon');
 		const body = document.body;
+		
+		// Deteksi preferensi OS Theme
+		const osThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-		// Check localStorage for theme preference
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'dark') {
-			body.classList.add('dark-mode');
-			themeIcon.classList.remove('fa-moon');
-			themeIcon.classList.add('fa-sun');
-		}
-
-		// Toggle theme on click
-		themeToggle.addEventListener('click', function (e) {
-			e.preventDefault();
-			body.classList.toggle('dark-mode');
-
-			if (body.classList.contains('dark-mode')) {
-				localStorage.setItem('theme', 'dark');
+		function applyTheme(isDark) {
+			if (isDark) {
+				body.classList.add('dark-mode');
 				themeIcon.classList.remove('fa-moon');
 				themeIcon.classList.add('fa-sun');
 			} else {
-				localStorage.setItem('theme', 'light');
+				body.classList.remove('dark-mode');
 				themeIcon.classList.remove('fa-sun');
 				themeIcon.classList.add('fa-moon');
+			}
+		}
+
+		// Initial Check
+		const savedTheme = localStorage.getItem('theme');
+		if (savedTheme) {
+			applyTheme(savedTheme === 'dark');
+		} else {
+			// Berpatokan pada preferensi sistem jika belum pernah diset secara manual
+			applyTheme(osThemeQuery.matches);
+		}
+
+		// Event listener jika user mengganti tema sistemnya secara live
+		osThemeQuery.addEventListener('change', function(e) {
+			if (!localStorage.getItem('theme')) {
+				applyTheme(e.matches);
+			}
+		});
+
+		// Toggle theme manual on click
+		themeToggle.addEventListener('click', function (e) {
+			e.preventDefault();
+			const isCurrentlyDark = body.classList.contains('dark-mode');
+			
+			if (isCurrentlyDark) {
+				applyTheme(false);
+				localStorage.setItem('theme', 'light');
+			} else {
+				applyTheme(true);
+				localStorage.setItem('theme', 'dark');
 			}
 		});
 	});

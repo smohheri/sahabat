@@ -25,7 +25,7 @@
 
 		<!-- Sidebar Menu -->
 		<nav class="mt-2">
-			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+			<ul class="nav nav-pills nav-sidebar flex-column nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
 
 				<!-- Dashboard -->
 				<li class="nav-item">
@@ -117,70 +117,52 @@
 					</ul>
 				</li>
 
-				<!-- Informasi -->
-				<li class="nav-header">INFORMASI</li>
+				<!-- Website & Info -->
+				<li class="nav-header">WEBSITE & INFO</li>
 
-				<!-- Kontak Pengembang -->
-				<li class="nav-item">
-					<a href="<?php echo site_url('admin/kontak'); ?>"
-						class="nav-link <?php echo $this->uri->segment(2) == 'kontak' ? 'active' : ''; ?>">
-						<i class="nav-icon fas fa-headset"></i>
-						<p>Kontak Pengembang</p>
-					</a>
-				</li>
-
-				<!-- Dukung Kami -->
-				<li class="nav-item">
-					<a href="<?php echo site_url('admin/dukung_kami'); ?>"
-						class="nav-link <?php echo $this->uri->segment(2) == 'dukung_kami' ? 'active' : ''; ?>">
-						<i class="nav-icon fas fa-heart"></i>
-						<p>Dukung Kami</p>
-					</a>
-				</li>
-
-				<!-- Changelog -->
-				<li class="nav-item">
-					<a href="<?php echo site_url('admin/changelog'); ?>"
-						class="nav-link <?php echo $this->uri->segment(2) == 'changelog' ? 'active' : ''; ?>">
-						<i class="nav-icon fas fa-history"></i>
-						<p>Changelog</p>
-					</a>
-				</li>
-
-				<!-- Landing Page -->
-				<li class="nav-header">LANDING PAGE</li>
-
-				<li
-					class="nav-item <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities')) ? 'menu-open' : ''; ?>">
-					<a href="#"
-						class="nav-link <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities')) ? 'active' : ''; ?>">
-						<i class="nav-icon fas fa-home"></i>
+				<li class="nav-item <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'menu-open' : ''; ?>">
+					<a href="#" class="nav-link <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-globe"></i>
 						<p>
-							Landing Page
+							Kelola Website
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities')) ? 'display: block;' : ''; ?>">
+					<ul class="nav nav-treeview" style="<?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/carousel'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'carousel' ? 'active' : ''; ?>">
+							<a href="<?php echo site_url('admin/carousel'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'carousel' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Kelola Carousel</p>
+								<p>Carousel / Banner</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/landing'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'landing' ? 'active' : ''; ?>">
+							<a href="<?php echo site_url('admin/landing'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'landing' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Kelola About</p>
+								<p>Tentang Kami</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo site_url('admin/facilities'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'facilities' ? 'active' : ''; ?>">
+							<a href="<?php echo site_url('admin/facilities'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'facilities' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Kelola Fasilitas</p>
+								<p>Fasilitas LKSA</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/kontak'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'kontak' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Kontak Pengembang</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/dukung_kami'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'dukung_kami' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Dukung Kami</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/changelog'); ?>" class="nav-link <?php echo $this->uri->segment(2) == 'changelog' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Log Pembaruan</p>
 							</a>
 						</li>
 					</ul>

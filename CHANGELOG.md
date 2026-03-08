@@ -12,13 +12,27 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Membuat CSS terpusat (`assets/css/datatables-global.css`) untuk styling DataTables.
   - Memuat DataTables beserta plugin (Bootstrap 4, Responsive) secara global di template `head.php` dan `footer.php`.
   - Setup fitur responsif dan terjemahan Bahasa Indonesia otomatis di seluruh file Laporan.
+- ✨ **Auto-Detect Device Dark Mode**
+  - Menerapkan script JS pintar di `head.php` dan `navbar.php` untuk mendeteksi preferensi tema gelap (*prefers-color-scheme*) perangkat secara otomatis.
+  - Tema AdminLTE secara langsung mengikuti tema lokal (tanpa me-_refresh_), namun tetap bisa mengatur ulang melalui tombol khusus panel (override preference).
 
 ### Changed
 - 🔄 **Refactor Halaman Admin**
   - Menghapus CSS DataTables inline dan import berulang di file `anak.php`, `pengurus.php`, `user.php`, `logs.php`.
   - Mengubah inisialisasi tabel summary di `statistik.php` ke tabel HTML bawaan Bootstrap untuk menghindari malfungsi DataTables terkait atribut `colspan`.
+  - Merapikan struktur Sidebar menu (`sidebar_lksa.php`) dengan mengelompokkan menu pendaftaran publik, fasilitas, carousel, kontak, serta changelog ke dalam *dropdown* khusus "Kelola Website" di bawh "WEBSITE & INFO".
+  - Menambahkan styling class AdminLTE `nav-compact` dan `nav-child-indent` untuk membuat sidebar admin lebih ringkas dan terstruktur.
 - 🔄 **Refactor Landing Page**
   - Mengubah *branding* navbar (sebelumnya menampilkan nama lembaga berbasis teks) menjadi dinamis menggunakan gambar Logo LKSA sesuai pengaturan dengan ukuran proporsional.
+
+### Fixed
+- 🐛 **Perbaikan UI Dashboard Admin**
+  - Menyesuaikan *padding* pada panel Ringkasan (`.summary-clean` di `dashboard.php`) agar layout label dan angka tidak terlalu menempel ke tepi kotak (*card*).
+- 🐛 **Perbaikan Konfigurasi Sistem dan Session**
+  - Fungsi `env()` di `config.php` dan `database.php` kini diatur secara murni untuk hanya membaca properti sistem via superglobal variabel `$_ENV`, menyelesaikan malfungsi yang terjadi ketika memuat var environment melalui fallback server host.
+  - Menghapus pemuatan properti env yang *redundant* pada pengaturan bawaan CodeIgniter dan mengembalikannya ke pengaturan/nilai native `FALSE`/`TRUE` milik CodeIgniter.
+  - Menyelesaikan masalah hilangnya notifikasi *Flashdata* (pesan gagal login) yang diakibatkan oleh kurangnya nama tabel di `sess_save_path`. Konfigurasi dikembalikan menggunakan driver `database` dan disimpan valid ke tabel `ci_sessions`.
+  - Memperbarui durasi login aplikasi (**PWA Optimization**) dengan memperpanjang *Session Expiration* menjadi 30 hari (`2592000` detik) dan *Time To Update* (regenerasi ID ID) menjadi 24 jam (`86400` detik) agar sesi tidak cepat berakhir.
 
 ---
 

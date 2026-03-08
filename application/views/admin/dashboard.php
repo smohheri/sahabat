@@ -760,7 +760,7 @@
 
 	/* Summary Clean */
 	.summary-clean {
-		padding: 10px;
+		padding: 15px 25px;
 	}
 
 	.sum-row {
