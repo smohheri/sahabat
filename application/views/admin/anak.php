@@ -1,8 +1,5 @@
 <!-- Data Anak - Redesain Modern -->
 
-<!-- DataTables CSS -->
-<link rel="stylesheet"
-	href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 
 <div class="laporan-page">
 	<!-- Page Header -->
@@ -2080,75 +2077,7 @@
 		border-color: #0f3460 !important;
 	}
 
-	/* DataTables Pagination Styling */
-	.dataTables_wrapper .dataTables_paginate {
-		padding: 20px 25px 15px 15px;
-		margin-right: 15px;
-	}
 
-	.dataTables_wrapper .dataTables_info {
-		padding: 25px 15px 15px 25px;
-	}
-
-	.dataTables_wrapper .dataTables_length {
-		padding: 20px 15px 10px 25px;
-	}
-
-	.dataTables_wrapper .dataTables_filter {
-		padding: 20px 25px 10px 15px;
-		text-align: right;
-	}
-
-	.dataTables_wrapper .dataTables_filter input {
-		padding: 6px 12px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		font-size: 14px;
-	}
-
-	.dataTables_wrapper .dataTables_filter label {
-		font-weight: 500;
-		color: #2d3748;
-	}
-
-	/* Dark mode for DataTables controls */
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
-		color: #e0e0e0 !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-		color: #fff !important;
-		background: #0f3460 !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-		color: #fff !important;
-		background: #4e73df !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_info {
-		color: #a0a0a0;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_length select {
-		background-color: #16213e;
-		color: #e0e0e0;
-		border-color: #0f3460;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter input {
-		background-color: #16213e;
-		color: #e0e0e0;
-		border-color: #0f3460;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter input::placeholder {
-		color: #a0a0a0;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter label {
-		color: #e0e0e0;
-	}
 
 	/* Form Section Styles */
 	.form-section {
@@ -2198,57 +2127,56 @@
 	}
 </style>
 
+
+
 <script>
-	// Load DataTables JS dynamically to ensure jQuery is loaded
-	$.getScript("<?php echo base_url('assets/plugins/datatables/jquery.dataTables.min.js'); ?>", function () {
-		$.getScript("<?php echo base_url('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'); ?>", function () {
-			$(document).ready(function () {
-				// Initialize DataTable with server-side processing
-				tableAnak = $('#tableAnak').DataTable({
-					"processing": true,
-					"serverSide": true,
-					"ajax": {
-						"url": "<?php echo site_url('admin/anak_ajax'); ?>",
-						"type": "POST",
-						"data": function (d) {
-							d.status_anak = $('#filterStatus').val();
-							d.jenis_kelamin = $('#filterJenisKelamin').val();
-							d.pendidikan = $('#filterPendidikan').val();
-						}
-					},
-					"columns": [
-						{ "data": 0, "orderable": false }, // No
-						{ "data": 1, "orderable": true }, // Nama Anak
-						{ "data": 2, "orderable": false }, // Jenis Kelamin
-						{ "data": 3, "orderable": false }, // Tempat/Tgl Lahir
-						{ "data": 4, "orderable": false }, // Kategori
-						{ "data": 5, "orderable": false }, // Nama Sekolah
-						{ "data": 6, "orderable": true },  // Biaya SPP
-						{ "data": 7, "orderable": false }  // Aksi
-					],
-					"pageLength": 10,
-					"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
-					"language": {
-						"processing": "Memproses...",
-						"search": "Cari:",
-						"lengthMenu": "Tampilkan _MENU_ data per halaman",
-						"zeroRecords": "Tidak ada data anak",
-						"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-						"infoEmpty": "Tidak ada data yang tersedia",
-						"infoFiltered": "(difilter dari _MAX_ total data)",
-						"paginate": {
-							"first": "Pertama",
-							"last": "Terakhir",
-							"next": "Selanjutnya",
-							"previous": "Sebelumnya"
-						}
-					}
-				});
-			});
+	var tableAnak;
+
+	$(document).ready(function () {
+		// Initialize DataTable with server-side processing
+		tableAnak = $('#tableAnak').DataTable({
+			"processing": true,
+			"serverSide": true,
+			"responsive": true,
+			"autoWidth": false,
+			"ajax": {
+				"url": "<?php echo site_url('admin/anak_ajax'); ?>",
+				"type": "POST",
+				"data": function (d) {
+					d.status_anak = $('#filterStatus').val();
+					d.jenis_kelamin = $('#filterJenisKelamin').val();
+					d.pendidikan = $('#filterPendidikan').val();
+				}
+			},
+			"columns": [
+				{ "data": 0, "orderable": false, "width": "5%" },  // No
+				{ "data": 1, "orderable": true,  "width": "20%" }, // Nama Anak
+				{ "data": 2, "orderable": false, "width": "10%" }, // Jenis Kelamin
+				{ "data": 3, "orderable": false, "width": "15%" }, // Tempat/Tgl Lahir
+				{ "data": 4, "orderable": false, "width": "15%" }, // Kategori
+				{ "data": 5, "orderable": false, "width": "15%" }, // Nama Sekolah
+				{ "data": 6, "orderable": true,  "width": "10%" }, // Biaya SPP
+				{ "data": 7, "orderable": false, "width": "10%" }  // Aksi
+			],
+			"pageLength": 10,
+			"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+			"language": {
+				"processing": "Memproses...",
+				"search": "Cari:",
+				"lengthMenu": "Tampilkan _MENU_ data per halaman",
+				"zeroRecords": "Tidak ada data anak",
+				"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+				"infoEmpty": "Tidak ada data yang tersedia",
+				"infoFiltered": "(difilter dari _MAX_ total data)",
+				"paginate": {
+					"first": "Pertama",
+					"last": "Terakhir",
+					"next": "Selanjutnya",
+					"previous": "Sebelumnya"
+				}
+			}
 		});
 	});
-
-	var tableAnak;
 
 	function filterData() {
 		if (tableAnak) {
@@ -2264,7 +2192,7 @@
 	}
 
 	// Custom file input label update
-	$('.custom-file-input').on('change', function () {
+	$(document).on('change', '.custom-file-input', function () {
 		var fileName = $(this).val().split('\\').pop();
 		$(this).siblings('.custom-file-label').addClass('selected').html(fileName);
 	});

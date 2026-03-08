@@ -391,19 +391,26 @@
 
 		$('#tableUsers').DataTable({
 			"paging": true,
-			"lengthChange": false,
+			"lengthChange": true,
 			"searching": true,
 			"ordering": true,
-			"info": false,
+			"info": true,
 			"autoWidth": false,
 			"responsive": true,
 			"pageLength": 10,
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Semua"]],
 			"language": {
 				"search": "Cari:",
 				"zeroRecords": "Tidak ada data",
+				"lengthMenu": "Tampilkan _MENU_ data per halaman",
+				"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+				"infoEmpty": "Tidak ada data yang tersedia",
+				"infoFiltered": "(difilter dari _MAX_ total data)",
 				"paginate": {
-					"previous": "<",
-					"next": ">"
+					"first": "Pertama",
+					"last": "Terakhir",
+					"previous": "Sebelumnya",
+					"next": "Selanjutnya"
 				}
 			}
 		});

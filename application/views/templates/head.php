@@ -39,6 +39,11 @@
 			<link rel="stylesheet" href="<?php echo base_url('assets/plugins/' . $css); ?>">
 		<?php endforeach; ?>
 	<?php endif; ?>
+
+	<!-- DataTables Global CSS -->
+	<link rel="stylesheet" href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
+	<link rel="stylesheet" href="<?php echo base_url('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
+	<link rel="stylesheet" href="<?php echo base_url('assets/css/datatables-global.css'); ?>">
 </head>
 
 <!-- jQuery -->

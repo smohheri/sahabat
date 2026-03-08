@@ -5,6 +5,23 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-03-08
+
+### Added
+- ✨ **Standarisasi Global DataTables**
+  - Membuat CSS terpusat (`assets/css/datatables-global.css`) untuk styling DataTables.
+  - Memuat DataTables beserta plugin (Bootstrap 4, Responsive) secara global di template `head.php` dan `footer.php`.
+  - Setup fitur responsif dan terjemahan Bahasa Indonesia otomatis di seluruh file Laporan.
+
+### Changed
+- 🔄 **Refactor Halaman Admin**
+  - Menghapus CSS DataTables inline dan import berulang di file `anak.php`, `pengurus.php`, `user.php`, `logs.php`.
+  - Mengubah inisialisasi tabel summary di `statistik.php` ke tabel HTML bawaan Bootstrap untuk menghindari malfungsi DataTables terkait atribut `colspan`.
+- 🔄 **Refactor Landing Page**
+  - Mengubah *branding* navbar (sebelumnya menampilkan nama lembaga berbasis teks) menjadi dinamis menggunakan gambar Logo LKSA sesuai pengaturan dengan ukuran proporsional.
+
+---
+
 ## [1.10.1] - 2026-03-05
 
 ### Fixed

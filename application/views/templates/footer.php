@@ -28,6 +28,12 @@
 <!-- AdminLTE App -->
 <script src="<?php echo base_url('assets/js/adminlte.min.js'); ?>"></script>
 
+<!-- DataTables Global JS -->
+<script src="<?php echo base_url('assets/plugins/datatables/jquery.dataTables.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js'); ?>"></script>
+
 <!-- Custom JS -->
 <?php if (isset($custom_js)): ?>
 	<?php foreach ($custom_js as $js): ?>

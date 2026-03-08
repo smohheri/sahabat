@@ -1,4 +1,5 @@
 <!-- Data Pengurus - Redesain Modern -->
+
 <div class="pengurus-page">
 	<!-- Page Header -->
 	<div class="page-header">
@@ -375,62 +376,56 @@
 	</div>
 </div>
 
+
+
 <script>
 	$(document).ready(function () {
 		// Initialize DataTable
 		$('#tablePengurus').DataTable({
 			"paging": true,
-			"lengthChange": false,
+			"lengthChange": true,
 			"searching": true,
 			"ordering": true,
-			"info": false,
+			"info": true,
 			"autoWidth": false,
 			"responsive": true,
 			"pageLength": 10,
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Semua"]],
 			"language": {
 				"search": "Cari:",
 				"zeroRecords": "Tidak ada data",
+				"lengthMenu": "Tampilkan _MENU_ data per halaman",
+				"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+				"infoEmpty": "Tidak ada data yang tersedia",
+				"infoFiltered": "(difilter dari _MAX_ total data)",
 				"paginate": {
-					"previous": "<",
-					"next": ">"
+					"first": "Pertama",
+					"last": "Terakhir",
+					"previous": "Sebelumnya",
+					"next": "Selanjutnya"
 				}
 			}
 		});
 
 		// Custom file input label update
-		$('.custom-file-input').on('change', function () {
+		$(document).on('change', '.custom-file-input', function () {
 			var fileName = $(this).val().split('\\').pop();
 			$(this).siblings('.custom-file-label').addClass('selected').html(fileName);
 		});
-
-		// Filter functionality
-		function filterData() {
-			var jabatan = $('#filterJabatan').val().toLowerCase();
-			var rows = $('#tablePengurus tbody tr');
-
-			rows.each(function () {
-				var row = $(this);
-				var jabatanCell = row.find('td').eq(2).text().toLowerCase();
-
-				var showRow = true;
-
-				if (jabatan && jabatanCell.indexOf(jabatan) === -1) {
-					showRow = false;
-				}
-
-				if (showRow) {
-					row.show();
-				} else {
-					row.hide();
-				}
-			});
-		}
-
-		function resetFilter() {
-			$('#filterJabatan').val('');
-			$('#tablePengurus tbody tr').show();
-		}
 	});
+
+	// Filter functionality - global scope agar bisa dipanggil dari onclick
+	function filterData() {
+		var dt = $('#tablePengurus').DataTable();
+		var jabatan = $('#filterJabatan').val();
+		dt.column(2).search(jabatan).draw();
+	}
+
+	function resetFilter() {
+		$('#filterJabatan').val('');
+		var dt = $('#tablePengurus').DataTable();
+		dt.search('').columns().search('').draw();
+	}
 </script>
 
 <style>
@@ -727,6 +722,66 @@
 
 	.table-responsive {
 		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	/* DataTables Navigation Padding - konsisten dengan Data Anak */
+	.dataTables_wrapper .dataTables_paginate {
+		padding: 20px 25px 15px 15px;
+		margin-right: 15px;
+	}
+
+	.dataTables_wrapper .dataTables_info {
+		padding: 25px 15px 15px 25px;
+	}
+
+	.dataTables_wrapper .dataTables_length {
+		padding: 20px 15px 10px 25px;
+	}
+
+	.dataTables_wrapper .dataTables_filter {
+		padding: 20px 25px 10px 15px;
+		text-align: right;
+	}
+
+	.dataTables_wrapper .dataTables_filter input {
+		padding: 6px 12px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 14px;
+	}
+
+	.dataTables_wrapper .dataTables_filter label {
+		font-weight: 500;
+		color: #2d3748;
+	}
+
+	#tablePengurus {
+		min-width: 500px;
+		width: 100% !important;
+	}
+
+	.dataTables_wrapper {
+		width: 100%;
+		overflow-x: auto;
+	}
+
+	@media (max-width: 768px) {
+		.dataTables_wrapper .dataTables_length,
+		.dataTables_wrapper .dataTables_filter {
+			text-align: left;
+			width: 100%;
+		}
+		.dataTables_wrapper .dataTables_info,
+		.dataTables_wrapper .dataTables_paginate {
+			text-align: center;
+			width: 100%;
+			padding: 10px 15px;
+		}
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			padding: 0.3em 0.6em !important;
+			margin: 2px !important;
+		}
 	}
 
 	/* Data Table */

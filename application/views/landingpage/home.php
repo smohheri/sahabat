@@ -659,7 +659,9 @@
 	<!-- Navbar -->
 	<nav class="navbar navbar-expand-lg fixed-top landing-navbar" id="navbar">
 		<div class="container">
-			<a class="navbar-brand" href="#"><?php echo $settings->nama_lksa ?? 'Simpintar'; ?></a>
+			<a class="navbar-brand d-flex align-items-center" href="#">
+				<img src="<?php echo $favicon_url; ?>" alt="Logo <?php echo $settings->nama_lksa ?? 'LKSA'; ?>" style="max-height: 40px; width: auto;">
+			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>

@@ -1,8 +1,5 @@
 <!-- Log Aktivitas - Redesain Modern -->
 
-<!-- DataTables CSS -->
-<link rel="stylesheet"
-	href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 
 <div class="laporan-page">
 	<!-- Page Header -->
@@ -509,118 +506,47 @@
 		color: #e74a3b;
 	}
 
-	/* DataTables Pagination Styling */
-	.dataTables_wrapper .dataTables_paginate {
-		padding: 20px 25px 15px 15px;
-		margin-right: 15px;
-	}
 
-	.dataTables_wrapper .dataTables_info {
-		padding: 25px 15px 15px 25px;
-	}
-
-	.dataTables_wrapper .dataTables_length {
-		padding: 20px 15px 10px 25px;
-	}
-
-	.dataTables_wrapper .dataTables_filter {
-		padding: 20px 25px 10px 15px;
-		text-align: right;
-	}
-
-	.dataTables_wrapper .dataTables_filter input {
-		padding: 6px 12px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		font-size: 14px;
-	}
-
-	.dataTables_wrapper .dataTables_filter label {
-		font-weight: 500;
-		color: #2d3748;
-	}
-
-	/* Dark mode for DataTables controls */
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
-		color: #e0e0e0 !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-		color: #fff !important;
-		background: #0f3460 !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-		color: #fff !important;
-		background: #4e73df !important;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_info {
-		color: #a0a0a0;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_length select {
-		background-color: #16213e;
-		color: #e0e0e0;
-		border-color: #0f3460;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter input {
-		background-color: #16213e;
-		color: #e0e0e0;
-		border-color: #0f3460;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter input::placeholder {
-		color: #a0a0a0;
-	}
-
-	body.dark-mode .dataTables_wrapper .dataTables_filter label {
-		color: #e0e0e0;
-	}
 </style>
 
 <script>
-	// Load DataTables JS dynamically to ensure jQuery is loaded
-	$.getScript("<?php echo base_url('assets/plugins/datatables/jquery.dataTables.min.js'); ?>", function () {
-		$.getScript("<?php echo base_url('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'); ?>", function () {
-			$(document).ready(function () {
-				// Initialize DataTable with server-side processing
-				$('#tableLogs').DataTable({
-					"processing": true,
-					"serverSide": true,
-					"ajax": {
-						"url": "<?php echo site_url('admin/logs_ajax'); ?>",
-						"type": "POST"
-					},
-					"columns": [
-						{ "data": 0, "orderable": false }, // No
-						{ "data": 1, "orderable": false }, // User
-						{ "data": 2, "orderable": false }, // Activity
-						{ "data": 3, "orderable": false }, // Description
-						{ "data": 4, "orderable": false }, // IP Address
-						{ "data": 5, "orderable": true }  // Time
-					],
-					"order": [[5, 'desc']],
-					"pageLength": 10,
-					"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
-					"language": {
-						"processing": "Memproses...",
-						"search": "Cari:",
-						"lengthMenu": "Tampilkan _MENU_ data per halaman",
-						"zeroRecords": "Tidak ada data log",
-						"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-						"infoEmpty": "Tidak ada data yang tersedia",
-						"infoFiltered": "(difilter dari _MAX_ total data)",
-						"paginate": {
-							"first": "Pertama",
-							"last": "Terakhir",
-							"next": "Selanjutnya",
-							"previous": "Sebelumnya"
-						}
-					}
-				});
-			});
+	$(document).ready(function () {
+		// Initialize DataTable with server-side processing
+		$('#tableLogs').DataTable({
+			"processing": true,
+			"serverSide": true,
+			"responsive": true,
+			"autoWidth": false,
+			"ajax": {
+				"url": "<?php echo site_url('admin/logs_ajax'); ?>",
+				"type": "POST"
+			},
+			"columns": [
+				{ "data": 0, "orderable": false }, // No
+				{ "data": 1, "orderable": false }, // User
+				{ "data": 2, "orderable": false }, // Activity
+				{ "data": 3, "orderable": false }, // Description
+				{ "data": 4, "orderable": false }, // IP Address
+				{ "data": 5, "orderable": true }  // Time
+			],
+			"order": [[5, 'desc']],
+			"pageLength": 10,
+			"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+			"language": {
+				"processing": "Memproses...",
+				"search": "Cari:",
+				"lengthMenu": "Tampilkan _MENU_ data per halaman",
+				"zeroRecords": "Tidak ada data log",
+				"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+				"infoEmpty": "Tidak ada data yang tersedia",
+				"infoFiltered": "(difilter dari _MAX_ total data)",
+				"paginate": {
+					"first": "Pertama",
+					"last": "Terakhir",
+					"next": "Selanjutnya",
+					"previous": "Sebelumnya"
+				}
+			}
 		});
 	});
 </script>

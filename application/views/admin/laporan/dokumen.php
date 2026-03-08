@@ -759,3 +759,33 @@
 		color: #a0a0a0 !important;
 	}
 </style>
+
+<script>
+	$(document).ready(function () {
+		$('.data-table').DataTable({
+			"paging": true,
+			"lengthChange": true,
+			"searching": true,
+			"ordering": true,
+			"info": true,
+			"autoWidth": false,
+			"responsive": true,
+			"pageLength": 10,
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Semua"]],
+			"language": {
+				"search": "Cari:",
+				"zeroRecords": "Tidak ada data",
+				"lengthMenu": "Tampilkan _MENU_ data per halaman",
+				"info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+				"infoEmpty": "Tidak ada data yang tersedia",
+				"infoFiltered": "(difilter dari _MAX_ total data)",
+				"paginate": {
+					"first": "Pertama",
+					"last": "Terakhir",
+					"previous": "Sebelumnya",
+					"next": "Selanjutnya"
+				}
+			}
+		});
+	});
+</script>

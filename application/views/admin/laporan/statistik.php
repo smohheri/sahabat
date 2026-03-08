@@ -134,7 +134,7 @@
 			<h3><i class="fas fa-table"></i> Detail Statistik</h3>
 		</div>
 		<div class="panel-body">
-			<table class="data-table">
+			<table class="table table-hover table-striped">
 				<thead>
 					<tr>
 						<th>Kategori</th>
