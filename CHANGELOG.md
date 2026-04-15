@@ -5,6 +5,79 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-04-15
+
+### Added
+- ✨ **Modul Penilaian Karakter Anak**
+  - Menambahkan menu admin baru **Penilaian Karakter** di sidebar dengan submenu:
+    - Master Penilaian
+    - Data Penilaian
+    - Detail Penilaian
+    - Catatan Kualitatif
+    - Ringkasan Mingguan
+    - Ringkasan Bulanan
+    - Laporan Karakter
+  - Menambahkan route baru untuk seluruh halaman penilaian karakter di `application/config/routes.php`.
+  - Menambahkan model baru:
+    - `application/models/Character_master_model.php`
+    - `application/models/Character_assessment_model.php`
+  - Menambahkan view baru:
+    - `application/views/admin/penilaian_master.php`
+    - `application/views/admin/penilaian_table.php`
+    - `application/views/admin/penilaian_laporan.php`
+
+- 📄 **Export PDF Laporan Karakter**
+  - Menambahkan endpoint `admin/export_pdf_karakter`.
+  - Menambahkan generator PDF ringkasan perkembangan karakter per anak di `application/libraries/Pdf_export.php`.
+  - Mendukung filter laporan berdasarkan minggu, bulan, dan rentang tanggal.
+
+- 🧪 **Seed & SQL Pendukung Penilaian Karakter**
+  - Menambahkan file SQL seed untuk data uji coba:
+    - `database/seed_character_assessment_data.sql`
+    - `database/seed_anak_dummy_data.sql`
+  - Menambahkan SQL migrasi role:
+    - `database/alter_table_add_role_guru.sql`
+
+### Changed
+- 🔄 **Peningkatan Alur Login dengan Pilihan Akses**
+  - Form login sekarang memiliki dropdown `akses`.
+  - Validasi login mewajibkan role akun sesuai dengan akses yang dipilih.
+  - Role `guru` disesuaikan menjadi `pengajar` pada alur autentikasi dan manajemen user.
+
+- 🔄 **Pembaruan Manajemen User**
+  - Validasi role di halaman user diperluas menjadi:
+    - `admin`
+    - `petugas`
+    - `dinas`
+    - `operator`
+    - `pengajar`
+  - Filter dan opsi role pada form tambah/edit user ikut diperbarui.
+
+- 🔄 **Penyesuaian PWA untuk Area Admin**
+  - Service worker tidak lagi mengontrol halaman `/admin` untuk mencegah konflik navigasi dan unduhan file PDF.
+  - Registrasi service worker kini otomatis di-unregister pada area admin.
+  - Versi cache service worker dinaikkan ke `sahabat-pwa-v4`.
+
+### Fixed
+- 🐛 **Perbaikan Login Tanpa Notifikasi Error**
+  - Mengubah session lokal ke driver `files` pada `.env` agar flashdata kembali berfungsi saat tabel session database belum tersedia.
+  - Menambahkan pengamanan di `application/helpers/logging_helper.php` agar aktivitas login tidak gagal jika tabel `user_logs` belum ada.
+
+- 🐛 **Perbaikan Export PDF Karakter**
+  - Mengatasi error 500 akibat dependency mPDF belum tersedia melalui integrasi Composer.
+  - Menambahkan header no-cache pada export PDF untuk menghindari respons stale/cache lama.
+  - Menyesuaikan tombol export agar membuka file PDF di tab baru dengan alur yang lebih aman.
+
+- 🐛 **Perbaikan Fallback Logo Aplikasi**
+  - Memastikan favicon, preloader, dan logo sidebar hanya memakai file upload jika benar-benar ada.
+  - Menambahkan fallback aman ke `assets/img/AdminLTELogo.png` jika file logo upload tidak ditemukan.
+
+- 🐛 **Perbaikan Script Seed Karakter**
+  - Memperbaiki query insert dummy anak di `database/seed_character_assessment_data.sql` agar kompatibel dengan parser MySQL/phpMyAdmin.
+  - Menyesuaikan seed supaya data penilaian langsung muncul pada filter periode aktif.
+
+---
+
 ## [1.11.0] - 2026-03-08
 
 ### Added
