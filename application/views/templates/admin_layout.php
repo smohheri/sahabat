@@ -4,7 +4,7 @@
 
 <?php $this->load->view('templates/navbar'); ?>
 
-<?php $this->load->view('templates/sidebar_lksa'); ?>
+<?php $this->load->view($sidebar_view ?? 'templates/sidebar_lksa'); ?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

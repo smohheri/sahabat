@@ -9,6 +9,11 @@ class Admin extends CI_Controller
 		if (!$this->session->userdata('is_logged_in')) {
 			redirect('auth/login');
 		}
+
+		if (in_array($this->session->userdata('role'), array('guru', 'pengajar'), TRUE)) {
+			redirect('guru');
+		}
+
 		$this->load->helper('ip');
 		$this->load->helper('logging');
 	}

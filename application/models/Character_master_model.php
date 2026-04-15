@@ -19,6 +19,47 @@ class Character_master_model extends CI_Model
         return $this->db->get()->result();
     }
 
+    public function get_aspects_with_indicators()
+    {
+        if (!$this->db->table_exists('character_aspects') || !$this->db->table_exists('character_indicators')) {
+            return array();
+        }
+
+        $this->db->select('ca.id_aspect, ca.aspect_name, ca.aspect_code, ca.description AS aspect_description, ca.`order` AS aspect_order, ci.id_indicator, ci.indicator_name, ci.indicator_code, ci.description AS indicator_description, ci.`order` AS indicator_order', false);
+        $this->db->from('character_aspects ca');
+        $this->db->join('character_indicators ci', 'ci.id_aspect = ca.id_aspect', 'left');
+        $this->db->order_by('ca.`order`', 'ASC', false);
+        $this->db->order_by('ci.`order`', 'ASC', false);
+
+        $rows = $this->db->get()->result();
+
+        $grouped = array();
+        foreach ($rows as $row) {
+            if (!isset($grouped[$row->id_aspect])) {
+                $grouped[$row->id_aspect] = (object) array(
+                    'id_aspect' => $row->id_aspect,
+                    'aspect_name' => $row->aspect_name,
+                    'aspect_code' => $row->aspect_code,
+                    'description' => $row->aspect_description,
+                    'order' => $row->aspect_order,
+                    'indicators' => array()
+                );
+            }
+
+            if (!empty($row->id_indicator)) {
+                $grouped[$row->id_aspect]->indicators[] = (object) array(
+                    'id_indicator' => $row->id_indicator,
+                    'indicator_name' => $row->indicator_name,
+                    'indicator_code' => $row->indicator_code,
+                    'description' => $row->indicator_description,
+                    'order' => $row->indicator_order
+                );
+            }
+        }
+
+        return array_values($grouped);
+    }
+
     public function count_indicators()
     {
         return (int) $this->db->count_all('character_indicators');

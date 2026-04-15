@@ -1,4 +1,13 @@
 <!-- Navbar -->
+<?php
+$role = $this->session->userdata('role');
+$is_guru = in_array($role, array('guru', 'pengajar'), TRUE);
+$dashboard_link = $is_guru ? site_url('guru') : site_url('admin');
+$secondary_link = $is_guru ? site_url('guru/anak') : site_url('admin/kontak');
+$secondary_icon = $is_guru ? 'fas fa-child' : 'far fa-address-card';
+$secondary_label = $is_guru ? 'Data Anak' : 'Kontak';
+$secondary_title = $is_guru ? 'Lihat data anak' : 'Kontak Pengembang';
+?>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light" id="main-navbar">
 	<!-- Left navbar links -->
 	<ul class="navbar-nav">
@@ -6,7 +15,7 @@
 			<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="<?php echo base_url('admin'); ?>" class="nav-link">Dashboard</a>
+			<a href="<?php echo $dashboard_link; ?>" class="nav-link">Dashboard</a>
 		</li>
 	</ul>
 
@@ -14,8 +23,8 @@
 	<ul class="navbar-nav ml-auto">
 		<!-- Contact Link (Text like Dashboard) -->
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="<?php echo site_url('admin/kontak'); ?>" class="nav-link" title="Kontak Pengembang">
-				<i class="far fa-address-card mr-1"></i> Kontak
+			<a href="<?php echo $secondary_link; ?>" class="nav-link" title="<?php echo $secondary_title; ?>">
+				<i class="<?php echo $secondary_icon; ?> mr-1"></i> <?php echo $secondary_label; ?>
 			</a>
 		</li>
 
@@ -439,7 +448,7 @@
 		const themeToggle = document.getElementById('theme-toggle');
 		const themeIcon = document.getElementById('theme-icon');
 		const body = document.body;
-		
+
 		// Deteksi preferensi OS Theme
 		const osThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -465,7 +474,7 @@
 		}
 
 		// Event listener jika user mengganti tema sistemnya secara live
-		osThemeQuery.addEventListener('change', function(e) {
+		osThemeQuery.addEventListener('change', function (e) {
 			if (!localStorage.getItem('theme')) {
 				applyTheme(e.matches);
 			}
@@ -475,7 +484,7 @@
 		themeToggle.addEventListener('click', function (e) {
 			e.preventDefault();
 			const isCurrentlyDark = body.classList.contains('dark-mode');
-			
+
 			if (isCurrentlyDark) {
 				applyTheme(false);
 				localStorage.setItem('theme', 'light');

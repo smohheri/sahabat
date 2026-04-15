@@ -13,6 +13,13 @@ $route['donasi'] = 'landing/donasi';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 
+// Guru
+$route['guru'] = 'guru/index';
+$route['guru/anak'] = 'guru/anak';
+$route['guru/penilaian-karakter'] = 'guru/penilaian_karakter';
+$route['guru/perkembangan-anak'] = 'guru/perkembangan_anak';
+$route['guru/perkembangan-anak/detail/(:num)'] = 'guru/perkembangan_anak_detail/$1';
+
 // Admin
 $route['admin'] = 'admin/index';
 $route['admin/anak'] = 'admin/anak';

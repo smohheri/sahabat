@@ -14,14 +14,14 @@ class Auth extends CI_Controller
 
 	public function login()
 	{
-		// Jika sudah login, redirect ke admin
+		// Jika sudah login, redirect sesuai role
 		if ($this->session->userdata('is_logged_in')) {
-			redirect('admin');
+			$this->redirect_by_role($this->session->userdata('role'));
 		}
 
 		$this->form_validation->set_rules('username', 'Username', 'required');
 		$this->form_validation->set_rules('password', 'Password', 'required');
-		$this->form_validation->set_rules('akses', 'Akses', 'required|in_list[admin,petugas,dinas,operator,pengajar]');
+		$this->form_validation->set_rules('akses', 'Akses', 'required|in_list[admin,petugas,dinas,operator,guru,pengajar]');
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->load->helper('form');
@@ -34,6 +34,7 @@ class Auth extends CI_Controller
 					'petugas' => 'Petugas',
 					'dinas' => 'Dinas',
 					'operator' => 'Operator',
+					'guru' => 'Guru',
 					'pengajar' => 'Pengajar'
 				)
 			);
@@ -46,7 +47,7 @@ class Auth extends CI_Controller
 			$user = $this->User_model->login($username, $password);
 
 			if ($user) {
-				if ($user->role !== $akses) {
+				if (!$this->is_akses_match($user->role, $akses)) {
 					$this->session->set_flashdata('error', 'Akses yang dipilih tidak sesuai dengan akun Anda.');
 					redirect('auth/login');
 				}
@@ -63,12 +64,31 @@ class Auth extends CI_Controller
 				// Log login activity
 				log_activity('login', 'Login ke sistem');
 
-				redirect('admin');
+				$this->redirect_by_role($user->role);
 			} else {
 				$this->session->set_flashdata('error', 'Username atau password salah!');
 				redirect('auth/login');
 			}
 		}
+	}
+
+	private function is_akses_match($user_role, $selected_akses)
+	{
+		$teacher_roles = array('guru', 'pengajar');
+		if (in_array($user_role, $teacher_roles, TRUE) && in_array($selected_akses, $teacher_roles, TRUE)) {
+			return TRUE;
+		}
+
+		return $user_role === $selected_akses;
+	}
+
+	private function redirect_by_role($role)
+	{
+		if (in_array($role, array('guru', 'pengajar'), TRUE)) {
+			redirect('guru');
+		}
+
+		redirect('admin');
 	}
 
 	public function logout()

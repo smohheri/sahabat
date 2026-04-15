@@ -38,11 +38,44 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Menambahkan SQL migrasi role:
     - `database/alter_table_add_role_guru.sql`
 
+- 👨‍🏫 **Panel Guru Terpisah dari Admin**
+  - Menambahkan route panel guru:
+    - `guru`
+    - `guru/anak`
+    - `guru/penilaian-karakter`
+    - `guru/perkembangan-anak`
+    - `guru/perkembangan-anak/detail/{id_anak}`
+  - Menambahkan controller baru `application/controllers/Guru.php`.
+  - Menambahkan sidebar khusus guru `application/views/templates/sidebar_guru.php`.
+  - Menambahkan halaman baru panel guru:
+    - `application/views/guru/dashboard.php`
+    - `application/views/guru/anak.php`
+    - `application/views/guru/penilaian.php`
+    - `application/views/guru/perkembangan.php`
+    - `application/views/guru/perkembangan_detail.php`
+
+- 📈 **Monitoring Perkembangan Anak di Panel Guru**
+  - Menambahkan halaman ringkasan perkembangan dengan daftar anak dan skor tiap aspek.
+  - Menambahkan halaman detail perkembangan anak dengan:
+    - ringkasan skor indikator per aspek,
+    - riwayat penilaian,
+    - grafik radar nilai per aspek,
+    - grafik tren indikator per aspek (multi-line chart).
+  - Menambahkan query model pendukung di `application/models/Character_assessment_model.php` untuk:
+    - ringkasan skor aspek per anak,
+    - detail skor indikator,
+    - riwayat penilaian per anak,
+    - dataset tren indikator.
+
 ### Changed
 - 🔄 **Peningkatan Alur Login dengan Pilihan Akses**
   - Form login sekarang memiliki dropdown `akses`.
   - Validasi login mewajibkan role akun sesuai dengan akses yang dipilih.
-  - Role `guru` disesuaikan menjadi `pengajar` pada alur autentikasi dan manajemen user.
+  - Mendukung role `guru` dan `pengajar` dengan alur redirect otomatis ke panel guru.
+
+- 🔄 **Penyesuaian Layout Shared untuk Multi-Role**
+  - Template layout admin sekarang mendukung pemilihan sidebar dinamis berdasarkan role.
+  - Navbar disesuaikan agar tautan utama mengikuti konteks role (admin/guru).
 
 - 🔄 **Pembaruan Manajemen User**
   - Validasi role di halaman user diperluas menjadi:
@@ -75,6 +108,9 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - 🐛 **Perbaikan Script Seed Karakter**
   - Memperbaiki query insert dummy anak di `database/seed_character_assessment_data.sql` agar kompatibel dengan parser MySQL/phpMyAdmin.
   - Menyesuaikan seed supaya data penilaian langsung muncul pada filter periode aktif.
+
+- 🐛 **Perbaikan Submit Penilaian Karakter Guru**
+  - Menambahkan token CSRF pada form penilaian karakter guru untuk mencegah error `The action you have requested is not allowed` saat proteksi CSRF aktif.
 
 ---
 
