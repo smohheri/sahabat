@@ -99,7 +99,10 @@
 					<select class="form-select" id="filterRole">
 						<option value="">Semua Role</option>
 						<option value="admin">Admin</option>
+						<option value="petugas">Petugas</option>
+						<option value="dinas">Dinas</option>
 						<option value="operator">Operator</option>
+						<option value="pengajar">Pengajar</option>
 					</select>
 				</div>
 				<div class="filter-item filter-actions">
@@ -236,7 +239,10 @@
 													</div>
 													<select class="form-control" name="role" required>
 														<option value="admin" <?php echo $user->role == 'admin' ? 'selected' : ''; ?>>Admin</option>
+														<option value="petugas" <?php echo $user->role == 'petugas' ? 'selected' : ''; ?>>Petugas</option>
+														<option value="dinas" <?php echo $user->role == 'dinas' ? 'selected' : ''; ?>>Dinas</option>
 														<option value="operator" <?php echo $user->role == 'operator' ? 'selected' : ''; ?>>Operator</option>
+														<option value="pengajar" <?php echo $user->role == 'pengajar' ? 'selected' : ''; ?>>Pengajar</option>
 													</select>
 												</div>
 											</div>
@@ -343,7 +349,10 @@
 						<select class="form-control" name="role" required>
 							<option value="">Pilih Role</option>
 							<option value="admin">Admin</option>
+							<option value="petugas">Petugas</option>
+							<option value="dinas">Dinas</option>
 							<option value="operator">Operator</option>
+							<option value="pengajar">Pengajar</option>
 						</select>
 					</div>
 				</div>

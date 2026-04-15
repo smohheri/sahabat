@@ -21,22 +21,36 @@ class Auth extends CI_Controller
 
 		$this->form_validation->set_rules('username', 'Username', 'required');
 		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('akses', 'Akses', 'required|in_list[admin,petugas,dinas,operator,pengajar]');
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->load->helper('form');
 			$settings = $this->config->item('settings');
 			$data = array(
 				'title' => 'Login - ' . ($settings ? $settings->nama_lksa : 'LKSA Harapan Bangsa'),
-				'settings' => $settings
+				'settings' => $settings,
+				'akses_options' => array(
+					'admin' => 'Admin',
+					'petugas' => 'Petugas',
+					'dinas' => 'Dinas',
+					'operator' => 'Operator',
+					'pengajar' => 'Pengajar'
+				)
 			);
 			$this->load->view('auth/login', $data);
 		} else {
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
+			$akses = $this->input->post('akses');
 
 			$user = $this->User_model->login($username, $password);
 
 			if ($user) {
+				if ($user->role !== $akses) {
+					$this->session->set_flashdata('error', 'Akses yang dipilih tidak sesuai dengan akun Anda.');
+					redirect('auth/login');
+				}
+
 				$session_data = array(
 					'id_user' => $user->id_user,
 					'nama' => $user->nama,

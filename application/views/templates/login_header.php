@@ -170,6 +170,17 @@
 			transform: translateY(-2px);
 		}
 
+		/* Perbaikan khusus agar teks dropdown akses tidak terpotong */
+		select.form-control {
+			height: auto;
+			min-height: 46px;
+			line-height: 1.4;
+			padding-top: 0.55rem;
+			padding-bottom: 0.55rem;
+			padding-right: 2.2rem;
+			text-overflow: ellipsis;
+		}
+
 		.input-group-text {
 			background: #f8f9fa;
 			border: 2px solid #e1e5e9;

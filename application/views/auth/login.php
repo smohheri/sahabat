@@ -97,6 +97,19 @@
 						</div>
 						<?php echo form_error('password', '<small class="text-danger">', '</small>'); ?>
 
+						<div class="input-group mb-3">
+							<?php
+							$options = array('' => 'Pilih Akses') + ($akses_options ?? array());
+							echo form_dropdown('akses', $options, set_value('akses'), 'class="form-control" required');
+							?>
+							<div class="input-group-append">
+								<div class="input-group-text">
+									<span class="fas fa-user-shield"></span>
+								</div>
+							</div>
+						</div>
+						<?php echo form_error('akses', '<small class="text-danger">', '</small>'); ?>
+
 						<div class="row">
 							<div class="col-12">
 								<button type="submit" class="btn btn-primary-custom btn-block">Masuk</button>

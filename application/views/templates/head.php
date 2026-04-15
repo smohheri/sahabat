@@ -9,8 +9,9 @@
 	<!-- Favicon - Menggunakan logo sahabat -->
 	<link rel="icon" type="image/png" href="<?php echo base_url('assets/img/logo_sahabat.png'); ?>" />
 	<?php
-	$logo = $this->config->item('settings')->logo ?? null;
-	$favicon_url = !empty($logo)
+	$logo = $this->config->item('settings')->logo ?? '';
+	$logo_path = FCPATH . 'assets/uploads/logos/' . $logo;
+	$favicon_url = (!empty($logo) && file_exists($logo_path))
 		? base_url('assets/uploads/logos/' . $logo)
 		: base_url('assets/img/AdminLTELogo.png');
 	?>
@@ -41,8 +42,10 @@
 	<?php endif; ?>
 
 	<!-- DataTables Global CSS -->
-	<link rel="stylesheet" href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
-	<link rel="stylesheet" href="<?php echo base_url('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
+	<link rel="stylesheet"
+		href="<?php echo base_url('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
+	<link rel="stylesheet"
+		href="<?php echo base_url('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/datatables-global.css'); ?>">
 </head>
 
@@ -58,7 +61,7 @@
 	(function () {
 		const savedTheme = localStorage.getItem('theme');
 		const osPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-		
+
 		if (savedTheme === 'dark' || (!savedTheme && osPrefersDark)) {
 			document.write('<style>body { background-color: #1a1a2e !important; }</style>');
 		}

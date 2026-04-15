@@ -424,7 +424,7 @@ class Admin extends CI_Controller
 
 			$this->form_validation->set_rules('nama', 'Nama', 'required');
 			$this->form_validation->set_rules('username', 'Username', 'required');
-			$this->form_validation->set_rules('role', 'Role', 'required');
+			$this->form_validation->set_rules('role', 'Role', 'required|in_list[admin,petugas,dinas,operator,pengajar]');
 
 			if ($this->form_validation->run() == FALSE) {
 				$this->session->set_flashdata('error', validation_errors());
@@ -492,6 +492,466 @@ class Admin extends CI_Controller
 		$data['title'] = 'Kelola User - LKSA Harapan Bangsa';
 		$data['page_title'] = 'Kelola User';
 		$data['content'] = $this->load->view('admin/user', $data, TRUE);
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_master()
+	{
+		$this->load->model('Character_master_model');
+		$this->load->library('form_validation');
+
+		if ($this->input->get('delete_scale')) {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus skala!');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$id_scale = (int) $this->input->get('delete_scale');
+			$scale = $this->Character_master_model->get_scale_by_id($id_scale);
+
+			if (!$scale) {
+				$this->session->set_flashdata('error', 'Data skala tidak ditemukan.');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$this->Character_master_model->delete_scale($id_scale);
+			log_activity('delete_character_scale', 'Menghapus skala penilaian karakter: skor ' . $scale->score . ' - ' . $scale->category);
+			$this->session->set_flashdata('success', 'Skala penilaian berhasil dihapus.');
+			redirect('admin/penilaian-karakter/master');
+		}
+
+		if ($this->input->post('form_type') === 'scale') {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengelola skala!');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$id_scale = (int) $this->input->post('id_scale');
+			$score = (int) $this->input->post('score');
+			$category = trim((string) $this->input->post('category'));
+			$description = trim((string) $this->input->post('description'));
+
+			$this->form_validation->set_rules('score', 'Skor', 'required|integer');
+			$this->form_validation->set_rules('category', 'Kategori', 'required|min_length[3]');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', validation_errors());
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			if ($score < 1) {
+				$this->session->set_flashdata('error', 'Skor minimal bernilai 1.');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			if ($this->Character_master_model->is_scale_score_exists($score, $id_scale ?: null)) {
+				$this->session->set_flashdata('error', 'Skor sudah digunakan. Gunakan nilai skor lain.');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$payload = array(
+				'score' => $score,
+				'category' => $category,
+				'description' => $description
+			);
+
+			if ($id_scale > 0) {
+				$old = $this->Character_master_model->get_scale_by_id($id_scale);
+				if (!$old) {
+					$this->session->set_flashdata('error', 'Data skala tidak ditemukan.');
+					redirect('admin/penilaian-karakter/master');
+				}
+
+				$this->Character_master_model->update_scale($id_scale, $payload);
+				log_activity('update_character_scale', 'Memperbarui skala penilaian karakter: skor ' . $old->score . ' - ' . $old->category);
+				$this->session->set_flashdata('success', 'Skala penilaian berhasil diperbarui.');
+			} else {
+				$this->Character_master_model->insert_scale($payload);
+				log_activity('add_character_scale', 'Menambahkan skala penilaian karakter: skor ' . $score . ' - ' . $category);
+				$this->session->set_flashdata('success', 'Skala penilaian berhasil ditambahkan.');
+			}
+
+			redirect('admin/penilaian-karakter/master');
+		}
+
+		if ($this->input->get('delete_aspect')) {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk menghapus aspek!');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$id_aspect = (int) $this->input->get('delete_aspect');
+			$aspect = $this->Character_master_model->get_aspect_by_id($id_aspect);
+
+			if (!$aspect) {
+				$this->session->set_flashdata('error', 'Data aspek tidak ditemukan.');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$this->Character_master_model->delete_aspect($id_aspect);
+			log_activity('delete_character_aspect', 'Menghapus aspek penilaian karakter: ' . $aspect->aspect_name . ' (' . $aspect->aspect_code . ')');
+			$this->session->set_flashdata('success', 'Aspek penilaian berhasil dihapus.');
+			redirect('admin/penilaian-karakter/master');
+		}
+
+		if ($this->input->post('form_type') === 'aspect') {
+			if ($this->session->userdata('role') != 'admin') {
+				$this->session->set_flashdata('error', 'Anda tidak memiliki akses untuk mengelola aspek!');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$id_aspect = (int) $this->input->post('id_aspect');
+			$aspect_name = trim($this->input->post('aspect_name'));
+			$aspect_code = strtoupper(trim($this->input->post('aspect_code')));
+			$description = trim((string) $this->input->post('description'));
+			$order = (int) $this->input->post('order');
+
+			$this->form_validation->set_rules('aspect_name', 'Nama Aspek', 'required|min_length[3]');
+			$this->form_validation->set_rules('aspect_code', 'Kode Aspek', 'required|min_length[3]|max_length[50]|regex_match[/^[A-Za-z0-9_]+$/]');
+			$this->form_validation->set_rules('order', 'Urutan', 'required|integer');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', validation_errors());
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			if ($this->Character_master_model->is_aspect_code_exists($aspect_code, $id_aspect ?: null)) {
+				$this->session->set_flashdata('error', 'Kode aspek sudah digunakan. Gunakan kode lain.');
+				redirect('admin/penilaian-karakter/master');
+			}
+
+			$payload = array(
+				'aspect_name' => $aspect_name,
+				'aspect_code' => $aspect_code,
+				'description' => $description,
+				'order' => $order
+			);
+
+			if ($id_aspect > 0) {
+				$old = $this->Character_master_model->get_aspect_by_id($id_aspect);
+				if (!$old) {
+					$this->session->set_flashdata('error', 'Data aspek tidak ditemukan.');
+					redirect('admin/penilaian-karakter/master');
+				}
+
+				$this->Character_master_model->update_aspect($id_aspect, $payload);
+				log_activity('update_character_aspect', 'Memperbarui aspek penilaian karakter: ' . $old->aspect_name . ' (' . $old->aspect_code . ')');
+				$this->session->set_flashdata('success', 'Aspek penilaian berhasil diperbarui.');
+			} else {
+				$this->Character_master_model->insert_aspect($payload);
+				log_activity('add_character_aspect', 'Menambahkan aspek penilaian karakter: ' . $aspect_name . ' (' . $aspect_code . ')');
+				$this->session->set_flashdata('success', 'Aspek penilaian berhasil ditambahkan.');
+			}
+
+			redirect('admin/penilaian-karakter/master');
+		}
+
+		$master_data = array(
+			'scales' => $this->Character_master_model->get_scales(),
+			'aspects' => $this->Character_master_model->get_aspects_with_indicator_count(),
+			'total_indicators' => $this->Character_master_model->count_indicators()
+		);
+
+		$data = array(
+			'title' => 'Master Penilaian Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Master Penilaian Karakter',
+			'content' => $this->load->view('admin/penilaian_master', $master_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_data()
+	{
+		$this->load->model('Character_assessment_model');
+
+		$raw_rows = $this->Character_assessment_model->get_assessments();
+		$rows = array();
+		foreach ($raw_rows as $r) {
+			$rows[] = array(
+				$r->id_assessment,
+				$r->nama_anak ?: '-',
+				$r->assessor_name ?: '-',
+				$r->assessor_type ?: '-',
+				$r->assessment_date ?: '-',
+				($r->week_number ?: '-') . ' / ' . ($r->month ?: '-') . ' / ' . ($r->year ?: '-'),
+				ucfirst($r->status ?: '-')
+			);
+		}
+
+		$view_data = array(
+			'heading' => 'Data Penilaian Karakter',
+			'subheading' => 'Tabel utama penilaian karakter (character_assessments)',
+			'icon_class' => 'fa-clipboard-list',
+			'table_icon' => 'fa-table',
+			'table_title' => 'Daftar Penilaian',
+			'columns' => array('ID', 'Nama Anak', 'Assessor', 'Tipe Assessor', 'Tanggal', 'Minggu / Bulan / Tahun', 'Status'),
+			'rows' => $rows,
+			'empty_message' => 'Belum ada data penilaian karakter.',
+			'stat_cards' => array(
+				array('label' => 'Total Penilaian', 'value' => $this->Character_assessment_model->count_assessments(), 'icon' => 'fa-clipboard-list', 'class' => 'stat-blue'),
+				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
+				array('label' => 'Status Aktif', 'value' => 'Master Data', 'icon' => 'fa-database', 'class' => 'stat-orange')
+			)
+		);
+
+		$data = array(
+			'title' => 'Data Penilaian Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Data Penilaian Karakter',
+			'content' => $this->load->view('admin/penilaian_table', $view_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_detail()
+	{
+		$this->load->model('Character_assessment_model');
+
+		$raw_rows = $this->Character_assessment_model->get_assessment_details();
+		$rows = array();
+		foreach ($raw_rows as $r) {
+			$rows[] = array(
+				$r->id_detail,
+				$r->id_assessment,
+				$r->nama_anak ?: '-',
+				$r->aspect_name ?: '-',
+				$r->indicator_name ?: '-',
+				(isset($r->score) ? $r->score : '-'),
+				$r->assessment_date ?: '-'
+			);
+		}
+
+		$view_data = array(
+			'heading' => 'Detail Skor Penilaian',
+			'subheading' => 'Detail skor per indikator (character_assessment_details)',
+			'icon_class' => 'fa-list-alt',
+			'table_icon' => 'fa-tasks',
+			'table_title' => 'Daftar Detail Penilaian',
+			'columns' => array('ID Detail', 'ID Penilaian', 'Nama Anak', 'Aspek', 'Indikator', 'Skor', 'Tanggal Penilaian'),
+			'rows' => $rows,
+			'empty_message' => 'Belum ada detail skor penilaian.',
+			'stat_cards' => array(
+				array('label' => 'Total Detail', 'value' => $this->Character_assessment_model->count_details(), 'icon' => 'fa-list-alt', 'class' => 'stat-blue'),
+				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
+				array('label' => 'Tipe Data', 'value' => 'Indikator', 'icon' => 'fa-layer-group', 'class' => 'stat-orange')
+			)
+		);
+
+		$data = array(
+			'title' => 'Detail Penilaian Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Detail Penilaian Karakter',
+			'content' => $this->load->view('admin/penilaian_table', $view_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_catatan()
+	{
+		$this->load->model('Character_assessment_model');
+
+		$raw_rows = $this->Character_assessment_model->get_qualitative_notes();
+		$rows = array();
+		foreach ($raw_rows as $r) {
+			$rows[] = array(
+				$r->id_note,
+				$r->id_assessment,
+				$r->nama_anak ?: '-',
+				$r->assessor_name ?: '-',
+				substr(strip_tags((string) $r->strengths), 0, 80) ?: '-',
+				substr(strip_tags((string) $r->areas_to_support), 0, 80) ?: '-'
+			);
+		}
+
+		$view_data = array(
+			'heading' => 'Catatan Kualitatif',
+			'subheading' => 'Catatan pengamatan perkembangan karakter (character_qualitative_notes)',
+			'icon_class' => 'fa-sticky-note',
+			'table_icon' => 'fa-clipboard',
+			'table_title' => 'Daftar Catatan Kualitatif',
+			'columns' => array('ID Catatan', 'ID Penilaian', 'Nama Anak', 'Assessor', 'Kekuatan', 'Area Dukungan'),
+			'rows' => $rows,
+			'empty_message' => 'Belum ada catatan kualitatif.',
+			'stat_cards' => array(
+				array('label' => 'Total Catatan', 'value' => $this->Character_assessment_model->count_notes(), 'icon' => 'fa-sticky-note', 'class' => 'stat-blue'),
+				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
+				array('label' => 'Jenis Data', 'value' => 'Kualitatif', 'icon' => 'fa-file-alt', 'class' => 'stat-orange')
+			)
+		);
+
+		$data = array(
+			'title' => 'Catatan Kualitatif Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Catatan Kualitatif Karakter',
+			'content' => $this->load->view('admin/penilaian_table', $view_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_ringkasan_mingguan()
+	{
+		$this->load->model('Character_assessment_model');
+
+		$raw_rows = $this->Character_assessment_model->get_weekly_summary();
+		$rows = array();
+		foreach ($raw_rows as $r) {
+			$rows[] = array(
+				$r->id_summary,
+				$r->nama_anak ?: '-',
+				$r->aspect_name ?: '-',
+				$r->week_number ?: '-',
+				$r->year ?: '-',
+				number_format((float) $r->avg_score, 2),
+				$r->assessor_type ?: '-'
+			);
+		}
+
+		$view_data = array(
+			'heading' => 'Ringkasan Mingguan',
+			'subheading' => 'Ringkasan nilai mingguan per anak dan aspek (character_weekly_summary)',
+			'icon_class' => 'fa-calendar-week',
+			'table_icon' => 'fa-calendar-week',
+			'table_title' => 'Daftar Ringkasan Mingguan',
+			'columns' => array('ID', 'Nama Anak', 'Aspek', 'Minggu', 'Tahun', 'Rata-rata', 'Tipe Assessor'),
+			'rows' => $rows,
+			'empty_message' => 'Belum ada ringkasan mingguan.',
+			'stat_cards' => array(
+				array('label' => 'Total Ringkasan', 'value' => $this->Character_assessment_model->count_weekly_summary(), 'icon' => 'fa-calendar-week', 'class' => 'stat-blue'),
+				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
+				array('label' => 'Periode', 'value' => 'Mingguan', 'icon' => 'fa-clock', 'class' => 'stat-orange')
+			)
+		);
+
+		$data = array(
+			'title' => 'Ringkasan Mingguan Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Ringkasan Mingguan Karakter',
+			'content' => $this->load->view('admin/penilaian_table', $view_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_ringkasan_bulanan()
+	{
+		$this->load->model('Character_assessment_model');
+
+		$raw_rows = $this->Character_assessment_model->get_monthly_summary();
+		$rows = array();
+		foreach ($raw_rows as $r) {
+			$rows[] = array(
+				$r->id_summary,
+				$r->nama_anak ?: '-',
+				$r->aspect_name ?: '-',
+				$r->month ?: '-',
+				$r->year ?: '-',
+				number_format((float) $r->avg_score, 2),
+				$r->assessor_type ?: '-'
+			);
+		}
+
+		$view_data = array(
+			'heading' => 'Ringkasan Bulanan',
+			'subheading' => 'Ringkasan nilai bulanan per anak dan aspek (character_monthly_summary)',
+			'icon_class' => 'fa-calendar-alt',
+			'table_icon' => 'fa-calendar-alt',
+			'table_title' => 'Daftar Ringkasan Bulanan',
+			'columns' => array('ID', 'Nama Anak', 'Aspek', 'Bulan', 'Tahun', 'Rata-rata', 'Tipe Assessor'),
+			'rows' => $rows,
+			'empty_message' => 'Belum ada ringkasan bulanan.',
+			'stat_cards' => array(
+				array('label' => 'Total Ringkasan', 'value' => $this->Character_assessment_model->count_monthly_summary(), 'icon' => 'fa-calendar-alt', 'class' => 'stat-blue'),
+				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
+				array('label' => 'Periode', 'value' => 'Bulanan', 'icon' => 'fa-clock', 'class' => 'stat-orange')
+			)
+		);
+
+		$data = array(
+			'title' => 'Ringkasan Bulanan Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Ringkasan Bulanan Karakter',
+			'content' => $this->load->view('admin/penilaian_table', $view_data, TRUE)
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function penilaian_karakter_laporan()
+	{
+		$this->load->model('Character_assessment_model');
+		$this->load->helper('tanggal');
+
+		$period_type = $this->input->get('period_type', true) ?: 'weekly';
+		$year = (int) ($this->input->get('year', true) ?: date('Y'));
+		$week = (int) ($this->input->get('week', true) ?: date('W'));
+		$month = (int) ($this->input->get('month', true) ?: date('n'));
+		$start_date = $this->input->get('start_date', true) ?: date('Y-m-01');
+		$end_date = $this->input->get('end_date', true) ?: date('Y-m-d');
+
+		if (!in_array($period_type, array('weekly', 'monthly', 'range'), true)) {
+			$period_type = 'weekly';
+		}
+
+		if ($period_type === 'range' && $start_date > $end_date) {
+			$tmp = $start_date;
+			$start_date = $end_date;
+			$end_date = $tmp;
+		}
+
+		$filters = array(
+			'period_type' => $period_type,
+			'year' => $year,
+			'week' => $week,
+			'month' => $month,
+			'start_date' => $start_date,
+			'end_date' => $end_date
+		);
+
+		$summary_rows = $this->Character_assessment_model->get_child_progress_summary($filters);
+
+		$overall_avg = 0;
+		if (!empty($summary_rows)) {
+			$total = 0;
+			foreach ($summary_rows as $r) {
+				$total += (float) $r->avg_score;
+			}
+			$overall_avg = $total / count($summary_rows);
+		}
+
+		$period_label = '';
+		if ($period_type === 'weekly') {
+			$period_label = 'Minggu ke-' . $week . ' Tahun ' . $year;
+		} elseif ($period_type === 'monthly') {
+			$period_label = bulan_indo($month) . ' ' . $year;
+		} else {
+			$period_label = tanggal_indo($start_date) . ' s/d ' . tanggal_indo($end_date);
+		}
+
+		$query_params = http_build_query($filters);
+
+		$view_data = array(
+			'period_type' => $period_type,
+			'year' => $year,
+			'week' => $week,
+			'month' => $month,
+			'start_date' => $start_date,
+			'end_date' => $end_date,
+			'period_label' => $period_label,
+			'summary_rows' => $summary_rows,
+			'total_children' => count($summary_rows),
+			'overall_avg' => $overall_avg,
+			'total_assessments' => array_sum(array_map(function ($r) {
+				return (int) $r->total_penilaian;
+			}, $summary_rows)),
+			'years' => range(date('Y') + 1, date('Y') - 10),
+			'export_url' => site_url('admin/export_pdf_karakter?' . $query_params)
+		);
+
+		$data = array(
+			'title' => 'Laporan Karakter - LKSA Harapan Bangsa',
+			'page_title' => 'Laporan Karakter',
+			'content' => $this->load->view('admin/penilaian_laporan', $view_data, TRUE)
+		);
+
 		$this->load->view('templates/admin_layout', $data);
 	}
 
@@ -1104,6 +1564,65 @@ class Admin extends CI_Controller
 		$html = $this->pdf_export->generate_laporan_statistik($data);
 		$this->pdf_export->generate($html, 'laporan_statistik_' . date('Ymd') . '.pdf', 'D');
 		log_activity('export_pdf_statistik', 'Mengekspor laporan PDF data statistik');
+	}
+
+	public function export_pdf_karakter()
+	{
+		header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+		header('Cache-Control: post-check=0, pre-check=0', false);
+		header('Pragma: no-cache');
+
+		$this->load->model('Character_assessment_model');
+		$this->load->library('Pdf_export');
+		$this->load->helper('tanggal');
+
+		$period_type = $this->input->get('period_type', true) ?: 'weekly';
+		$year = (int) ($this->input->get('year', true) ?: date('Y'));
+		$week = (int) ($this->input->get('week', true) ?: date('W'));
+		$month = (int) ($this->input->get('month', true) ?: date('n'));
+		$start_date = $this->input->get('start_date', true) ?: date('Y-m-01');
+		$end_date = $this->input->get('end_date', true) ?: date('Y-m-d');
+
+		if (!in_array($period_type, array('weekly', 'monthly', 'range'), true)) {
+			$period_type = 'weekly';
+		}
+
+		if ($period_type === 'range' && $start_date > $end_date) {
+			$tmp = $start_date;
+			$start_date = $end_date;
+			$end_date = $tmp;
+		}
+
+		$filters = array(
+			'period_type' => $period_type,
+			'year' => $year,
+			'week' => $week,
+			'month' => $month,
+			'start_date' => $start_date,
+			'end_date' => $end_date
+		);
+
+		$summary_rows = $this->Character_assessment_model->get_child_progress_summary($filters);
+
+		$period_label = '';
+		if ($period_type === 'weekly') {
+			$period_label = 'Minggu ke-' . $week . ' Tahun ' . $year;
+		} elseif ($period_type === 'monthly') {
+			$period_label = bulan_indo($month) . ' ' . $year;
+		} else {
+			$period_label = tanggal_indo($start_date) . ' s/d ' . tanggal_indo($end_date);
+		}
+
+		$data = array(
+			'summary_rows' => $summary_rows,
+			'period_type' => $period_type,
+			'period_label' => $period_label,
+			'settings' => $this->config->item('settings')
+		);
+
+		$html = $this->pdf_export->generate_laporan_karakter_ringkasan($data);
+		$this->pdf_export->generate($html, 'laporan_karakter_' . date('Ymd') . '.pdf', 'D');
+		log_activity('export_pdf_karakter', 'Mengekspor laporan PDF penilaian karakter (' . $period_label . ')');
 	}
 
 	public function generate_pdf_statistik()

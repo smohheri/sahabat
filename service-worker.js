@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'sahabat-pwa-v3';
+const CACHE_VERSION = 'sahabat-pwa-v4';
 const APP_SHELL = [
   './',
   './manifest.webmanifest',
@@ -42,6 +42,15 @@ self.addEventListener('fetch', (event) => {
 
   // Ignore browser-extension and other unsupported schemes.
   if (requestUrl.protocol !== 'http:' && requestUrl.protocol !== 'https:') {
+    return;
+  }
+
+  // Admin area should always use direct network to avoid stale fallback behavior,
+  // especially for binary/document responses like PDF export.
+  if (requestUrl.pathname.includes('/admin/')) {
+    if (request.mode === 'navigate') {
+      event.respondWith(fetch(request));
+    }
     return;
   }
 

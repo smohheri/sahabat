@@ -8,6 +8,10 @@ if (!function_exists('log_activity')) {
 		$CI->load->model('User_log_model');
 		$CI->load->helper('ip');
 
+		if (!$CI->db->table_exists('user_logs')) {
+			return;
+		}
+
 		$log_data = array(
 			'id_user' => $CI->session->userdata('id_user'),
 			'activity' => $activity,
@@ -15,7 +19,12 @@ if (!function_exists('log_activity')) {
 			'ip_address' => get_real_ip(),
 			'user_agent' => $CI->input->user_agent()
 		);
-		$CI->User_log_model->insert_log($log_data);
+
+		try {
+			$CI->User_log_model->insert_log($log_data);
+		} catch (Exception $e) {
+			log_message('error', 'Gagal menyimpan activity log: ' . $e->getMessage());
+		}
 	}
 }
 
