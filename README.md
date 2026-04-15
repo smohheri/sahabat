@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.11.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.12.0-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -32,8 +32,22 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Laporan dokumen
 - Laporan statistik dengan chart (PDF & Excel)
 - Export PDF statistik dengan chart sebagai gambar
+- Laporan karakter admin dengan rekap nilai tiap aspek per anak
+- Detail laporan karakter per anak dengan ringkasan indikator dan histori penilaian
+- Export PDF laporan karakter admin (rekap + detail) dengan grafik radar dan tren aspek
 - Dukungan legend pada chart (jenis kelamin, usia, pendidikan)
 - Kop surat yang dapat dikustomisasi
+
+### 🧠 Modul Penilaian Karakter (Admin & Guru)
+- Master data aspek dan indikator karakter
+- Input penilaian karakter oleh guru/pengajar
+- Catatan kualitatif dan ringkasan mingguan/bulanan
+- Dashboard laporan karakter admin dengan:
+   - statistik total anak, anak dinilai, rata-rata umum, dan perlu dukungan
+   - grafik radar agregat rata-rata aspek seluruh anak
+   - grafik tren agregat per aspek berdasarkan periode
+   - tabel nilai per aspek per anak + tautan detail
+- Halaman perkembangan anak di panel guru dengan detail grafik dan histori
 
 ### ⚙️ Pengaturan Sistem
 - Profile LKSA (nama, alamat, kontak, logo)
@@ -121,7 +135,7 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - **Frontend**: Bootstrap 4, AdminLTE 3, jQuery
 - **Library**:
   - DataTables untuk tabel interaktif
-  - TCPDF untuk export PDF
+   - mPDF (via Composer) untuk export PDF
   - PHPExcel/PhpSpreadsheet untuk export Excel
   - AOS untuk animasi
   - Font Awesome untuk icon

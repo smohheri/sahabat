@@ -1,4 +1,4 @@
-<div class="guru-perkembangan-detail-page">
+<div class="admin-karakter-detail-page">
     <?php if (!$schema_ready): ?>
         <div class="alert alert-warning mb-4">
             <i class="fas fa-database mr-1"></i>
@@ -8,7 +8,7 @@
 
     <div class="page-header-card d-flex justify-content-between align-items-start flex-wrap">
         <div>
-            <h2>Detail Perkembangan Anak</h2>
+            <h2>Detail Laporan Karakter Anak</h2>
             <p class="mb-1"><strong><?php echo $anak->nama_anak; ?></strong></p>
             <p class="text-muted mb-0">
                 Pendidikan: <?php echo !empty($anak->pendidikan) ? $anak->pendidikan : '-'; ?> |
@@ -17,7 +17,7 @@
         </div>
         <div class="d-flex mt-2 mt-md-0">
             <form id="exportPdfForm" method="post"
-                action="<?php echo site_url('guru/perkembangan-anak/detail/' . (int) $anak->id_anak . '/export-pdf'); ?>"
+                action="<?php echo site_url('admin/penilaian-karakter/laporan/detail/' . (int) $anak->id_anak . '/export-pdf'); ?>"
                 class="mr-2">
                 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>"
                     value="<?php echo $this->security->get_csrf_hash(); ?>">
@@ -72,8 +72,6 @@
                 <div class="chart-wrap">
                     <canvas id="trendChart"></canvas>
                 </div>
-                <small class="text-muted d-block mt-2">Grafik radar menampilkan nilai rata-rata per aspek (skala 0 sampai
-                    4).</small>
             <?php else: ?>
                 <div class="text-center text-muted py-4">Belum ada data aspek yang cukup untuk ditampilkan dalam grafik.
                 </div>
@@ -81,28 +79,25 @@
         </div>
     </div>
 
-    <?php if (!empty($aspect_groups)): ?>
-        <?php foreach ($aspect_groups as $aspect): ?>
-            <?php $chart_data = $aspect_trend_chart_data[$aspect['id_aspect']] ?? array('labels' => array(), 'datasets' => array()); ?>
-            <div class="card-panel mb-4">
-                <div class="panel-header">
-                    <h3><i class="fas fa-wave-square text-primary"></i> Tren Indikator - <?php echo $aspect['aspect_name']; ?>
-                    </h3>
-                </div>
-                <div class="panel-body form-body">
-                    <?php if (!empty($chart_data['labels']) && !empty($chart_data['datasets'])): ?>
-                        <div class="chart-wrap indicator-trend-wrap">
-                            <canvas id="aspectTrendChart<?php echo (int) $aspect['id_aspect']; ?>"></canvas>
-                        </div>
-                        <small class="text-muted d-block mt-2">Setiap garis mewakili indikator pada aspek ini.</small>
-                    <?php else: ?>
-                        <div class="text-center text-muted py-4">Belum ada data tren indikator untuk aspek ini pada periode
-                            terpilih.</div>
-                    <?php endif; ?>
-                </div>
+    <?php foreach ($aspect_groups as $aspect): ?>
+        <?php $chart_data = $aspect_trend_chart_data[$aspect['id_aspect']] ?? array('labels' => array(), 'datasets' => array()); ?>
+        <div class="card-panel mb-4">
+            <div class="panel-header">
+                <h3><i class="fas fa-wave-square text-primary"></i> Tren Indikator - <?php echo $aspect['aspect_name']; ?>
+                </h3>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+            <div class="panel-body form-body">
+                <?php if (!empty($chart_data['labels']) && !empty($chart_data['datasets'])): ?>
+                    <div class="chart-wrap indicator-trend-wrap">
+                        <canvas id="aspectTrendChart<?php echo (int) $aspect['id_aspect']; ?>"></canvas>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center text-muted py-4">Belum ada data tren indikator untuk aspek ini pada periode
+                        terpilih.</div>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
 
     <div class="card-panel mb-4">
         <div class="panel-header">
@@ -110,7 +105,7 @@
         </div>
         <div class="panel-body form-body">
             <form method="get"
-                action="<?php echo site_url('guru/perkembangan-anak/detail/' . (int) $anak->id_anak); ?>">
+                action="<?php echo site_url('admin/penilaian-karakter/laporan/detail/' . (int) $anak->id_anak); ?>">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -196,11 +191,7 @@
                                     <td><?php echo !empty($indicator['indicator_code']) ? $indicator['indicator_code'] : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <?php if ($indicator['avg_score'] !== null): ?>
-                                            <strong><?php echo number_format((float) $indicator['avg_score'], 2); ?></strong>
-                                        <?php else: ?>
-                                            <span class="text-muted">-</span>
-                                        <?php endif; ?>
+                                        <?php echo $indicator['avg_score'] !== null ? number_format((float) $indicator['avg_score'], 2) : '-'; ?>
                                     </td>
                                     <td class="text-center"><?php echo (int) $indicator['score_count']; ?></td>
                                     <td class="text-center">
@@ -232,6 +223,7 @@
                             <th>ID</th>
                             <th>Tanggal</th>
                             <th>Minggu / Bulan / Tahun</th>
+                            <th>Assessor</th>
                             <th class="text-center">Rata-rata</th>
                             <th class="text-center">Total Indikator</th>
                             <th>Status</th>
@@ -247,6 +239,8 @@
                                 <td><?php echo (int) $item->week_number; ?> / <?php echo (int) $item->month; ?> /
                                     <?php echo (int) $item->year; ?>
                                 </td>
+                                <td><?php echo !empty($item->assessor_name) ? $item->assessor_name : '-'; ?>
+                                    (<?php echo !empty($item->assessor_type) ? ucfirst($item->assessor_type) : '-'; ?>)</td>
                                 <td class="text-center">
                                     <?php echo $item->avg_score !== null ? number_format((float) $item->avg_score, 2) : '-'; ?>
                                 </td>
@@ -258,7 +252,7 @@
                         <?php endforeach; ?>
                         <?php if (empty($history_rows)): ?>
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">Belum ada riwayat penilaian untuk
+                                <td colspan="8" class="text-center py-4 text-muted">Belum ada riwayat penilaian untuk
                                     periode ini.</td>
                             </tr>
                         <?php endif; ?>
@@ -270,7 +264,7 @@
 </div>
 
 <style>
-    .guru-perkembangan-detail-page {
+    .admin-karakter-detail-page {
         padding: 10px;
     }
 
@@ -428,23 +422,12 @@
                 },
                 options: {
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
                     scales: {
                         r: {
                             min: 0,
                             max: 4,
                             ticks: {
                                 stepSize: 0.5
-                            },
-                            pointLabels: {
-                                font: {
-                                    size: 11
-                                }
                             }
                         }
                     }
@@ -493,28 +476,12 @@
                     },
                     options: {
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            }
-                        },
                         scales: {
                             y: {
                                 min: 0,
                                 max: 4,
                                 ticks: {
                                     stepSize: 0.5
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Skor'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Tanggal Penilaian'
                                 }
                             }
                         }
@@ -555,7 +522,7 @@
 
             var exportForm = document.getElementById('exportPdfForm');
             if (exportForm) {
-                exportForm.addEventListener('submit', function () {
+       exportForm.addEventListener('submit', function () {
                     var radarInput = document.getElementById('radarChartImage');
                     var aspectInput = document.getElementById('aspectChartImages');
 

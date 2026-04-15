@@ -98,11 +98,9 @@
 					<label>Role</label>
 					<select class="form-select" id="filterRole">
 						<option value="">Semua Role</option>
-						<option value="admin">Admin</option>
-						<option value="petugas">Petugas</option>
-						<option value="dinas">Dinas</option>
-						<option value="operator">Operator</option>
-						<option value="pengajar">Pengajar</option>
+						<?php foreach ($available_roles as $role): ?>
+							<option value="<?php echo $role; ?>"><?php echo ucfirst($role); ?></option>
+						<?php endforeach; ?>
 					</select>
 				</div>
 				<div class="filter-item filter-actions">
@@ -238,11 +236,9 @@
 																class="fas fa-user-shield text-primary"></i></span>
 													</div>
 													<select class="form-control" name="role" required>
-														<option value="admin" <?php echo $user->role == 'admin' ? 'selected' : ''; ?>>Admin</option>
-														<option value="petugas" <?php echo $user->role == 'petugas' ? 'selected' : ''; ?>>Petugas</option>
-														<option value="dinas" <?php echo $user->role == 'dinas' ? 'selected' : ''; ?>>Dinas</option>
-														<option value="operator" <?php echo $user->role == 'operator' ? 'selected' : ''; ?>>Operator</option>
-														<option value="pengajar" <?php echo $user->role == 'pengajar' ? 'selected' : ''; ?>>Pengajar</option>
+														<?php foreach ($available_roles as $role): ?>
+															<option value="<?php echo $role; ?>" <?php echo $user->role == $role ? 'selected' : ''; ?>><?php echo ucfirst($role); ?></option>
+														<?php endforeach; ?>
 													</select>
 												</div>
 											</div>
@@ -348,11 +344,9 @@
 						</div>
 						<select class="form-control" name="role" required>
 							<option value="">Pilih Role</option>
-							<option value="admin">Admin</option>
-							<option value="petugas">Petugas</option>
-							<option value="dinas">Dinas</option>
-							<option value="operator">Operator</option>
-							<option value="pengajar">Pengajar</option>
+							<?php foreach ($available_roles as $role): ?>
+								<option value="<?php echo $role; ?>"><?php echo ucfirst($role); ?></option>
+							<?php endforeach; ?>
 						</select>
 					</div>
 				</div>

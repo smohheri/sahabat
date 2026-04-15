@@ -526,4 +526,151 @@ class Guru extends CI_Controller
 
 		$this->load->view('templates/admin_layout', $data);
 	}
+
+	public function perkembangan_anak_detail_export_pdf($id_anak = 0)
+	{
+		$this->load->model('Character_assessment_model');
+		$this->load->helper('tanggal');
+		$this->load->library('Pdf_export');
+
+		$id_anak = (int) $id_anak;
+		$anak = $this->Anak_model->get_anak_by_id($id_anak);
+		if (!$anak) {
+			$this->session->set_flashdata('error', 'Data anak tidak ditemukan.');
+			redirect('guru/perkembangan-anak');
+		}
+
+		$period_type = $this->input->post('period_type', true) ?: 'weekly';
+		$year = (int) ($this->input->post('year', true) ?: date('Y'));
+		$week = (int) ($this->input->post('week', true) ?: date('W'));
+		$month = (int) ($this->input->post('month', true) ?: date('n'));
+		$start_date = $this->input->post('start_date', true) ?: date('Y-m-01');
+		$end_date = $this->input->post('end_date', true) ?: date('Y-m-d');
+
+		if (!in_array($period_type, array('weekly', 'monthly', 'range'), true)) {
+			$period_type = 'weekly';
+		}
+
+		if ($period_type === 'range' && $start_date > $end_date) {
+			$tmp = $start_date;
+			$start_date = $end_date;
+			$end_date = $tmp;
+		}
+
+		$filters = array(
+			'period_type' => $period_type,
+			'year' => $year,
+			'week' => $week,
+			'month' => $month,
+			'start_date' => $start_date,
+			'end_date' => $end_date
+		);
+
+		$schema_ready = $this->Character_assessment_model->is_assessment_schema_ready();
+
+		$indicator_rows = $schema_ready
+			? $this->Character_assessment_model->get_assessor_child_indicator_scores((int) $this->session->userdata('id_user'), $id_anak, $filters)
+			: array();
+
+		$history_rows = $schema_ready
+			? $this->Character_assessment_model->get_assessor_child_assessment_history((int) $this->session->userdata('id_user'), $id_anak, $filters, 25)
+			: array();
+
+		$aspect_groups = array();
+		$aspect_avg_total = 0;
+		$aspect_avg_count = 0;
+
+		foreach ($indicator_rows as $row) {
+			$id_aspect = (int) $row->id_aspect;
+			if (!isset($aspect_groups[$id_aspect])) {
+				$aspect_groups[$id_aspect] = array(
+					'id_aspect' => $id_aspect,
+					'aspect_name' => $row->aspect_name,
+					'indicators' => array(),
+					'aspect_sum' => 0,
+					'aspect_count' => 0
+				);
+			}
+
+			$score = $row->avg_score !== null ? (float) $row->avg_score : null;
+			$aspect_groups[$id_aspect]['indicators'][] = array(
+				'indicator_name' => $row->indicator_name,
+				'indicator_code' => $row->indicator_code,
+				'avg_score' => $score,
+				'score_count' => (int) $row->score_count,
+				'last_assessed_at' => $row->last_assessed_at
+			);
+
+			if ($score !== null) {
+				$aspect_groups[$id_aspect]['aspect_sum'] += $score;
+				$aspect_groups[$id_aspect]['aspect_count']++;
+			}
+		}
+
+		foreach ($aspect_groups as $key => $group) {
+			$aspect_avg = null;
+			if ($group['aspect_count'] > 0) {
+				$aspect_avg = $group['aspect_sum'] / $group['aspect_count'];
+				$aspect_avg_total += $aspect_avg;
+				$aspect_avg_count++;
+			}
+
+			$aspect_groups[$key]['aspect_avg'] = $aspect_avg;
+			unset($aspect_groups[$key]['aspect_sum'], $aspect_groups[$key]['aspect_count']);
+		}
+
+		$overall_avg = $aspect_avg_count > 0 ? ($aspect_avg_total / $aspect_avg_count) : 0;
+		$total_assessments = count($history_rows);
+
+		$radar_chart_image = trim((string) $this->input->post('radar_chart_image', false));
+		if (strpos($radar_chart_image, 'data:image/') !== 0) {
+			$radar_chart_image = '';
+		}
+
+		$aspect_chart_images_raw = trim((string) $this->input->post('aspect_chart_images', false));
+		$aspect_chart_images = array();
+		if (!empty($aspect_chart_images_raw)) {
+			$decoded = json_decode($aspect_chart_images_raw, true);
+			if (is_array($decoded)) {
+				foreach ($decoded as $item) {
+					if (!is_array($item)) {
+						continue;
+					}
+
+					$aspect_id = isset($item['aspect_id']) ? (int) $item['aspect_id'] : 0;
+					$image = isset($item['image']) ? trim((string) $item['image']) : '';
+					if ($aspect_id > 0 && strpos($image, 'data:image/') === 0) {
+						$aspect_chart_images[$aspect_id] = $image;
+					}
+				}
+			}
+		}
+
+		$period_label = '';
+		if ($period_type === 'weekly') {
+			$period_label = 'Minggu ' . $week . ', Tahun ' . $year;
+		} elseif ($period_type === 'monthly') {
+			$period_label = 'Bulan ' . $month . ', Tahun ' . $year;
+		} else {
+			$period_label = tanggal_indo($start_date) . ' s.d. ' . tanggal_indo($end_date);
+		}
+
+		$pdf_data = array(
+			'anak' => $anak,
+			'filters' => $filters,
+			'period_label' => $period_label,
+			'overall_avg' => $overall_avg,
+			'total_assessments' => $total_assessments,
+			'aspect_groups' => array_values($aspect_groups),
+			'history_rows' => $history_rows,
+			'radar_chart_image' => $radar_chart_image,
+			'aspect_chart_images' => $aspect_chart_images,
+			'printed_at' => date('Y-m-d H:i:s'),
+			'assessor_name' => (string) $this->session->userdata('nama')
+		);
+
+		$html = $this->load->view('guru/perkembangan_detail_pdf', $pdf_data, true);
+		$filename = 'laporan_perkembangan_' . preg_replace('/[^a-z0-9]+/i', '_', strtolower($anak->nama_anak)) . '_' . date('Ymd_His') . '.pdf';
+		$this->pdf_export->generate($html, $filename, 'D');
+	}
 }

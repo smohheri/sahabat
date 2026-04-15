@@ -44,8 +44,8 @@
 					</a>
 				</li>
 
-				<!-- Data Master -->
-				<li class="nav-header">DATA MASTER</li>
+				<!-- Operasional Inti -->
+				<li class="nav-header">OPERASIONAL INTI</li>
 
 				<!-- Anak -->
 				<li class="nav-item">
@@ -65,62 +65,83 @@
 					</a>
 				</li>
 
-				<li class="nav-item <?php echo $this->uri->segment(2) == 'penilaian-karakter' ? 'menu-open' : ''; ?>">
-					<a href="#"
-						class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' ? 'active' : ''; ?>">
-						<i class="nav-icon fas fa-clipboard-check"></i>
+				<!-- Penilaian & Monitoring -->
+				<li class="nav-header">PENILAIAN & MONITORING</li>
+
+				<?php
+				$penilaian_segment = $this->uri->segment(2) == 'penilaian-karakter';
+				$penilaian_sub = $this->uri->segment(3);
+				$group_master_input = $penilaian_segment && in_array($penilaian_sub, array('', 'master', 'data-penilaian', 'detail-penilaian', 'catatan-kualitatif'), true);
+				$group_ringkasan_laporan = $penilaian_segment && in_array($penilaian_sub, array('ringkasan-mingguan', 'ringkasan-bulanan', 'laporan'), true);
+				?>
+
+				<li class="nav-item <?php echo $group_master_input ? 'menu-open' : ''; ?>">
+					<a href="#" class="nav-link <?php echo $group_master_input ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-edit"></i>
 						<p>
-							Penilaian Karakter
+							Master & Input
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo $this->uri->segment(2) == 'penilaian-karakter' ? 'display: block;' : ''; ?>">
+					<ul class="nav nav-treeview" style="<?php echo $group_master_input ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/master'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && (empty($this->uri->segment(3)) || $this->uri->segment(3) == 'master') ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && (empty($penilaian_sub) || $penilaian_sub == 'master') ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Master Penilaian</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/data-penilaian'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'data-penilaian' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'data-penilaian' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Data Penilaian</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/detail-penilaian'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'detail-penilaian' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'detail-penilaian' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Detail Penilaian</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/catatan-kualitatif'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'catatan-kualitatif' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'catatan-kualitatif' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Catatan Kualitatif</p>
 							</a>
 						</li>
+					</ul>
+				</li>
+
+				<li class="nav-item <?php echo $group_ringkasan_laporan ? 'menu-open' : ''; ?>">
+					<a href="#" class="nav-link <?php echo $group_ringkasan_laporan ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-chart-line"></i>
+						<p>
+							Ringkasan & Laporan
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview"
+						style="<?php echo $group_ringkasan_laporan ? 'display: block;' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/ringkasan-mingguan'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'ringkasan-mingguan' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'ringkasan-mingguan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Ringkasan Mingguan</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/ringkasan-bulanan'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'ringkasan-bulanan' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'ringkasan-bulanan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Ringkasan Bulanan</p>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/laporan'); ?>"
-								class="nav-link <?php echo $this->uri->segment(2) == 'penilaian-karakter' && $this->uri->segment(3) == 'laporan' ? 'active' : ''; ?>">
+								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'laporan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Laporan Karakter</p>
 							</a>
@@ -130,14 +151,14 @@
 
 
 
-				<!-- Laporan -->
-				<li class="nav-header">LAPORAN</li>
+				<!-- Laporan & Ekspor -->
+				<li class="nav-header">LAPORAN & EKSPOR</li>
 
 				<li class="nav-item <?php echo $this->uri->segment(2) == 'laporan' ? 'menu-open' : ''; ?>">
 					<a href="#" class="nav-link <?php echo $this->uri->segment(2) == 'laporan' ? 'active' : ''; ?>">
 						<i class="nav-icon fas fa-file-alt"></i>
 						<p>
-							Kelola Laporan
+							Laporan Administrasi
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
@@ -188,8 +209,8 @@
 					</ul>
 				</li>
 
-				<!-- Website & Info -->
-				<li class="nav-header">WEBSITE & INFO</li>
+				<!-- Website Publik -->
+				<li class="nav-header">WEBSITE PUBLIK</li>
 
 				<li
 					class="nav-item <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'menu-open' : ''; ?>">
@@ -248,8 +269,8 @@
 					</ul>
 				</li>
 
-				<!-- Pengaturan -->
-				<li class="nav-header">PENGATURAN</li>
+				<!-- Sistem & Akses -->
+				<li class="nav-header">SISTEM & AKSES</li>
 
 				<li
 					class="nav-item <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'logs', 'backup')) ? 'menu-open' : ''; ?>">

@@ -33,6 +33,27 @@ class User_model extends CI_Model
 		return $this->db->get('users')->result();
 	}
 
+	public function get_user_roles()
+	{
+		$default_roles = array('admin', 'petugas', 'dinas', 'operator', 'pengajar');
+
+		$query = $this->db->query("SHOW COLUMNS FROM users LIKE 'role'");
+		$column = $query->row_array();
+
+		if (!$column || empty($column['Type'])) {
+			return $default_roles;
+		}
+
+		if (preg_match("/^enum\\((.*)\\)$/", $column['Type'], $matches) !== 1) {
+			return $default_roles;
+		}
+
+		$roles = str_getcsv($matches[1], ',', "'");
+		$roles = array_values(array_filter(array_map('trim', $roles)));
+
+		return !empty($roles) ? $roles : $default_roles;
+	}
+
 	public function get_user_by_id($id)
 	{
 		return $this->db->get_where('users', ['id_user' => $id])->row();

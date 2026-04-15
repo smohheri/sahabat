@@ -53,13 +53,12 @@ $anak_perempuan = count(array_filter($anak, function ($a) {
                         <th>Kategori</th>
                         <th>Pendidikan</th>
                         <th>Status</th>
-                        <th>Dokumen</th>
+                        <th>Detail</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $no = 1; ?>
                     <?php foreach ($anak as $a): ?>
-                        <?php $dokumen_lengkap = !empty($a->file_kk) && !empty($a->file_akta); ?>
                         <tr>
                             <td><?php echo $no++; ?></td>
                             <td><?php echo $a->nama_anak; ?></td>
@@ -73,10 +72,10 @@ $anak_perempuan = count(array_filter($anak, function ($a) {
                                 </span>
                             </td>
                             <td>
-                                <span
-                                    class="badge badge-pill <?php echo $dokumen_lengkap ? 'badge-info' : 'badge-warning'; ?>">
-                                    <?php echo $dokumen_lengkap ? 'Lengkap' : 'Belum Lengkap'; ?>
-                                </span>
+                                <a href="<?php echo site_url('guru/perkembangan-anak/detail/' . (int) $a->id_anak); ?>"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-chart-line"></i> Lihat Perkembangan
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

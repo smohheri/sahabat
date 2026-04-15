@@ -67,6 +67,28 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
     - riwayat penilaian per anak,
     - dataset tren indikator.
 
+- 🧾 **Detail Laporan Karakter Per Anak (Admin)**
+  - Menambahkan halaman detail per anak di admin:
+    - `admin/penilaian-karakter/laporan/detail/{id_anak}`
+  - Menambahkan informasi lengkap pada detail admin:
+    - grafik radar nilai per aspek,
+    - grafik tren indikator per aspek,
+    - tabel indikator per aspek,
+    - riwayat penilaian lintas assessor.
+  - Menambahkan view baru:
+    - `application/views/admin/penilaian_laporan_detail.php`
+
+- 📄 **Export PDF Detail Laporan Karakter (Admin)**
+  - Menambahkan endpoint export PDF detail admin:
+    - `admin/penilaian-karakter/laporan/detail/{id_anak}/export-pdf`
+  - Menambahkan template PDF detail admin:
+    - `application/views/admin/penilaian_laporan_detail_pdf.php`
+  - Mendukung penyertaan gambar grafik radar dan grafik tren per aspek dari canvas halaman ke file PDF.
+
+- 📄 **Template Rekap PDF Laporan Karakter Admin**
+  - Menambahkan template PDF baru untuk rekap keseluruhan aspek dan nilai per aspek per anak:
+    - `application/views/admin/penilaian_laporan_pdf.php`
+
 ### Changed
 - 🔄 **Peningkatan Alur Login dengan Pilihan Akses**
   - Form login sekarang memiliki dropdown `akses`.
@@ -85,6 +107,24 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
     - `operator`
     - `pengajar`
   - Filter dan opsi role pada form tambah/edit user ikut diperbarui.
+
+- 🔄 **Laporan Karakter Admin Diselaraskan dengan Panel Guru**
+  - Halaman `admin/penilaian-karakter/laporan` kini mengikuti pola halaman perkembangan guru, dengan versi insight lebih lengkap untuk admin.
+  - Menambahkan statistik tambahan (`Anak Dinilai`, `Perlu Dukungan`) dan tabel skor tiap aspek per anak.
+  - Menambahkan tombol aksi `Detail` per anak menuju halaman detail laporan admin.
+  - Menambahkan grafik radar agregat seluruh siswa dan grafik tren agregat per aspek (bukan per siswa tunggal).
+
+- 🔄 **Perbaikan Alur Export PDF Laporan Karakter Admin**
+  - Export PDF dari halaman laporan admin kini menggunakan data rekap keseluruhan aspek dan nilai per aspek per anak.
+  - Export PDF rekap admin kini mendukung pengiriman gambar grafik radar dan grafik tren per aspek dari halaman laporan (canvas ke PDF).
+  - Alur export diperbarui menggunakan submit form `POST` agar payload gambar chart dapat diproses stabil.
+
+- 🔄 **Pengelompokan Ulang Sidebar Admin**
+  - Sidebar admin direstrukturisasi ke kelompok yang lebih relevan: `OPERASIONAL INTI`, `PENILAIAN & MONITORING`, `LAPORAN & EKSPOR`, `WEBSITE PUBLIK`, dan `SISTEM & AKSES`.
+  - Menu `Penilaian Karakter` dipecah menjadi dua grup agar navigasi lebih fokus:
+    - `Master & Input`
+    - `Ringkasan & Laporan`
+  - Label submenu diperpendek untuk keterbacaan pada layar sempit.
 
 - 🔄 **Penyesuaian PWA untuk Area Admin**
   - Service worker tidak lagi mengontrol halaman `/admin` untuk mencegah konflik navigasi dan unduhan file PDF.
@@ -111,6 +151,17 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - 🐛 **Perbaikan Submit Penilaian Karakter Guru**
   - Menambahkan token CSRF pada form penilaian karakter guru untuk mencegah error `The action you have requested is not allowed` saat proteksi CSRF aktif.
+
+- 🐛 **Perbaikan Error 500 pada Detail Laporan Karakter Admin**
+  - Memperbaiki `Undefined property: Admin::$Anak_model` dengan memuat `Anak_model` pada method detail admin.
+  - Memperbaiki perhitungan total penilaian pada laporan admin agar konsisten dengan struktur data array.
+
+- 🐛 **Perbaikan Render Grafik ke PDF (Guru/Admin Detail)**
+  - Memperbaiki pembacaan payload gambar base64 chart (`radar_chart_image`, `aspect_chart_images`) agar tidak rusak oleh proses sanitasi input.
+  - Memastikan grafik radar dan grafik tren per aspek benar-benar ikut tercetak di PDF detail.
+
+- 🐛 **Perbaikan CSRF Export PDF Rekap Admin**
+  - Menambahkan token CSRF pada form export laporan karakter admin untuk mencegah error `The action you have requested is not allowed` saat CSRF aktif.
 
 ---
 

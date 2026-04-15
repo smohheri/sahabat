@@ -182,6 +182,80 @@ class Character_assessment_model extends CI_Model
         return $this->db->get()->result();
     }
 
+    public function get_child_aspect_scores($filters = array())
+    {
+        if (
+            !$this->db->table_exists('character_assessments') ||
+            !$this->db->table_exists('character_assessment_details') ||
+            !$this->db->table_exists('character_indicators') ||
+            !$this->db->table_exists('character_aspects')
+        ) {
+            return array();
+        }
+
+        $period_type = $filters['period_type'] ?? 'weekly';
+
+        $this->db->select('ca.id_anak, ci.id_aspect, AVG(cad.score) AS avg_score, COUNT(cad.id_detail) AS score_count, MAX(ca.assessment_date) AS tanggal_terakhir', false);
+        $this->db->from('character_assessments ca');
+        $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'inner');
+        $this->db->join('character_indicators ci', 'ci.id_indicator = cad.id_indicator', 'inner');
+        $this->db->join('character_aspects asp', 'asp.id_aspect = ci.id_aspect', 'inner');
+
+        if ($period_type === 'monthly') {
+            $this->db->where('ca.month', (int) ($filters['month'] ?? date('n')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        } elseif ($period_type === 'range') {
+            $this->db->where('ca.assessment_date >=', $filters['start_date'] ?? date('Y-m-01'));
+            $this->db->where('ca.assessment_date <=', $filters['end_date'] ?? date('Y-m-d'));
+        } else {
+            $this->db->where('ca.week_number', (int) ($filters['week'] ?? date('W')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        }
+
+        $this->db->group_by(array('ca.id_anak', 'ci.id_aspect'));
+        $this->db->order_by('ca.id_anak', 'ASC');
+        $this->db->order_by('asp.`order`', 'ASC', false);
+
+        return $this->db->get()->result();
+    }
+
+    public function get_overall_aspect_trend($filters = array())
+    {
+        if (
+            !$this->db->table_exists('character_assessments') ||
+            !$this->db->table_exists('character_assessment_details') ||
+            !$this->db->table_exists('character_indicators') ||
+            !$this->db->table_exists('character_aspects')
+        ) {
+            return array();
+        }
+
+        $period_type = $filters['period_type'] ?? 'weekly';
+
+        $this->db->select('ca.assessment_date, asp.id_aspect, asp.aspect_name, AVG(cad.score) AS avg_score', false);
+        $this->db->from('character_assessments ca');
+        $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'inner');
+        $this->db->join('character_indicators ci', 'ci.id_indicator = cad.id_indicator', 'inner');
+        $this->db->join('character_aspects asp', 'asp.id_aspect = ci.id_aspect', 'inner');
+
+        if ($period_type === 'monthly') {
+            $this->db->where('ca.month', (int) ($filters['month'] ?? date('n')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        } elseif ($period_type === 'range') {
+            $this->db->where('ca.assessment_date >=', $filters['start_date'] ?? date('Y-m-01'));
+            $this->db->where('ca.assessment_date <=', $filters['end_date'] ?? date('Y-m-d'));
+        } else {
+            $this->db->where('ca.week_number', (int) ($filters['week'] ?? date('W')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        }
+
+        $this->db->group_by(array('ca.assessment_date', 'asp.id_aspect'));
+        $this->db->order_by('ca.assessment_date', 'ASC');
+        $this->db->order_by('asp.`order`', 'ASC', false);
+
+        return $this->db->get()->result();
+    }
+
     public function get_assessor_child_indicator_scores($id_assessor, $id_anak, $filters = array())
     {
         if (
@@ -273,6 +347,116 @@ class Character_assessment_model extends CI_Model
         $this->db->from('character_assessments ca');
         $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'left');
         $this->db->where('ca.id_assessor', (int) $id_assessor);
+        $this->db->where('ca.id_anak', (int) $id_anak);
+
+        if ($period_type === 'monthly') {
+            $this->db->where('ca.month', (int) ($filters['month'] ?? date('n')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        } elseif ($period_type === 'range') {
+            $this->db->where('ca.assessment_date >=', $filters['start_date'] ?? date('Y-m-01'));
+            $this->db->where('ca.assessment_date <=', $filters['end_date'] ?? date('Y-m-d'));
+        } else {
+            $this->db->where('ca.week_number', (int) ($filters['week'] ?? date('W')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        }
+
+        $this->db->group_by('ca.id_assessment');
+        $this->db->order_by('ca.assessment_date', 'DESC');
+        $this->db->order_by('ca.id_assessment', 'DESC');
+        $this->db->limit((int) $limit);
+
+        return $this->db->get()->result();
+    }
+
+    public function get_child_indicator_scores($id_anak, $filters = array())
+    {
+        if (
+            !$this->db->table_exists('character_assessments') ||
+            !$this->db->table_exists('character_assessment_details') ||
+            !$this->db->table_exists('character_indicators') ||
+            !$this->db->table_exists('character_aspects')
+        ) {
+            return array();
+        }
+
+        $period_type = $filters['period_type'] ?? 'weekly';
+
+        $this->db->select('asp.id_aspect, asp.aspect_name, asp.`order` AS aspect_order, ci.id_indicator, ci.indicator_name, ci.indicator_code, ci.`order` AS indicator_order, AVG(cad.score) AS avg_score, COUNT(cad.id_detail) AS score_count, MAX(ca.assessment_date) AS last_assessed_at', false);
+        $this->db->from('character_assessments ca');
+        $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'inner');
+        $this->db->join('character_indicators ci', 'ci.id_indicator = cad.id_indicator', 'inner');
+        $this->db->join('character_aspects asp', 'asp.id_aspect = ci.id_aspect', 'inner');
+        $this->db->where('ca.id_anak', (int) $id_anak);
+
+        if ($period_type === 'monthly') {
+            $this->db->where('ca.month', (int) ($filters['month'] ?? date('n')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        } elseif ($period_type === 'range') {
+            $this->db->where('ca.assessment_date >=', $filters['start_date'] ?? date('Y-m-01'));
+            $this->db->where('ca.assessment_date <=', $filters['end_date'] ?? date('Y-m-d'));
+        } else {
+            $this->db->where('ca.week_number', (int) ($filters['week'] ?? date('W')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        }
+
+        $this->db->group_by(array('asp.id_aspect', 'ci.id_indicator'));
+        $this->db->order_by('asp.`order`', 'ASC', false);
+        $this->db->order_by('ci.`order`', 'ASC', false);
+
+        return $this->db->get()->result();
+    }
+
+    public function get_child_indicator_trend($id_anak, $filters = array())
+    {
+        if (
+            !$this->db->table_exists('character_assessments') ||
+            !$this->db->table_exists('character_assessment_details') ||
+            !$this->db->table_exists('character_indicators') ||
+            !$this->db->table_exists('character_aspects')
+        ) {
+            return array();
+        }
+
+        $period_type = $filters['period_type'] ?? 'weekly';
+
+        $this->db->select('ca.assessment_date, asp.id_aspect, asp.aspect_name, ci.id_indicator, ci.indicator_name, ci.indicator_code, AVG(cad.score) AS avg_score', false);
+        $this->db->from('character_assessments ca');
+        $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'inner');
+        $this->db->join('character_indicators ci', 'ci.id_indicator = cad.id_indicator', 'inner');
+        $this->db->join('character_aspects asp', 'asp.id_aspect = ci.id_aspect', 'inner');
+        $this->db->where('ca.id_anak', (int) $id_anak);
+
+        if ($period_type === 'monthly') {
+            $this->db->where('ca.month', (int) ($filters['month'] ?? date('n')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        } elseif ($period_type === 'range') {
+            $this->db->where('ca.assessment_date >=', $filters['start_date'] ?? date('Y-m-01'));
+            $this->db->where('ca.assessment_date <=', $filters['end_date'] ?? date('Y-m-d'));
+        } else {
+            $this->db->where('ca.week_number', (int) ($filters['week'] ?? date('W')));
+            $this->db->where('ca.year', (int) ($filters['year'] ?? date('Y')));
+        }
+
+        $this->db->group_by(array('ca.assessment_date', 'asp.id_aspect', 'ci.id_indicator'));
+        $this->db->order_by('ca.assessment_date', 'ASC');
+        $this->db->order_by('asp.`order`', 'ASC', false);
+        $this->db->order_by('ci.`order`', 'ASC', false);
+
+        return $this->db->get()->result();
+    }
+
+    public function get_child_assessment_history($id_anak, $filters = array(), $limit = 25)
+    {
+        if (!$this->db->table_exists('character_assessments')) {
+            return array();
+        }
+
+        $period_type = $filters['period_type'] ?? 'weekly';
+
+        $this->db->select('ca.id_assessment, ca.assessment_date, ca.week_number, ca.month, ca.year, ca.status, ca.notes, ca.created_at, u.nama AS assessor_name, ca.assessor_type, COUNT(cad.id_detail) AS total_indicator, AVG(cad.score) AS avg_score', false);
+        $this->db->from('character_assessments ca');
+        $this->db->join('users u', 'u.id_user = ca.id_assessor', 'left');
+        $this->db->join('character_assessment_details cad', 'cad.id_assessment = ca.id_assessment', 'left');
         $this->db->where('ca.id_anak', (int) $id_anak);
 
         if ($period_type === 'monthly') {

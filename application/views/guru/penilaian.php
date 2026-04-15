@@ -427,6 +427,7 @@
 		display: grid;
 		grid-template-columns: 300px 1fr;
 		gap: 20px;
+		align-items: stretch;
 	}
 
 	.child-list-panel {
@@ -434,6 +435,9 @@
 		border-radius: 12px;
 		overflow: hidden;
 		background: #f8fafc;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
 	}
 
 	.child-list-title {
@@ -447,7 +451,9 @@
 	}
 
 	.child-list-wrap {
-		max-height: 760px;
+		flex: 1;
+		min-height: 0;
+		max-height: 2200px;
 		overflow-y: auto;
 	}
 
@@ -627,6 +633,12 @@
 
 		.child-list-wrap {
 			max-height: 320px;
+			min-height: 0;
+		}
+
+		.child-list-panel {
+			height: auto;
+			min-height: 0;
 		}
 
 		.indicator-row {

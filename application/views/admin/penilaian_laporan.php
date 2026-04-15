@@ -1,153 +1,229 @@
-<div class="character-master-page">
-    <div class="page-header">
-        <div class="header-info">
-            <div class="header-icon bg-purple">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div>
-                <h2>Laporan Karakter</h2>
-                <p>Ringkasan perkembangan per anak berdasarkan periode yang dipilih</p>
-            </div>
+<div class="admin-perkembangan-page">
+    <div class="page-header-card d-flex justify-content-between align-items-start flex-wrap">
+        <div>
+            <h2>Laporan Karakter</h2>
+            <p>Format admin mengikuti tampilan Perkembangan Guru dengan insight lebih lengkap untuk monitoring lintas
+                assessor.</p>
         </div>
-        <div class="header-actions">
-            <a href="<?php echo $export_url; ?>" id="btnExportPdfKarakter" class="btn btn-export-primary"
-                target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </a>
+        <form method="post" action="<?php echo $export_url; ?>" id="formExportPdfKarakter" class="mt-2 mt-md-0"
+            target="_blank" rel="noopener noreferrer">
+            <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>"
+                value="<?php echo $this->security->get_csrf_hash(); ?>">
+            <input type="hidden" name="period_type"
+                value="<?php echo htmlspecialchars($period_type, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="year" value="<?php echo (int) $year; ?>">
+            <input type="hidden" name="week" value="<?php echo (int) $week; ?>">
+            <input type="hidden" name="month" value="<?php echo (int) $month; ?>">
+            <input type="hidden" name="start_date"
+                value="<?php echo htmlspecialchars($start_date, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="end_date"
+                value="<?php echo htmlspecialchars($end_date, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="radar_chart_image" id="radar_chart_image" value="">
+            <input type="hidden" name="aspect_trend_images" id="aspect_trend_images" value="">
+            <button type="submit" id="btnExportPdfKarakter" class="btn btn-danger">
+                <i class="fas fa-file-pdf mr-1"></i> Export PDF
+            </button>
+        </form>
+    </div>
+
+    <div class="stats-row">
+        <div class="small-box-card box-blue">
+            <div class="label">Total Anak</div>
+            <div class="value"><?php echo (int) $total_children; ?></div>
+        </div>
+        <div class="small-box-card box-green">
+            <div class="label">Anak Dinilai</div>
+            <div class="value"><?php echo (int) $assessed_children; ?></div>
+        </div>
+        <div class="small-box-card box-orange">
+            <div class="label">Rata-rata Umum</div>
+            <div class="value"><?php echo number_format((float) $overall_avg, 2); ?></div>
+        </div>
+        <div class="small-box-card box-red">
+            <div class="label">Perlu Dukungan</div>
+            <div class="value"><?php echo (int) $need_support_count; ?></div>
         </div>
     </div>
 
-    <div class="data-panel mb-4">
+    <div class="card-panel mb-4">
         <div class="panel-header">
-            <h3><i class="fas fa-filter"></i> Filter Periode Laporan</h3>
+            <h3><i class="fas fa-filter text-info"></i> Filter Periode</h3>
         </div>
-        <div class="panel-body p-3">
+        <div class="panel-body form-body">
             <form method="get" action="<?php echo site_url('admin/penilaian-karakter/laporan'); ?>">
                 <div class="row">
-                    <div class="col-md-3 form-group">
-                        <label class="font-weight-bold text-muted">Jenis Periode</label>
-                        <select name="period_type" id="periodType" class="form-control">
-                            <option value="weekly" <?php echo $period_type === 'weekly' ? 'selected' : ''; ?>>Per Minggu
-                            </option>
-                            <option value="monthly" <?php echo $period_type === 'monthly' ? 'selected' : ''; ?>>Per Bulan
-                            </option>
-                            <option value="range" <?php echo $period_type === 'range' ? 'selected' : ''; ?>>Range Tanggal
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2 form-group filter-weekly filter-monthly">
-                        <label class="font-weight-bold text-muted">Tahun</label>
-                        <select name="year" class="form-control">
-                            <?php foreach ($years as $y): ?>
-                                <option value="<?php echo $y; ?>" <?php echo ((int) $year === (int) $y) ? 'selected' : ''; ?>>
-                                    <?php echo $y; ?>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Periode</label>
+                            <select name="period_type" class="form-control" id="period_type">
+                                <option value="weekly" <?php echo $period_type === 'weekly' ? 'selected' : ''; ?>>Mingguan
                                 </option>
-                            <?php endforeach; ?>
-                        </select>
+                                <option value="monthly" <?php echo $period_type === 'monthly' ? 'selected' : ''; ?>>
+                                    Bulanan</option>
+                                <option value="range" <?php echo $period_type === 'range' ? 'selected' : ''; ?>>Rentang
+                                    Tanggal</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="col-md-2 form-group filter-weekly">
-                        <label class="font-weight-bold text-muted">Minggu</label>
-                        <select name="week" class="form-control">
-                            <?php for ($w = 1; $w <= 53; $w++): ?>
-                                <option value="<?php echo $w; ?>" <?php echo ((int) $week === $w) ? 'selected' : ''; ?>>Minggu
-                                    <?php echo $w; ?>
-                                </option>
-                            <?php endfor; ?>
-                        </select>
+                    <div class="col-md-2 period-weekly period-monthly">
+                        <div class="form-group">
+                            <label>Tahun</label>
+                            <select name="year" class="form-control">
+                                <?php foreach ($years as $item_year): ?>
+                                    <option value="<?php echo $item_year; ?>" <?php echo (int) $year === (int) $item_year ? 'selected' : ''; ?>><?php echo $item_year; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="col-md-2 form-group filter-monthly">
-                        <label class="font-weight-bold text-muted">Bulan</label>
-                        <select name="month" class="form-control">
-                            <?php for ($m = 1; $m <= 12; $m++): ?>
-                                <option value="<?php echo $m; ?>" <?php echo ((int) $month === $m) ? 'selected' : ''; ?>>
-                                    <?php echo $m; ?>
-                                </option>
-                            <?php endfor; ?>
-                        </select>
+                    <div class="col-md-2 period-weekly">
+                        <div class="form-group">
+                            <label>Minggu</label>
+                            <input type="number" name="week" min="1" max="53" class="form-control"
+                                value="<?php echo (int) $week; ?>">
+                        </div>
                     </div>
-
-                    <div class="col-md-2 form-group filter-range">
-                        <label class="font-weight-bold text-muted">Tanggal Mulai</label>
-                        <input type="date" class="form-control" name="start_date" value="<?php echo $start_date; ?>">
+                    <div class="col-md-2 period-monthly">
+                        <div class="form-group">
+                            <label>Bulan</label>
+                            <input type="number" name="month" min="1" max="12" class="form-control"
+                                value="<?php echo (int) $month; ?>">
+                        </div>
                     </div>
-
-                    <div class="col-md-2 form-group filter-range">
-                        <label class="font-weight-bold text-muted">Tanggal Akhir</label>
-                        <input type="date" class="form-control" name="end_date" value="<?php echo $end_date; ?>">
+                    <div class="col-md-2 period-range">
+                        <div class="form-group">
+                            <label>Tanggal Mulai</label>
+                            <input type="date" name="start_date" class="form-control"
+                                value="<?php echo $start_date; ?>">
+                        </div>
                     </div>
-
-                    <div class="col-md-1 form-group d-flex align-items-end">
-                        <button type="submit" class="btn btn-filter w-100"><i class="fas fa-search"></i></button>
+                    <div class="col-md-2 period-range">
+                        <div class="form-group">
+                            <label>Tanggal Selesai</label>
+                            <input type="date" name="end_date" class="form-control" value="<?php echo $end_date; ?>">
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-info btn-block"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="stats-row">
-        <div class="stat-card stat-blue">
-            <div class="stat-icon"><i class="fas fa-child"></i></div>
-            <div class="stat-info">
-                <span class="stat-number"><?php echo (int) $total_children; ?></span>
-                <span class="stat-label">Anak Terlapor</span>
-            </div>
+    <div class="card-panel mb-4">
+        <div class="panel-header d-flex justify-content-between align-items-center">
+            <h3><i class="fas fa-bullseye text-success"></i> Grafik Radar Rata-rata Aspek</h3>
+            <span class="period-chip"><?php echo $period_label; ?></span>
         </div>
-        <div class="stat-card stat-green">
-            <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
-            <div class="stat-info">
-                <span class="stat-number"><?php echo (int) $total_assessments; ?></span>
-                <span class="stat-label">Total Penilaian</span>
+        <div class="panel-body form-body">
+            <div class="chart-wrap">
+                <canvas id="radarAspectChart"></canvas>
             </div>
-        </div>
-        <div class="stat-card stat-orange">
-            <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
-            <div class="stat-info">
-                <span class="stat-number"><?php echo number_format((float) $overall_avg, 2); ?></span>
-                <span class="stat-label">Rata-rata Perkembangan</span>
-            </div>
+            <small class="text-muted d-block mt-2">Grafik menunjukkan rerata tiap aspek dari seluruh anak pada periode
+                terpilih.</small>
         </div>
     </div>
 
-    <div class="data-panel">
+    <?php if (!empty($aspects)): ?>
+        <?php foreach ($aspects as $aspect): ?>
+            <?php $trend_data = $aspect_trend_chart_data[(int) $aspect->id_aspect] ?? array('labels' => array(), 'datasets' => array()); ?>
+            <div class="card-panel mb-4">
+                <div class="panel-header">
+                    <h3><i class="fas fa-wave-square text-primary"></i> Grafik Tren Aspek - <?php echo $aspect->aspect_name; ?>
+                    </h3>
+                </div>
+                <div class="panel-body form-body">
+                    <?php if (!empty($trend_data['labels']) && !empty($trend_data['datasets'])): ?>
+                        <div class="chart-wrap indicator-trend-wrap">
+                            <canvas id="aspectTrendChart<?php echo (int) $aspect->id_aspect; ?>"></canvas>
+                        </div>
+                        <small class="text-muted d-block mt-2">Tren ini adalah agregasi seluruh nilai siswa untuk aspek
+                            <?php echo $aspect->aspect_name; ?>.</small>
+                    <?php else: ?>
+                        <div class="text-center text-muted py-4">Belum ada data tren untuk aspek ini pada periode terpilih.</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <div class="card-panel">
         <div class="panel-header">
-            <h3><i class="fas fa-table"></i> Ringkasan Perkembangan per Anak</h3>
-            <span class="period-chip"><?php echo $period_label; ?></span>
+            <h3><i class="fas fa-table text-primary"></i> Skor Tiap Aspek per Anak</h3>
         </div>
         <div class="panel-body">
             <div class="table-responsive">
-                <table class="data-table">
+                <table class="table table-striped table-hover mb-0 perkembangan-table">
                     <thead>
                         <tr>
-                            <th style="width: 60px;">No</th>
+                            <th>No</th>
                             <th>Nama Anak</th>
-                            <th style="width: 170px;" class="text-center">Total Penilaian</th>
-                            <th style="width: 170px;" class="text-center">Rata-rata Skor</th>
-                            <th style="width: 240px;">Kategori Perkembangan</th>
-                            <th style="width: 170px;" class="text-center">Update Terakhir</th>
+                            <th>Pendidikan</th>
+                            <?php foreach ($aspects as $aspect): ?>
+                                <th class="text-center"><?php echo $aspect->aspect_name; ?></th>
+                            <?php endforeach; ?>
+                            <th class="text-center">Total Penilaian</th>
+                            <th class="text-center">Rata-rata</th>
+                            <th class="text-center">Kategori</th>
+                            <th class="text-center">Terakhir Dinilai</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($summary_rows)): ?>
-                            <?php $no = 1;
-                            foreach ($summary_rows as $row): ?>
-                                <tr>
-                                    <td class="text-center"><?php echo $no++; ?></td>
-                                    <td><?php echo $row->nama_anak; ?></td>
-                                    <td class="text-center"><?php echo (int) $row->total_penilaian; ?></td>
-                                    <td class="text-center"><?php echo number_format((float) $row->avg_score, 2); ?></td>
-                                    <td><?php echo $row->kategori; ?></td>
-                                    <td class="text-center">
-                                        <?php echo !empty($row->tanggal_terakhir) ? date('d-m-Y', strtotime($row->tanggal_terakhir)) : '-'; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
+                        <?php foreach ($table_rows as $index => $row): ?>
                             <tr>
-                                <td colspan="6" class="text-center text-muted">Belum ada data perkembangan untuk periode
-                                    ini.</td>
+                                <td><?php echo $index + 1; ?></td>
+                                <td><?php echo $row['nama_anak']; ?></td>
+                                <td><?php echo !empty($row['pendidikan']) ? $row['pendidikan'] : '-'; ?></td>
+                                <?php foreach ($aspects as $aspect): ?>
+                                    <?php
+                                    $score = $row['aspect_scores'][(int) $aspect->id_aspect] ?? null;
+                                    $score_class = 'badge-secondary';
+                                    if ($score !== null) {
+                                        if ($score >= 3.5) {
+                                            $score_class = 'badge-success';
+                                        } elseif ($score >= 2.5) {
+                                            $score_class = 'badge-primary';
+                                        } elseif ($score >= 1.5) {
+                                            $score_class = 'badge-warning';
+                                        } else {
+                                            $score_class = 'badge-danger';
+                                        }
+                                    }
+                                    ?>
+                                    <td class="text-center">
+                                        <?php if ($score !== null): ?>
+                                            <span
+                                                class="badge badge-pill <?php echo $score_class; ?>"><?php echo number_format((float) $score, 2); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                <?php endforeach; ?>
+                                <td class="text-center"><?php echo (int) $row['total_penilaian']; ?></td>
+                                <td class="text-center">
+                                    <?php if ($row['avg_score'] !== null): ?>
+                                        <strong><?php echo number_format((float) $row['avg_score'], 2); ?></strong>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center"><?php echo $row['kategori']; ?></td>
+                                <td class="text-center">
+                                    <?php echo !empty($row['tanggal_terakhir']) ? date('d-m-Y', strtotime($row['tanggal_terakhir'])) : '-'; ?>
+                                </td>
+                                <td class="text-center">
+                                    <a href="<?php echo site_url('admin/penilaian-karakter/laporan/detail/' . (int) $row['id_anak'] . '?' . http_build_query(array('period_type' => $period_type, 'year' => $year, 'week' => $week, 'month' => $month, 'start_date' => $start_date, 'end_date' => $end_date))); ?>"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($table_rows)): ?>
+                            <tr>
+                                <td colspan="<?php echo count($aspects) + 9; ?>" class="text-center py-4 text-muted">Belum
+                                    ada data anak pada periode ini.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -159,184 +235,311 @@
 
 <script>
     (function () {
-        function toggleFilterFields() {
-            var periodType = document.getElementById('periodType').value;
-            var weeklyFields = document.querySelectorAll('.filter-weekly');
-            var monthlyFields = document.querySelectorAll('.filter-monthly');
-            var rangeFields = document.querySelectorAll('.filter-range');
+        function updatePeriodFields() {
+            var period = document.getElementById('period_type');
+            if (!period) {
+                return;
+            }
 
-            weeklyFields.forEach(function (el) { el.style.display = (periodType === 'weekly') ? '' : 'none'; });
-            monthlyFields.forEach(function (el) { el.style.display = (periodType === 'monthly') ? '' : 'none'; });
-            rangeFields.forEach(function (el) { el.style.display = (periodType === 'range') ? '' : 'none'; });
+            var value = period.value;
+            var weeklyEls = document.querySelectorAll('.period-weekly');
+            var monthlyEls = document.querySelectorAll('.period-monthly');
+            var rangeEls = document.querySelectorAll('.period-range');
+
+            weeklyEls.forEach(function (el) {
+                el.style.display = (value === 'weekly') ? 'block' : 'none';
+            });
+
+            monthlyEls.forEach(function (el) {
+                el.style.display = (value === 'monthly') ? 'block' : 'none';
+            });
+
+            rangeEls.forEach(function (el) {
+                el.style.display = (value === 'range') ? 'block' : 'none';
+            });
         }
 
-        document.getElementById('periodType').addEventListener('change', toggleFilterFields);
-        toggleFilterFields();
+        function initRadarChart() {
+            var canvas = document.getElementById('radarAspectChart');
+            if (!canvas || typeof Chart === 'undefined') {
+                return;
+            }
 
-        var exportBtn = document.getElementById('btnExportPdfKarakter');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', function (e) {
-                if (!('serviceWorker' in navigator)) {
+            var labels = <?php echo json_encode($radar_labels); ?>;
+            var scores = <?php echo json_encode($radar_scores); ?>;
+
+            if (!labels.length || !scores.length) {
+                return;
+            }
+
+            new Chart(canvas, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Rata-rata Aspek (Admin)',
+                        data: scores,
+                        borderColor: '#4e73df',
+                        backgroundColor: 'rgba(78,115,223,0.20)',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#4e73df',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 4,
+                            ticks: { stepSize: 0.5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initAspectTrendCharts() {
+            if (typeof Chart === 'undefined') {
+                return;
+            }
+
+            var chartDataMap = <?php echo json_encode($aspect_trend_chart_data); ?>;
+            Object.keys(chartDataMap).forEach(function (aspectId) {
+                var canvas = document.getElementById('aspectTrendChart' + aspectId);
+                if (!canvas) {
                     return;
                 }
 
-                e.preventDefault();
-                var href = exportBtn.getAttribute('href');
+                var chartData = chartDataMap[aspectId];
+                if (!chartData || !chartData.labels || !chartData.datasets || !chartData.labels.length || !chartData.datasets.length) {
+                    return;
+                }
 
-                navigator.serviceWorker.getRegistrations().then(function (registrations) {
-                    var jobs = registrations.map(function (registration) {
-                        return registration.unregister();
-                    });
-
-                    return Promise.all(jobs);
-                }).finally(function () {
-                    window.open(href, '_blank', 'noopener,noreferrer');
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: chartData.datasets[0].label,
+                            data: chartData.datasets[0].data,
+                            borderColor: '#4e73df',
+                            backgroundColor: 'rgba(78, 115, 223, 0.10)',
+                            borderWidth: 3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            tension: 0.3,
+                            spanGaps: true,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 4,
+                                ticks: { stepSize: 0.5 },
+                                title: {
+                                    display: true,
+                                    text: 'Skor Rata-rata'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tanggal Penilaian'
+                                }
+                            }
+                        }
+                    }
                 });
             });
         }
+
+        function getCanvasDataUrl(canvasId) {
+            var canvas = document.getElementById(canvasId);
+            if (!canvas || typeof canvas.toDataURL !== 'function') {
+                return '';
+            }
+
+            try {
+                return canvas.toDataURL('image/png');
+            } catch (err) {
+                return '';
+            }
+        }
+
+        function collectAspectTrendImages() {
+            var result = {};
+            var chartDataMap = <?php echo json_encode($aspect_trend_chart_data); ?>;
+
+            Object.keys(chartDataMap).forEach(function (aspectId) {
+                var canvasId = 'aspectTrendChart' + aspectId;
+                var imageData = getCanvasDataUrl(canvasId);
+                if (imageData) {
+                    result[aspectId] = imageData;
+                }
+            });
+
+            return result;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var period = document.getElementById('period_type');
+            if (period) {
+                period.addEventListener('change', updatePeriodFields);
+            }
+
+            updatePeriodFields();
+            initRadarChart();
+            initAspectTrendCharts();
+
+            var exportBtn = document.getElementById('btnExportPdfKarakter');
+            var exportForm = document.getElementById('formExportPdfKarakter');
+            if (exportBtn && exportForm) {
+                exportBtn.addEventListener('click', function (e) {
+                    var radarImageInput = document.getElementById('radar_chart_image');
+                    var aspectTrendImagesInput = document.getElementById('aspect_trend_images');
+
+                    if (radarImageInput) {
+                        radarImageInput.value = getCanvasDataUrl('radarAspectChart');
+                    }
+
+                    if (aspectTrendImagesInput) {
+                        aspectTrendImagesInput.value = JSON.stringify(collectAspectTrendImages());
+                    }
+
+                    if (!('serviceWorker' in navigator)) {
+                        return;
+                    }
+
+                    e.preventDefault();
+
+                    navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                        var jobs = registrations.map(function (registration) {
+                            return registration.unregister();
+                        });
+
+                        return Promise.all(jobs);
+                    }).finally(function () {
+                        exportForm.submit();
+                    });
+                });
+            }
+        });
     })();
 </script>
 
 <style>
-    .character-master-page {
+    .admin-perkembangan-page {
         padding: 10px;
     }
 
-    .character-master-page .page-header {
+    .page-header-card {
         background: #fff;
-        border-radius: 16px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .character-master-page .header-info {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .character-master-page .header-actions {
-        display: flex;
-        gap: 12px;
-    }
-
-    .character-master-page .btn-export-primary {
-        padding: 10px 20px;
-        background: #4e73df;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        font-weight: 500;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .character-master-page .btn-export-primary:hover {
-        background: #2e59d9;
-        color: #fff;
-    }
-
-    .character-master-page .header-icon {
-        width: 60px;
-        height: 60px;
+        padding: 20px;
         border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 26px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        margin-bottom: 20px;
     }
 
-    .character-master-page .bg-purple {
-        background: rgba(111, 66, 193, .12);
-        color: #6f42c1;
-    }
-
-    .character-master-page .header-info h2 {
-        margin: 0 0 5px;
-        font-size: 22px;
-        font-weight: 600;
-        color: #2d3748;
-    }
-
-    .character-master-page .header-info p {
+    .page-header-card h2 {
         margin: 0;
-        color: #718096;
-        font-size: 14px;
-    }
-
-    .character-master-page .stats-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .character-master-page .stat-card {
-        background: #fff;
-        border-radius: 14px;
-        padding: 22px;
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
-    }
-
-    .character-master-page .stat-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         font-size: 24px;
-    }
-
-    .character-master-page .stat-blue .stat-icon {
-        background: rgba(78, 115, 223, .1);
-        color: #4e73df;
-    }
-
-    .character-master-page .stat-green .stat-icon {
-        background: rgba(28, 200, 138, .1);
-        color: #1cc88a;
-    }
-
-    .character-master-page .stat-orange .stat-icon {
-        background: rgba(246, 194, 62, .1);
-        color: #f6c23e;
-    }
-
-    .character-master-page .stat-number {
-        font-size: 28px;
         font-weight: 700;
-        color: #2d3748;
-        line-height: 1;
     }
 
-    .character-master-page .stat-label {
+    .page-header-card p {
+        margin: 6px 0 0;
+        color: #6b7280;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .small-box-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #4e73df;
+    }
+
+    .small-box-card .label {
         font-size: 13px;
         color: #718096;
-        margin-top: 5px;
-        display: block;
     }
 
-    .character-master-page .data-panel {
+    .small-box-card .value {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .box-blue {
+        border-left-color: #4e73df;
+    }
+
+    .box-green {
+        border-left-color: #1cc88a;
+    }
+
+    .box-orange {
+        border-left-color: #f6c23e;
+    }
+
+    .box-red {
+        border-left-color: #e74a3b;
+    }
+
+    .card-panel {
         background: #fff;
         border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
     }
 
-    .character-master-page .period-chip {
+    .panel-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .panel-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .form-body {
+        padding: 20px;
+    }
+
+    .period-chip {
         background: #f8fafc;
         color: #4a5568;
         border: 1px solid #e2e8f0;
@@ -346,80 +549,36 @@
         font-weight: 600;
     }
 
-    .character-master-page .btn-filter {
-        background: #4e73df;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        height: 38px;
+    .period-range {
+        display: none;
     }
 
-    .character-master-page .btn-filter:hover {
-        background: #2e59d9;
-        color: #fff;
+    .chart-wrap {
+        position: relative;
+        height: 360px;
     }
 
-    .character-master-page .panel-header {
-        padding: 20px 25px;
-        border-bottom: 1px solid #edf2f7;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
+    .indicator-trend-wrap {
+        height: 300px;
     }
 
-    .character-master-page .panel-header h3 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: #2d3748;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .character-master-page .panel-header i {
-        color: #4e73df;
-    }
-
-    .character-master-page .data-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .character-master-page .data-table th {
-        padding: 15px 20px;
+    .perkembangan-table thead th {
         font-size: 12px;
-        font-weight: 600;
-        color: #718096;
         text-transform: uppercase;
-        letter-spacing: .5px;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .character-master-page .data-table td {
-        padding: 16px 20px;
-        border-bottom: 1px solid #edf2f7;
-        vertical-align: middle;
-        font-size: 14px;
-        color: #2d3748;
-    }
-
-    .character-master-page .data-table tbody tr:hover {
-        background: #f8fafc;
+        letter-spacing: 0.4px;
     }
 
     @media (max-width: 992px) {
-        .character-master-page .page-header {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
+        .stats-row {
+            grid-template-columns: 1fr;
         }
 
-        .character-master-page .stats-row {
-            grid-template-columns: 1fr;
+        .chart-wrap {
+            height: 280px;
+        }
+
+        .indicator-trend-wrap {
+            height: 250px;
         }
     }
 </style>

@@ -19,6 +19,7 @@ $route['guru/anak'] = 'guru/anak';
 $route['guru/penilaian-karakter'] = 'guru/penilaian_karakter';
 $route['guru/perkembangan-anak'] = 'guru/perkembangan_anak';
 $route['guru/perkembangan-anak/detail/(:num)'] = 'guru/perkembangan_anak_detail/$1';
+$route['guru/perkembangan-anak/detail/(:num)/export-pdf'] = 'guru/perkembangan_anak_detail_export_pdf/$1';
 
 // Admin
 $route['admin'] = 'admin/index';
@@ -98,3 +99,5 @@ $route['admin/penilaian-karakter/catatan-kualitatif'] = 'admin/penilaian_karakte
 $route['admin/penilaian-karakter/ringkasan-mingguan'] = 'admin/penilaian_karakter_ringkasan_mingguan';
 $route['admin/penilaian-karakter/ringkasan-bulanan'] = 'admin/penilaian_karakter_ringkasan_bulanan';
 $route['admin/penilaian-karakter/laporan'] = 'admin/penilaian_karakter_laporan';
+$route['admin/penilaian-karakter/laporan/detail/(:num)'] = 'admin/penilaian_karakter_laporan_detail/$1';
+$route['admin/penilaian-karakter/laporan/detail/(:num)/export-pdf'] = 'admin/penilaian_karakter_laporan_detail_export_pdf/$1';
