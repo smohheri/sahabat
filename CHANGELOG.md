@@ -131,6 +131,21 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Registrasi service worker kini otomatis di-unregister pada area admin.
   - Versi cache service worker dinaikkan ke `sahabat-pwa-v4`.
 
+- 🎨 **Konsolidasi CSS Panel Admin/Guru**
+  - Menambahkan stylesheet global bersama `assets/css/panel-global.css` untuk komponen berulang (header, stat card, panel, filter, tabel, empty state, alert, dan dark mode).
+  - Memuat stylesheet global tersebut di template bersama agar dapat dipakai lintas halaman.
+  - Mengurangi duplikasi CSS inline pada berbagai halaman admin dan guru agar desain lebih konsisten dan mudah dirawat.
+
+- 📊 **Paginasi Data Penilaian Karakter (Admin)**
+  - Menambahkan paginasi pada halaman:
+    - `admin/penilaian-karakter/data-penilaian`
+    - `admin/penilaian-karakter/detail-penilaian`
+  - Menambahkan dukungan `limit + offset` pada query model `Character_assessment_model` untuk data penilaian dan detail penilaian.
+  - Menyesuaikan tata letak kontrol paginasi ke bawah tabel agar lebih nyaman di layar kecil.
+
+- 🧹 **Penyesuaian Kolom Detail Penilaian**
+  - Menghapus kolom **ID Detail** dari halaman `admin/penilaian-karakter/detail-penilaian` karena tidak diperlukan pada tampilan operasional.
+
 ### Fixed
 - 🐛 **Perbaikan Login Tanpa Notifikasi Error**
   - Mengubah session lokal ke driver `files` pada `.env` agar flashdata kembali berfungsi saat tabel session database belum tersedia.
@@ -162,6 +177,13 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - 🐛 **Perbaikan CSRF Export PDF Rekap Admin**
   - Menambahkan token CSRF pada form export laporan karakter admin untuk mencegah error `The action you have requested is not allowed` saat CSRF aktif.
+
+- 🐛 **Perbaikan Navigasi Panel Guru (PWA/Cache)**
+  - Mencegah service worker mengontrol rute panel guru (`/guru`) agar tidak terjadi fallback ke halaman dashboard saat membuka menu tertentu.
+  - Registrasi service worker kini di-nonaktifkan untuk area panel (`/admin` dan `/guru`) serta pembersihan cache `sahabat-pwa-*` pada area tersebut.
+
+- 🐛 **Perbaikan Layout Kartu Statistik**
+  - Menyesuaikan tata letak `.stat-card` agar angka (`stat-number`) tampil di samping ikon sesuai struktur komponen kartu statistik.
 
 ---
 

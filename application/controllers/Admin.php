@@ -672,8 +672,44 @@ class Admin extends CI_Controller
 	public function penilaian_karakter_data()
 	{
 		$this->load->model('Character_assessment_model');
+		$this->load->library('pagination');
 
-		$raw_rows = $this->Character_assessment_model->get_assessments();
+		$per_page = 20;
+		$total_rows = (int) $this->Character_assessment_model->count_assessments();
+		$offset = (int) $this->input->get('per_page', TRUE);
+		if ($offset < 0) {
+			$offset = 0;
+		}
+		if ($offset >= $total_rows && $total_rows > 0) {
+			$offset = (int) (floor(($total_rows - 1) / $per_page) * $per_page);
+		}
+
+		$pagination_config = array(
+			'base_url' => site_url('admin/penilaian-karakter/data-penilaian'),
+			'total_rows' => $total_rows,
+			'per_page' => $per_page,
+			'page_query_string' => TRUE,
+			'query_string_segment' => 'per_page',
+			'reuse_query_string' => TRUE,
+			'full_tag_open' => '<nav><ul class="pagination pagination-sm mb-0">',
+			'full_tag_close' => '</ul></nav>',
+			'num_tag_open' => '<li class="page-item">',
+			'num_tag_close' => '</li>',
+			'cur_tag_open' => '<li class="page-item active"><span class="page-link">',
+			'cur_tag_close' => '</span></li>',
+			'next_tag_open' => '<li class="page-item">',
+			'next_tag_close' => '</li>',
+			'prev_tag_open' => '<li class="page-item">',
+			'prev_tag_close' => '</li>',
+			'first_tag_open' => '<li class="page-item">',
+			'first_tag_close' => '</li>',
+			'last_tag_open' => '<li class="page-item">',
+			'last_tag_close' => '</li>',
+			'attributes' => array('class' => 'page-link')
+		);
+		$this->pagination->initialize($pagination_config);
+
+		$raw_rows = $this->Character_assessment_model->get_assessments($per_page, $offset);
 		$rows = array();
 		foreach ($raw_rows as $r) {
 			$rows[] = array(
@@ -695,9 +731,10 @@ class Admin extends CI_Controller
 			'table_title' => 'Daftar Penilaian',
 			'columns' => array('ID', 'Nama Anak', 'Assessor', 'Tipe Assessor', 'Tanggal', 'Minggu / Bulan / Tahun', 'Status'),
 			'rows' => $rows,
+			'pagination_links' => $this->pagination->create_links(),
 			'empty_message' => 'Belum ada data penilaian karakter.',
 			'stat_cards' => array(
-				array('label' => 'Total Penilaian', 'value' => $this->Character_assessment_model->count_assessments(), 'icon' => 'fa-clipboard-list', 'class' => 'stat-blue'),
+				array('label' => 'Total Penilaian', 'value' => $total_rows, 'icon' => 'fa-clipboard-list', 'class' => 'stat-blue'),
 				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
 				array('label' => 'Status Aktif', 'value' => 'Master Data', 'icon' => 'fa-database', 'class' => 'stat-orange')
 			)
@@ -715,12 +752,47 @@ class Admin extends CI_Controller
 	public function penilaian_karakter_detail()
 	{
 		$this->load->model('Character_assessment_model');
+		$this->load->library('pagination');
 
-		$raw_rows = $this->Character_assessment_model->get_assessment_details();
+		$per_page = 20;
+		$total_rows = (int) $this->Character_assessment_model->count_details();
+		$offset = (int) $this->input->get('per_page', TRUE);
+		if ($offset < 0) {
+			$offset = 0;
+		}
+		if ($offset >= $total_rows && $total_rows > 0) {
+			$offset = (int) (floor(($total_rows - 1) / $per_page) * $per_page);
+		}
+
+		$pagination_config = array(
+			'base_url' => site_url('admin/penilaian-karakter/detail-penilaian'),
+			'total_rows' => $total_rows,
+			'per_page' => $per_page,
+			'page_query_string' => TRUE,
+			'query_string_segment' => 'per_page',
+			'reuse_query_string' => TRUE,
+			'full_tag_open' => '<nav><ul class="pagination pagination-sm mb-0">',
+			'full_tag_close' => '</ul></nav>',
+			'num_tag_open' => '<li class="page-item">',
+			'num_tag_close' => '</li>',
+			'cur_tag_open' => '<li class="page-item active"><span class="page-link">',
+			'cur_tag_close' => '</span></li>',
+			'next_tag_open' => '<li class="page-item">',
+			'next_tag_close' => '</li>',
+			'prev_tag_open' => '<li class="page-item">',
+			'prev_tag_close' => '</li>',
+			'first_tag_open' => '<li class="page-item">',
+			'first_tag_close' => '</li>',
+			'last_tag_open' => '<li class="page-item">',
+			'last_tag_close' => '</li>',
+			'attributes' => array('class' => 'page-link')
+		);
+		$this->pagination->initialize($pagination_config);
+
+		$raw_rows = $this->Character_assessment_model->get_assessment_details($per_page, $offset);
 		$rows = array();
 		foreach ($raw_rows as $r) {
 			$rows[] = array(
-				$r->id_detail,
 				$r->id_assessment,
 				$r->nama_anak ?: '-',
 				$r->aspect_name ?: '-',
@@ -736,11 +808,12 @@ class Admin extends CI_Controller
 			'icon_class' => 'fa-list-alt',
 			'table_icon' => 'fa-tasks',
 			'table_title' => 'Daftar Detail Penilaian',
-			'columns' => array('ID Detail', 'ID Penilaian', 'Nama Anak', 'Aspek', 'Indikator', 'Skor', 'Tanggal Penilaian'),
+			'columns' => array('ID Penilaian', 'Nama Anak', 'Aspek', 'Indikator', 'Skor', 'Tanggal Penilaian'),
 			'rows' => $rows,
+			'pagination_links' => $this->pagination->create_links(),
 			'empty_message' => 'Belum ada detail skor penilaian.',
 			'stat_cards' => array(
-				array('label' => 'Total Detail', 'value' => $this->Character_assessment_model->count_details(), 'icon' => 'fa-list-alt', 'class' => 'stat-blue'),
+				array('label' => 'Total Detail', 'value' => $total_rows, 'icon' => 'fa-list-alt', 'class' => 'stat-blue'),
 				array('label' => 'Data Ditampilkan', 'value' => count($rows), 'icon' => 'fa-table', 'class' => 'stat-green'),
 				array('label' => 'Tipe Data', 'value' => 'Indikator', 'icon' => 'fa-layer-group', 'class' => 'stat-orange')
 			)

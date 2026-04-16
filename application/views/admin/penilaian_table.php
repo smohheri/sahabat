@@ -50,12 +50,19 @@
                         <?php else: ?>
                             <tr>
                                 <td colspan="<?php echo count($columns); ?>" class="text-center text-muted">
-                                    <?php echo $empty_message; ?></td>
+                                    <?php echo $empty_message; ?>
+                                </td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
+
+            <?php if (!empty($pagination_links)): ?>
+                <div class="table-pagination-wrap">
+                    <?php echo $pagination_links; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -232,9 +239,26 @@
         background: #f8fafc;
     }
 
+    .character-master-page .table-pagination-wrap {
+        display: flex;
+        justify-content: flex-end;
+        padding: 14px 20px;
+        border-top: 1px solid #edf2f7;
+        background: #fff;
+    }
+
+    .character-master-page .table-pagination-wrap .pagination {
+        margin: 0;
+    }
+
     @media (max-width: 992px) {
         .character-master-page .stats-row {
             grid-template-columns: 1fr;
+        }
+
+        .character-master-page .table-pagination-wrap {
+            justify-content: center;
+            overflow-x: auto;
         }
     }
 </style>

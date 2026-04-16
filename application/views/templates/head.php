@@ -28,6 +28,9 @@
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/adminlte.min.css'); ?>">
 
+	<!-- Shared panel CSS -->
+	<link rel="stylesheet" href="<?php echo base_url('assets/css/panel-global.css'); ?>">
+
 	<!-- Custom CSS -->
 	<?php if (isset($custom_css)): ?>
 		<?php foreach ($custom_css as $css): ?>

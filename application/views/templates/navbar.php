@@ -440,6 +440,262 @@ $secondary_title = $is_guru ? 'Lihat data anak' : 'Kontak Pengembang';
 	body.dark-mode .border {
 		border-color: #0f3460 !important;
 	}
+
+	/* Guru Panel Dark Mode */
+	body.dark-mode .guru-dashboard,
+	body.dark-mode .guru-anak-page,
+	body.dark-mode .guru-penilaian-page,
+	body.dark-mode .guru-perkembangan-page,
+	body.dark-mode .guru-perkembangan-detail-page {
+		color: #e5e7eb;
+	}
+
+	body.dark-mode .guru-dashboard .stat-card,
+	body.dark-mode .guru-dashboard .substat-item,
+	body.dark-mode .guru-dashboard .panel,
+	body.dark-mode .guru-anak-page .page-header,
+	body.dark-mode .guru-anak-page .stat-card,
+	body.dark-mode .guru-anak-page .table-panel,
+	body.dark-mode .guru-penilaian-page .page-header-card,
+	body.dark-mode .guru-penilaian-page .stat-card,
+	body.dark-mode .guru-penilaian-page .card-panel,
+	body.dark-mode .guru-perkembangan-page .page-header-card,
+	body.dark-mode .guru-perkembangan-page .small-box-card,
+	body.dark-mode .guru-perkembangan-page .card-panel,
+	body.dark-mode .guru-perkembangan-detail-page .page-header-card,
+	body.dark-mode .guru-perkembangan-detail-page .small-box-card,
+	body.dark-mode .guru-perkembangan-detail-page .card-panel {
+		background: #16213e !important;
+		color: #e5e7eb !important;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+		border-color: #28456d !important;
+	}
+
+	body.dark-mode .guru-dashboard .card-icon,
+	body.dark-mode .guru-dashboard .bg-blue-light,
+	body.dark-mode .guru-dashboard .bg-pink-light,
+	body.dark-mode .guru-dashboard .bg-gray-light,
+	body.dark-mode .guru-penilaian-page .selected-child-header,
+	body.dark-mode .guru-penilaian-page .child-list-panel,
+	body.dark-mode .guru-penilaian-page .aspect-header,
+	body.dark-mode .guru-penilaian-page .import-panel,
+	body.dark-mode .guru-penilaian-page .import-actions,
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file,
+	body.dark-mode .guru-perkembangan-detail-page .chart-wrap,
+	body.dark-mode .guru-anak-page .badge-secondary,
+	body.dark-mode .guru-perkembangan-page .badge-secondary,
+	body.dark-mode .guru-perkembangan-detail-page .badge-secondary {
+		background-color: #1a2c4d !important;
+		color: #dbeafe !important;
+		border-color: #31537e !important;
+	}
+
+	body.dark-mode .guru-dashboard .panel-header,
+	body.dark-mode .guru-anak-page .table-header,
+	body.dark-mode .guru-penilaian-page .panel-header,
+	body.dark-mode .guru-perkembangan-page .panel-header,
+	body.dark-mode .guru-perkembangan-detail-page .panel-header,
+	body.dark-mode .guru-penilaian-page .child-list-title,
+	body.dark-mode .guru-penilaian-page .import-actions-header,
+	body.dark-mode .guru-dashboard .clean-table th {
+		background: #0f3460 !important;
+		color: #f8fafc !important;
+		border-color: #28456d !important;
+	}
+
+	body.dark-mode .guru-dashboard .page-header-card h2,
+	body.dark-mode .guru-dashboard .card-number,
+	body.dark-mode .guru-dashboard .substat-value,
+	body.dark-mode .guru-dashboard .panel-header h3,
+	body.dark-mode .guru-dashboard .sum-value,
+	body.dark-mode .guru-anak-page .page-header h2,
+	body.dark-mode .guru-anak-page .stat-value,
+	body.dark-mode .guru-anak-page .table-header h3,
+	body.dark-mode .guru-penilaian-page .page-header-card h2,
+	body.dark-mode .guru-penilaian-page .stat-value,
+	body.dark-mode .guru-penilaian-page .panel-header h3,
+	body.dark-mode .guru-penilaian-page .selected-child-header h4,
+	body.dark-mode .guru-penilaian-page .indicator-name,
+	body.dark-mode .guru-perkembangan-page .page-header-card h2,
+	body.dark-mode .guru-perkembangan-page .small-box-card .value,
+	body.dark-mode .guru-perkembangan-page .panel-header h3,
+	body.dark-mode .guru-perkembangan-detail-page .page-header-card h2,
+	body.dark-mode .guru-perkembangan-detail-page .small-box-card .value,
+	body.dark-mode .guru-perkembangan-detail-page .panel-header h3 {
+		color: #f8fafc !important;
+	}
+
+	body.dark-mode .guru-dashboard .card-label,
+	body.dark-mode .guru-dashboard .substat-label,
+	body.dark-mode .guru-dashboard .sum-label,
+	body.dark-mode .guru-dashboard .btn-link,
+	body.dark-mode .guru-anak-page .page-header p,
+	body.dark-mode .guru-anak-page .stat-title,
+	body.dark-mode .guru-anak-page .table-header span,
+	body.dark-mode .guru-penilaian-page .page-header-card p,
+	body.dark-mode .guru-penilaian-page .stat-title,
+	body.dark-mode .guru-penilaian-page .import-lead,
+	body.dark-mode .guru-penilaian-page .import-help-list,
+	body.dark-mode .guru-penilaian-page .import-actions-subtitle,
+	body.dark-mode .guru-penilaian-page .import-file-help,
+	body.dark-mode .guru-penilaian-page .child-meta,
+	body.dark-mode .guru-penilaian-page .aspect-header small,
+	body.dark-mode .guru-perkembangan-page .page-header-card p,
+	body.dark-mode .guru-perkembangan-page .small-box-card .label,
+	body.dark-mode .guru-perkembangan-detail-page .small-box-card .label,
+	body.dark-mode .guru-perkembangan-detail-page .page-header-card p,
+	body.dark-mode .guru-perkembangan-detail-page .page-header-card .text-muted,
+	body.dark-mode .guru-perkembangan-detail-page small.text-muted,
+	body.dark-mode .guru-anak-page .text-muted,
+	body.dark-mode .guru-penilaian-page .text-muted,
+	body.dark-mode .guru-perkembangan-page .text-muted,
+	body.dark-mode .guru-perkembangan-detail-page .text-muted {
+		color: #9fb3c8 !important;
+	}
+
+	body.dark-mode .guru-dashboard .clean-table,
+	body.dark-mode .guru-dashboard .clean-table td,
+	body.dark-mode .guru-dashboard .clean-table th,
+	body.dark-mode .guru-anak-page .table,
+	body.dark-mode .guru-anak-page .table td,
+	body.dark-mode .guru-anak-page .table th,
+	body.dark-mode .guru-penilaian-page .table,
+	body.dark-mode .guru-penilaian-page .table td,
+	body.dark-mode .guru-penilaian-page .table th,
+	body.dark-mode .guru-perkembangan-page .table,
+	body.dark-mode .guru-perkembangan-page .table td,
+	body.dark-mode .guru-perkembangan-page .table th,
+	body.dark-mode .guru-perkembangan-detail-page .table,
+	body.dark-mode .guru-perkembangan-detail-page .table td,
+	body.dark-mode .guru-perkembangan-detail-page .table th {
+		color: #e5e7eb !important;
+		border-color: #28456d !important;
+	}
+
+	body.dark-mode .guru-dashboard .clean-table th,
+	body.dark-mode .guru-anak-page .table thead th,
+	body.dark-mode .guru-penilaian-page .table thead th,
+	body.dark-mode .guru-perkembangan-page .table thead th,
+	body.dark-mode .guru-perkembangan-detail-page .table thead th {
+		background: #102845 !important;
+		color: #dbeafe !important;
+	}
+
+	body.dark-mode .guru-dashboard .clean-table tbody tr,
+	body.dark-mode .guru-anak-page .table tbody tr,
+	body.dark-mode .guru-penilaian-page .table tbody tr,
+	body.dark-mode .guru-perkembangan-page .table tbody tr,
+	body.dark-mode .guru-perkembangan-detail-page .table tbody tr {
+		background: #16213e !important;
+	}
+
+	body.dark-mode .guru-dashboard .clean-table tbody tr:hover,
+	body.dark-mode .guru-anak-page .table-hover tbody tr:hover,
+	body.dark-mode .guru-penilaian-page .table-hover tbody tr:hover,
+	body.dark-mode .guru-perkembangan-page .table-hover tbody tr:hover,
+	body.dark-mode .guru-perkembangan-detail-page .table-hover tbody tr:hover {
+		background: #1a2c4d !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .child-item,
+	body.dark-mode .guru-penilaian-page .score-radio-item,
+	body.dark-mode .guru-dashboard .action-box,
+	body.dark-mode .guru-perkembangan-detail-page .btn-outline-secondary,
+	body.dark-mode .guru-anak-page .btn-outline-primary {
+		background: #1a2c4d;
+		color: #dbeafe !important;
+		border-color: #31537e !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .child-item:hover,
+	body.dark-mode .guru-penilaian-page .child-item.active,
+	body.dark-mode .guru-dashboard .action-box:hover,
+	body.dark-mode .guru-perkembangan-detail-page .btn-outline-secondary:hover,
+	body.dark-mode .guru-anak-page .btn-outline-primary:hover {
+		background: #21406a !important;
+		color: #ffffff !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .import-actions,
+	body.dark-mode .guru-penilaian-page .import-actions form,
+	body.dark-mode .guru-penilaian-page .import-actions .form-group {
+		background: #1a2c4d !important;
+		color: #dbeafe !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file,
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file::file-selector-button,
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file::-webkit-file-upload-button {
+		background-color: #102845 !important;
+		color: #e5efff !important;
+		border-color: #31537e !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file::file-selector-button,
+	body.dark-mode .guru-penilaian-page .import-actions .form-control-file::-webkit-file-upload-button {
+		background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+		border: 1px solid #3b82f6 !important;
+		box-shadow: none !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .import-actions-title,
+	body.dark-mode .guru-penilaian-page .import-file-label {
+		color: #f8fafc !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .score-chip,
+	body.dark-mode .guru-penilaian-page .import-badge,
+	body.dark-mode .guru-dashboard .badge-blue,
+	body.dark-mode .guru-dashboard .badge-pink,
+	body.dark-mode .guru-dashboard .badge-green,
+	body.dark-mode .guru-dashboard .badge-gray {
+		background: rgba(59, 130, 246, 0.18) !important;
+		color: #bfdbfe !important;
+	}
+
+	body.dark-mode .guru-dashboard .sum-row,
+	body.dark-mode .guru-penilaian-page .indicator-row,
+	body.dark-mode .guru-perkembangan-detail-page .panel-header,
+	body.dark-mode .guru-anak-page .table-header,
+	body.dark-mode .guru-penilaian-page .panel-header,
+	body.dark-mode .guru-perkembangan-page .panel-header,
+	body.dark-mode .guru-perkembangan-detail-page .panel-header {
+		border-color: #28456d !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .form-control,
+	body.dark-mode .guru-perkembangan-page .form-control,
+	body.dark-mode .guru-perkembangan-detail-page .form-control,
+	body.dark-mode .guru-penilaian-page .custom-select,
+	body.dark-mode .guru-perkembangan-page .custom-select,
+	body.dark-mode .guru-perkembangan-detail-page .custom-select,
+	body.dark-mode .guru-penilaian-page select.form-control,
+	body.dark-mode .guru-perkembangan-page select.form-control,
+	body.dark-mode .guru-perkembangan-detail-page select.form-control {
+		background: #0f1c35 !important;
+		color: #e5e7eb !important;
+		border-color: #31537e !important;
+	}
+
+	body.dark-mode .guru-penilaian-page .form-control:focus,
+	body.dark-mode .guru-perkembangan-page .form-control:focus,
+	body.dark-mode .guru-perkembangan-detail-page .form-control:focus {
+		border-color: #60a5fa !important;
+		box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.18) !important;
+	}
+
+	body.dark-mode .guru-penilaian-page label,
+	body.dark-mode .guru-perkembangan-page label,
+	body.dark-mode .guru-perkembangan-detail-page label {
+		color: #dbeafe !important;
+	}
+
+	body.dark-mode .guru-penilaian-page input::placeholder,
+	body.dark-mode .guru-penilaian-page textarea::placeholder,
+	body.dark-mode .guru-perkembangan-page input::placeholder,
+	body.dark-mode .guru-perkembangan-detail-page input::placeholder {
+		color: #7f95ad !important;
+	}
 </style>
 
 <!-- Theme Toggle Script -->

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'sahabat-pwa-v4';
+const CACHE_VERSION = 'sahabat-pwa-v5';
 const APP_SHELL = [
   './',
   './manifest.webmanifest',
@@ -45,9 +45,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Admin area should always use direct network to avoid stale fallback behavior,
-  // especially for binary/document responses like PDF export.
-  if (requestUrl.pathname.includes('/admin/')) {
+  // Admin & Guru area should always use direct network to avoid stale fallback behavior,
+  // especially for dynamic panel pages and binary/document responses.
+  const isPanelRoute = /\/(admin|guru)(\/|$)/.test(requestUrl.pathname);
+  if (isPanelRoute) {
     if (request.mode === 'navigate') {
       event.respondWith(fetch(request));
     }

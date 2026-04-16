@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date as SpreadsheetDate;
+
 class Guru extends CI_Controller
 {
 	public function __construct()
@@ -236,6 +239,282 @@ class Guru extends CI_Controller
 		$this->load->view('templates/admin_layout', $data);
 	}
 
+	public function penilaian_karakter_template()
+	{
+		$this->load->model('Character_master_model');
+		$this->load->model('Character_assessment_model');
+		$this->load->library('excel_export');
+
+		if (!$this->Character_assessment_model->is_assessment_schema_ready()) {
+			$this->session->set_flashdata('error', 'Template import belum bisa dibuat karena tabel penilaian karakter belum lengkap.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$template_data = array(
+			'children' => $this->Anak_model->get_all_anak('nama_anak', 'ASC'),
+			'aspects' => $this->Character_master_model->get_aspects_with_indicators(),
+			'scales' => $this->Character_master_model->get_scales()
+		);
+
+		$total_indicators = 0;
+		foreach ($template_data['aspects'] as $aspect) {
+			$total_indicators += count((array) ($aspect->indicators ?? array()));
+		}
+
+		if (empty($template_data['aspects']) || empty($template_data['scales']) || $total_indicators === 0) {
+			$this->session->set_flashdata('error', 'Template import belum dapat dibuat karena data aspek, indikator, atau skala penilaian masih kosong.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$this->excel_export->export_template_penilaian_karakter(
+			$template_data,
+			'template_import_penilaian_karakter_' . date('Ymd_His') . '.xlsx'
+		);
+	}
+
+	public function penilaian_karakter_import()
+	{
+		$this->load->model('Character_master_model');
+		$this->load->model('Character_assessment_model');
+		$this->load->library('upload');
+
+		if (!$this->input->post('submit_import')) {
+			redirect('guru/penilaian-karakter');
+		}
+
+		if (!$this->Character_assessment_model->is_assessment_schema_ready()) {
+			$this->session->set_flashdata('error', 'Import belum dapat diproses karena tabel penilaian karakter belum lengkap.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		if (empty($_FILES['import_file']['name'])) {
+			$this->session->set_flashdata('error', 'Pilih file Excel atau spreadsheet yang akan diimport.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$upload_path = FCPATH . 'assets/temp/character_imports/';
+		if (!is_dir($upload_path)) {
+			mkdir($upload_path, 0755, TRUE);
+		}
+
+		$config = array(
+			'upload_path' => $upload_path,
+			'allowed_types' => 'xlsx|xls|csv',
+			'max_size' => 5120,
+			'file_ext_tolower' => TRUE,
+			'encrypt_name' => TRUE,
+		);
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload('import_file')) {
+			$this->session->set_flashdata('error', $this->upload->display_errors('', ''));
+			redirect('guru/penilaian-karakter');
+		}
+
+		$upload_data = $this->upload->data();
+		$file_path = $upload_data['full_path'];
+
+		try {
+			$spreadsheet = IOFactory::load($file_path);
+		} catch (\Throwable $e) {
+			if (is_file($file_path)) {
+				@unlink($file_path);
+			}
+
+			$this->session->set_flashdata('error', 'File import tidak dapat dibaca. Pastikan format file sesuai template.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$sheet = $spreadsheet->getSheetByName('Template Import');
+		if ($sheet === NULL) {
+			$sheet = $spreadsheet->getActiveSheet();
+		}
+
+		$header_row = 5;
+		$data_start_row = 6;
+		$highest_row = (int) $sheet->getHighestDataRow();
+		$highest_column_index = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($sheet->getHighestDataColumn($header_row));
+
+		$indicator_columns = array();
+		for ($column = 9; $column <= $highest_column_index; $column++) {
+			$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
+			$header_value = trim((string) $sheet->getCell($column_letter . $header_row)->getValue());
+			if (preg_match('/\[ID:\s*(\d+)\]/', $header_value, $matches)) {
+				$indicator_columns[$column] = (int) $matches[1];
+			}
+		}
+
+		if (empty($indicator_columns)) {
+			if (is_file($file_path)) {
+				@unlink($file_path);
+			}
+
+			$this->session->set_flashdata('error', 'Kolom indikator pada file import tidak ditemukan. Unduh ulang template terbaru.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$children_map = array();
+		foreach ($this->Anak_model->get_all_anak('nama_anak', 'ASC') as $child) {
+			$children_map[(int) $child->id_anak] = $child;
+		}
+
+		$valid_indicator_ids = array();
+		foreach ($this->Character_master_model->get_aspects_with_indicators() as $aspect) {
+			foreach ((array) $aspect->indicators as $indicator) {
+				$valid_indicator_ids[(int) $indicator->id_indicator] = TRUE;
+			}
+		}
+
+		$valid_scores = array();
+		foreach ($this->Character_master_model->get_scales() as $scale) {
+			$valid_scores[(int) $scale->score] = TRUE;
+		}
+
+		if (empty($valid_scores) || empty($valid_indicator_ids)) {
+			if (is_file($file_path)) {
+				@unlink($file_path);
+			}
+
+			$this->session->set_flashdata('error', 'Import belum dapat diproses karena data master skala atau indikator belum lengkap.');
+			redirect('guru/penilaian-karakter');
+		}
+
+		$imported_count = 0;
+		$skipped_errors = array();
+
+		for ($row = $data_start_row; $row <= $highest_row; $row++) {
+			$id_anak = (int) trim((string) $sheet->getCell('A' . $row)->getFormattedValue());
+			$nama_anak = trim((string) $sheet->getCell('B' . $row)->getFormattedValue());
+			$assessment_date = $this->parse_import_assessment_date($sheet->getCell('C' . $row));
+			$notes = trim((string) $sheet->getCell('D' . $row)->getFormattedValue());
+			$strengths = trim((string) $sheet->getCell('E' . $row)->getFormattedValue());
+			$development_observed = trim((string) $sheet->getCell('F' . $row)->getFormattedValue());
+			$areas_to_support = trim((string) $sheet->getCell('G' . $row)->getFormattedValue());
+			$support_strategy = trim((string) $sheet->getCell('H' . $row)->getFormattedValue());
+
+			$scores = array();
+			foreach ($indicator_columns as $column => $id_indicator) {
+				$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
+				$raw_score = trim((string) $sheet->getCell($column_letter . $row)->getFormattedValue());
+
+				if ($raw_score === '') {
+					continue;
+				}
+
+				if (!preg_match('/^\d+(?:\.0+)?$/', $raw_score)) {
+					$skipped_errors[] = 'Baris ' . $row . ': skor harus berupa angka bulat sesuai skala penilaian.';
+					$scores = NULL;
+					break;
+				}
+
+				$score = (int) $raw_score;
+				if (!isset($valid_scores[$score])) {
+					$skipped_errors[] = 'Baris ' . $row . ': skor harus berupa angka yang tersedia pada skala penilaian.';
+					$scores = NULL;
+					break;
+				}
+
+				if (!isset($valid_indicator_ids[$id_indicator])) {
+					$skipped_errors[] = 'Baris ' . $row . ': indikator pada template tidak lagi valid. Unduh ulang template terbaru.';
+					$scores = NULL;
+					break;
+				}
+
+				$scores[$id_indicator] = $score;
+			}
+
+			if ($scores === NULL) {
+				continue;
+			}
+
+			$has_text_content = ($assessment_date !== '') || $notes !== '' || $strengths !== '' || $development_observed !== '' || $areas_to_support !== '' || $support_strategy !== '';
+			$has_scores = !empty($scores);
+
+			if (!$has_text_content && !$has_scores) {
+				continue;
+			}
+
+			if ($id_anak <= 0 || !isset($children_map[$id_anak])) {
+				$skipped_errors[] = 'Baris ' . $row . ': ID anak tidak ditemukan.';
+				continue;
+			}
+
+			if ($nama_anak !== '' && strcasecmp($nama_anak, (string) $children_map[$id_anak]->nama_anak) !== 0) {
+				$skipped_errors[] = 'Baris ' . $row . ': nama anak tidak sesuai dengan ID anak pada sistem.';
+				continue;
+			}
+
+			if ($assessment_date === '') {
+				$skipped_errors[] = 'Baris ' . $row . ': tanggal penilaian wajib diisi dengan format YYYY-MM-DD.';
+				continue;
+			}
+
+			if (!$has_scores) {
+				$skipped_errors[] = 'Baris ' . $row . ': minimal isi satu skor indikator.';
+				continue;
+			}
+
+			$timestamp = strtotime($assessment_date);
+			if (!$timestamp) {
+				$skipped_errors[] = 'Baris ' . $row . ': tanggal penilaian tidak valid.';
+				continue;
+			}
+
+			$assessment_data = array(
+				'id_anak' => $id_anak,
+				'id_assessor' => (int) $this->session->userdata('id_user'),
+				'assessor_type' => 'guru',
+				'assessment_date' => date('Y-m-d', $timestamp),
+				'week_number' => (int) date('W', $timestamp),
+				'month' => (int) date('n', $timestamp),
+				'year' => (int) date('Y', $timestamp),
+				'notes' => $notes,
+				'status' => 'completed'
+			);
+
+			$qualitative_note = array(
+				'strengths' => $strengths,
+				'development_observed' => $development_observed,
+				'areas_to_support' => $areas_to_support,
+				'support_strategy' => $support_strategy
+			);
+
+			$result = $this->Character_assessment_model->create_assessment_with_details($assessment_data, $scores, $qualitative_note);
+
+			if (!$result['success']) {
+				$skipped_errors[] = 'Baris ' . $row . ': ' . $result['message'];
+				continue;
+			}
+
+			$imported_count++;
+		}
+
+		if (is_file($file_path)) {
+			@unlink($file_path);
+		}
+
+		if ($imported_count > 0) {
+			log_activity('import_character_assessment', 'Mengimpor ' . $imported_count . ' penilaian karakter melalui file spreadsheet.');
+			$this->session->set_flashdata('success', 'Import penilaian karakter berhasil. Total data tersimpan: ' . $imported_count . '.');
+		}
+
+		if (!empty($skipped_errors)) {
+			$preview_errors = array_slice($skipped_errors, 0, 8);
+			$message = 'Sebagian baris tidak diproses:<br>- ' . implode('<br>- ', $preview_errors);
+			if (count($skipped_errors) > count($preview_errors)) {
+				$message .= '<br>- dan ' . (count($skipped_errors) - count($preview_errors)) . ' baris lainnya.';
+			}
+			$this->session->set_flashdata('error', $message);
+		}
+
+		if ($imported_count === 0 && empty($skipped_errors)) {
+			$this->session->set_flashdata('error', 'Tidak ada baris yang diimport. Isi tanggal dan minimal satu skor pada baris yang ingin diproses.');
+		}
+
+		redirect('guru/penilaian-karakter');
+	}
+
 	public function perkembangan_anak()
 	{
 		$this->load->model('Character_master_model');
@@ -351,6 +630,31 @@ class Guru extends CI_Controller
 		);
 
 		$this->load->view('templates/admin_layout', $data);
+	}
+
+	private function parse_import_assessment_date($cell)
+	{
+		$value = $cell->getValue();
+
+		if ($value === NULL || $value === '') {
+			return '';
+		}
+
+		if (is_numeric($value)) {
+			try {
+				return SpreadsheetDate::excelToDateTimeObject($value)->format('Y-m-d');
+			} catch (\Throwable $e) {
+				return '';
+			}
+		}
+
+		$formatted_value = trim((string) $cell->getFormattedValue());
+		if ($formatted_value === '') {
+			return '';
+		}
+
+		$timestamp = strtotime($formatted_value);
+		return $timestamp ? date('Y-m-d', $timestamp) : '';
 	}
 
 	public function perkembangan_anak_detail($id_anak = 0)

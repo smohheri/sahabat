@@ -37,7 +37,7 @@
 		</div>
 		<div class="panel-body form-body">
 			<form method="get" action="<?php echo site_url('guru/perkembangan-anak'); ?>">
-				<div class="row">
+				<div class="row filter-form-row">
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>Periode</label>
@@ -86,8 +86,11 @@
 								value="<?php echo $filters['end_date']; ?>">
 						</div>
 					</div>
-					<div class="col-md-1 d-flex align-items-end">
-						<button type="submit" class="btn btn-info btn-block"><i class="fas fa-search"></i></button>
+					<div class="col-md-2 col-lg-1 filter-submit-col">
+						<button type="submit" class="btn btn-info btn-block filter-submit-btn">
+							<i class="fas fa-search mr-1"></i>
+							<span>Cari</span>
+						</button>
 					</div>
 				</div>
 			</form>
@@ -179,118 +182,11 @@
 </div>
 
 <style>
-	.guru-perkembangan-page {
-		padding: 10px;
-	}
-
-	.page-header-card {
-		background: #fff;
-		padding: 20px;
-		border-radius: 14px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-		margin-bottom: 20px;
-	}
-
-	.page-header-card h2 {
-		margin: 0;
-		font-size: 24px;
-		font-weight: 700;
-	}
-
-	.page-header-card p {
-		margin: 6px 0 0;
-		color: #6b7280;
-	}
-
-	.stats-row {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 15px;
-		margin-bottom: 20px;
-	}
-
-	.small-box-card {
-		background: #fff;
-		border-radius: 12px;
-		padding: 16px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-		border-left: 4px solid #4e73df;
-	}
-
-	.small-box-card .label {
-		font-size: 13px;
-		color: #718096;
-	}
-
-	.small-box-card .value {
-		font-size: 28px;
-		font-weight: 700;
-		line-height: 1.2;
-	}
-
-	.box-blue {
-		border-left-color: #4e73df;
-	}
-
-	.box-green {
-		border-left-color: #1cc88a;
-	}
-
-	.box-orange {
-		border-left-color: #f6c23e;
-	}
-
-	.box-red {
-		border-left-color: #e74a3b;
-	}
-
-	.card-panel {
-		background: #fff;
-		border-radius: 14px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-		overflow: hidden;
-	}
-
-	.panel-header {
-		padding: 16px 20px;
-		border-bottom: 1px solid #edf2f7;
-	}
-
-	.panel-header h3 {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-	}
-
-	.panel-body {
-		padding: 0;
-	}
-
-	.form-body {
-		padding: 20px;
-	}
-
-	.period-range {
-		display: none;
-	}
-
 	.perkembangan-table thead th {
 		font-size: 12px;
 		text-transform: uppercase;
 		letter-spacing: 0.4px;
 		white-space: nowrap;
-	}
-
-	@media (max-width: 992px) {
-		.stats-row {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@media (max-width: 576px) {
-		.stats-row {
-			grid-template-columns: 1fr;
-		}
 	}
 </style>
 

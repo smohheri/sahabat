@@ -5,9 +5,12 @@ require_once FCPATH . 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Excel_export
 {
@@ -329,6 +332,211 @@ class Excel_export
 		}
 
 		// Output
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+
+		$writer = new Xlsx($this->spreadsheet);
+		$writer->save('php://output');
+		exit;
+	}
+
+	public function export_template_penilaian_karakter($data, $filename = 'template_import_penilaian_karakter.xlsx')
+	{
+		$settings = get_instance()->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+		$children = (array) ($data['children'] ?? array());
+		$aspects = (array) ($data['aspects'] ?? array());
+		$scales = (array) ($data['scales'] ?? array());
+
+		$indicator_columns = array();
+		foreach ($aspects as $aspect) {
+			foreach ((array) ($aspect->indicators ?? array()) as $indicator) {
+				$indicator_columns[] = array(
+					'id_aspect' => (int) $aspect->id_aspect,
+					'aspect_name' => (string) $aspect->aspect_name,
+					'aspect_code' => (string) $aspect->aspect_code,
+					'id_indicator' => (int) $indicator->id_indicator,
+					'indicator_name' => (string) $indicator->indicator_name,
+					'indicator_code' => (string) $indicator->indicator_code,
+				);
+			}
+		}
+
+		$total_columns = 8 + count($indicator_columns);
+		$last_column = Coordinate::stringFromColumnIndex(max(1, $total_columns));
+		$sheet = $this->sheet;
+		$sheet->setTitle('Template Import');
+		$sheet->freezePane('A6');
+
+		$sheet->mergeCells('A1:' . $last_column . '1');
+		$sheet->mergeCells('A2:' . $last_column . '2');
+		$sheet->mergeCells('A3:' . $last_column . '3');
+		$sheet->mergeCells('A4:' . $last_column . '4');
+
+		$sheet->setCellValue('A1', 'TEMPLATE IMPORT PENILAIAN KARAKTER GURU');
+		$sheet->setCellValue('A2', $nama_lksa);
+		$sheet->setCellValue('A3', 'Gunakan file ini untuk mengisi penilaian karakter massal per anak.');
+		$sheet->setCellValue('A4', 'Isi kolom tanggal dan skor indikator yang diperlukan. Jangan ubah kolom ID Anak, Nama Anak, serta header indikator.');
+
+		$sheet->getStyle('A1:' . $last_column . '4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		$sheet->getStyle('A1:' . $last_column . '4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		$sheet->getStyle('A1')->getFont()->setBold(TRUE)->setSize(15);
+		$sheet->getStyle('A2')->getFont()->setBold(TRUE)->setSize(11);
+		$sheet->getStyle('A3:A4')->getFont()->setSize(10);
+		$sheet->getStyle('A1:' . $last_column . '4')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('EEF2FF');
+
+		$headers = array(
+			'ID Anak',
+			'Nama Anak',
+			'Tanggal Penilaian (YYYY-MM-DD)',
+			'Catatan Umum',
+			'Kekuatan Anak',
+			'Perkembangan Terlihat',
+			'Area Dukungan',
+			'Strategi Dukungan'
+		);
+
+		$header_row = 5;
+		foreach ($headers as $index => $header) {
+			$column_letter = Coordinate::stringFromColumnIndex($index + 1);
+			$sheet->setCellValue($column_letter . $header_row, $header);
+		}
+
+		foreach ($indicator_columns as $index => $indicator) {
+			$column_index = 9 + $index;
+			$column_letter = Coordinate::stringFromColumnIndex($column_index);
+			$header_text = 'Skor ' . ($indicator['indicator_code'] !== '' ? $indicator['indicator_code'] . ' - ' : '') . $indicator['indicator_name'] . ' [ID:' . $indicator['id_indicator'] . ']';
+			$sheet->setCellValue($column_letter . $header_row, $header_text);
+		}
+
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getFont()->setBold(TRUE);
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getAlignment()->setWrapText(TRUE);
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCEAFE');
+		$sheet->getStyle('A' . $header_row . ':' . $last_column . $header_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		$sheet->getRowDimension($header_row)->setRowHeight(42);
+		$sheet->setAutoFilter('A' . $header_row . ':' . $last_column . $header_row);
+
+		$min_score = !empty($scales) ? (int) min(array_map(function ($scale) {
+			return (int) $scale->score;
+		}, $scales)) : 1;
+		$max_score = !empty($scales) ? (int) max(array_map(function ($scale) {
+			return (int) $scale->score;
+		}, $scales)) : 4;
+
+		$row = 6;
+		foreach ($children as $child) {
+			$sheet->setCellValueExplicit('A' . $row, (string) $child->id_anak, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('B' . $row, $child->nama_anak);
+			$sheet->setCellValue('C' . $row, '');
+			$sheet->setCellValue('D' . $row, '');
+			$sheet->setCellValue('E' . $row, '');
+			$sheet->setCellValue('F' . $row, '');
+			$sheet->setCellValue('G' . $row, '');
+			$sheet->setCellValue('H' . $row, '');
+
+			for ($column_index = 9; $column_index <= $total_columns; $column_index++) {
+				$column_letter = Coordinate::stringFromColumnIndex($column_index);
+				$validation = $sheet->getCell($column_letter . $row)->getDataValidation();
+				$validation->setType(DataValidation::TYPE_WHOLE);
+				$validation->setErrorStyle(DataValidation::STYLE_STOP);
+				$validation->setAllowBlank(TRUE);
+				$validation->setShowInputMessage(TRUE);
+				$validation->setShowErrorMessage(TRUE);
+				$validation->setPromptTitle('Isi skor indikator');
+				$validation->setPrompt('Masukkan skor ' . $min_score . ' sampai ' . $max_score . ' sesuai skala.');
+				$validation->setErrorTitle('Skor tidak valid');
+				$validation->setError('Skor harus berupa angka ' . $min_score . ' sampai ' . $max_score . '.');
+				$validation->setFormula1((string) $min_score);
+				$validation->setFormula2((string) $max_score);
+			}
+
+			$sheet->getStyle('A' . $row . ':' . $last_column . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$row++;
+		}
+
+		$last_data_row = max(6, $row - 1);
+		$sheet->getStyle('A6:H' . $last_data_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+
+		$sheet->getColumnDimension('A')->setWidth(12);
+		$sheet->getColumnDimension('B')->setWidth(28);
+		$sheet->getColumnDimension('C')->setWidth(22);
+		$sheet->getColumnDimension('D')->setWidth(24);
+		$sheet->getColumnDimension('E')->setWidth(24);
+		$sheet->getColumnDimension('F')->setWidth(24);
+		$sheet->getColumnDimension('G')->setWidth(24);
+		$sheet->getColumnDimension('H')->setWidth(24);
+
+		for ($column_index = 9; $column_index <= $total_columns; $column_index++) {
+			$column_letter = Coordinate::stringFromColumnIndex($column_index);
+			$sheet->getColumnDimension($column_letter)->setWidth(18);
+		}
+
+		$sheet->getStyle('A1:' . $last_column . $last_data_row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		$sheet->getStyle('A6:C' . $last_data_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		$sheet->getStyle('I6:' . $last_column . $last_data_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$reference_sheet = new Worksheet($this->spreadsheet, 'Referensi');
+		$this->spreadsheet->addSheet($reference_sheet);
+		$reference_sheet->setCellValue('A1', 'Referensi Import Penilaian Karakter');
+		$reference_sheet->mergeCells('A1:F1');
+		$reference_sheet->getStyle('A1')->getFont()->setBold(TRUE)->setSize(14);
+		$reference_sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$reference_sheet->setCellValue('A3', 'Skala Penilaian');
+		$reference_sheet->getStyle('A3')->getFont()->setBold(TRUE);
+		$reference_sheet->fromArray(array('Skor', 'Kategori', 'Deskripsi'), NULL, 'A4');
+		$reference_sheet->getStyle('A4:C4')->getFont()->setBold(TRUE);
+		$reference_sheet->getStyle('A4:C4')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E7FF');
+
+		$scale_row = 5;
+		foreach ($scales as $scale) {
+			$reference_sheet->setCellValue('A' . $scale_row, (int) $scale->score);
+			$reference_sheet->setCellValue('B' . $scale_row, $scale->category);
+			$reference_sheet->setCellValue('C' . $scale_row, $scale->description ?: '-');
+			$scale_row++;
+		}
+
+		$reference_sheet->setCellValue('E3', 'Indikator Penilaian');
+		$reference_sheet->getStyle('E3')->getFont()->setBold(TRUE);
+		$reference_sheet->fromArray(array('ID Aspek', 'Aspek', 'ID Indikator', 'Kode', 'Nama Indikator'), NULL, 'E4');
+		$reference_sheet->getStyle('E4:I4')->getFont()->setBold(TRUE);
+		$reference_sheet->getStyle('E4:I4')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+
+		$indicator_row = 5;
+		foreach ($indicator_columns as $indicator) {
+			$reference_sheet->setCellValue('E' . $indicator_row, $indicator['id_aspect']);
+			$reference_sheet->setCellValue('F' . $indicator_row, $indicator['aspect_name']);
+			$reference_sheet->setCellValue('G' . $indicator_row, $indicator['id_indicator']);
+			$reference_sheet->setCellValue('H' . $indicator_row, $indicator['indicator_code']);
+			$reference_sheet->setCellValue('I' . $indicator_row, $indicator['indicator_name']);
+			$indicator_row++;
+		}
+
+		$reference_sheet->setCellValue('K3', 'Daftar Anak');
+		$reference_sheet->getStyle('K3')->getFont()->setBold(TRUE);
+		$reference_sheet->fromArray(array('ID Anak', 'Nama Anak', 'Pendidikan', 'Status'), NULL, 'K4');
+		$reference_sheet->getStyle('K4:N4')->getFont()->setBold(TRUE);
+		$reference_sheet->getStyle('K4:N4')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FDE68A');
+
+		$child_row = 5;
+		foreach ($children as $child) {
+			$reference_sheet->setCellValue('K' . $child_row, (int) $child->id_anak);
+			$reference_sheet->setCellValue('L' . $child_row, $child->nama_anak);
+			$reference_sheet->setCellValue('M' . $child_row, $child->pendidikan ?: '-');
+			$reference_sheet->setCellValue('N' . $child_row, $child->status_anak ?: '-');
+			$child_row++;
+		}
+
+		foreach (array('A', 'B', 'C', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N') as $column_letter) {
+			$reference_sheet->getColumnDimension($column_letter)->setAutoSize(TRUE);
+		}
+
+		$reference_sheet->getStyle('A4:N' . max($scale_row, $indicator_row, $child_row))->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		$this->spreadsheet->setActiveSheetIndex(0);
+
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition: attachment;filename="' . $filename . '"');
 		header('Cache-Control: max-age=0');

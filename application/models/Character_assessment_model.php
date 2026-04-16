@@ -518,7 +518,7 @@ class Character_assessment_model extends CI_Model
         return $this->safe_count('character_monthly_summary');
     }
 
-    public function get_assessments($limit = 100)
+    public function get_assessments($limit = 100, $offset = 0)
     {
         if (!$this->db->table_exists('character_assessments')) {
             return array();
@@ -530,11 +530,11 @@ class Character_assessment_model extends CI_Model
         $this->db->join('users u', 'u.id_user = ca.id_assessor', 'left');
         $this->db->order_by('ca.assessment_date', 'DESC');
         $this->db->order_by('ca.id_assessment', 'DESC');
-        $this->db->limit((int) $limit);
+        $this->db->limit((int) $limit, (int) $offset);
         return $this->db->get()->result();
     }
 
-    public function get_assessment_details($limit = 200)
+    public function get_assessment_details($limit = 200, $offset = 0)
     {
         if (!$this->db->table_exists('character_assessment_details')) {
             return array();
@@ -547,7 +547,7 @@ class Character_assessment_model extends CI_Model
         $this->db->join('character_indicators ci', 'ci.id_indicator = cad.id_indicator', 'left');
         $this->db->join('character_aspects asp', 'asp.id_aspect = ci.id_aspect', 'left');
         $this->db->order_by('cad.id_detail', 'DESC');
-        $this->db->limit((int) $limit);
+        $this->db->limit((int) $limit, (int) $offset);
         return $this->db->get()->result();
     }
 

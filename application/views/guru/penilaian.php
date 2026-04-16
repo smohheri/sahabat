@@ -44,6 +44,67 @@
 	</div>
 
 	<?php if ($schema_ready): ?>
+		<div class="card-panel mb-4 import-panel">
+			<div class="panel-header">
+				<h3><i class="fas fa-file-excel text-success"></i> Import Penilaian dari Spreadsheet</h3>
+			</div>
+			<div class="panel-body form-body">
+				<div class="import-tools">
+					<div class="import-content">
+						<div class="import-badge-row">
+							<span class="import-badge"><i class="fas fa-table mr-1"></i> Template siap pakai</span>
+							<span class="import-badge"><i class="fas fa-id-card mr-1"></i> ID anak & indikator
+								otomatis</span>
+						</div>
+						<p class="import-lead mb-2">Unduh template, isi skor penilaian per anak, lalu import kembali file
+							Excel/spreadsheet.</p>
+						<ul class="import-help-list mb-0">
+							<li>Template sudah berisi <strong>ID anak</strong>, <strong>nama anak</strong>, dan <strong>ID
+									indikator</strong> pada header kolom skor.</li>
+							<li>Isi <strong>tanggal penilaian</strong> dan minimal satu <strong>skor indikator</strong> pada
+								baris yang ingin diimport.</li>
+							<li>Format file yang didukung: <strong>.xlsx</strong>, <strong>.xls</strong>, atau
+								<strong>.csv</strong>.
+							</li>
+						</ul>
+					</div>
+					<div class="import-actions">
+						<div class="import-actions-header">
+							<div class="import-actions-icon">
+								<i class="fas fa-cloud-upload-alt"></i>
+							</div>
+							<div>
+								<div class="import-actions-title">Upload File Import</div>
+								<div class="import-actions-subtitle">Gunakan template resmi agar data langsung terbaca.
+								</div>
+							</div>
+						</div>
+						<a href="<?php echo site_url('guru/penilaian-karakter/template'); ?>"
+							class="btn btn-success btn-block mb-3 import-btn import-btn-success">
+							<i class="fas fa-download mr-1"></i> Unduh Template Import
+						</a>
+						<form method="post" action="<?php echo site_url('guru/penilaian-karakter/import'); ?>"
+							enctype="multipart/form-data">
+							<input type="hidden" name="submit_import" value="1">
+							<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>"
+								value="<?php echo $this->security->get_csrf_hash(); ?>">
+							<div class="form-group mb-3">
+								<label class="mb-2 import-file-label">Pilih File Import</label>
+								<input type="file" name="import_file" class="form-control-file" accept=".xlsx,.xls,.csv"
+									required>
+								<small class="import-file-help">Maksimal 5 MB. Format: XLSX, XLS, CSV.</small>
+							</div>
+							<button type="submit" class="btn btn-primary btn-block import-btn import-btn-primary">
+								<i class="fas fa-upload mr-1"></i> Import Penilaian
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
+
+	<?php if ($schema_ready): ?>
 		<div class="card-panel mb-4">
 			<div class="panel-header">
 				<h3><i class="fas fa-list text-primary"></i> Daftar Anak & Form Penilaian</h3>
@@ -190,7 +251,7 @@
 		</div>
 		<div class="panel-body form-body">
 			<form method="get" action="<?php echo site_url('guru/penilaian-karakter'); ?>">
-				<div class="row">
+				<div class="row filter-form-row">
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>Periode</label>
@@ -239,8 +300,11 @@
 								value="<?php echo $filters['end_date']; ?>">
 						</div>
 					</div>
-					<div class="col-md-1 d-flex align-items-end">
-						<button type="submit" class="btn btn-info btn-block"><i class="fas fa-search"></i></button>
+					<div class="col-md-2 col-lg-1 filter-submit-col">
+						<button type="submit" class="btn btn-info btn-block filter-submit-btn">
+							<i class="fas fa-search mr-1"></i>
+							<span>Cari</span>
+						</button>
 					</div>
 				</div>
 			</form>
@@ -337,90 +401,8 @@
 </div>
 
 <style>
-	.guru-penilaian-page {
-		padding: 10px;
-	}
-
-	.page-header-card {
-		background: #fff;
-		padding: 20px;
-		border-radius: 14px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-		margin-bottom: 20px;
-	}
-
-	.page-header-card h2 {
-		margin: 0;
-		font-size: 24px;
-		font-weight: 700;
-	}
-
-	.page-header-card p {
-		margin: 6px 0 0;
-		color: #6b7280;
-	}
-
-	.stats-row {
-		display: grid;
+	.guru-penilaian-page .stats-row {
 		grid-template-columns: repeat(3, 1fr);
-		gap: 15px;
-		margin-bottom: 20px;
-	}
-
-	.stat-card {
-		background: #fff;
-		border-radius: 12px;
-		padding: 18px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-		border-left: 4px solid #4e73df;
-	}
-
-	.stat-blue {
-		border-left-color: #4e73df;
-	}
-
-	.stat-green {
-		border-left-color: #1cc88a;
-	}
-
-	.stat-orange {
-		border-left-color: #f6c23e;
-	}
-
-	.stat-title {
-		font-size: 13px;
-		color: #718096;
-	}
-
-	.stat-value {
-		font-size: 28px;
-		font-weight: 700;
-	}
-
-	.card-panel {
-		background: #fff;
-		border-radius: 14px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-		overflow: hidden;
-	}
-
-	.panel-header {
-		padding: 16px 20px;
-		border-bottom: 1px solid #edf2f7;
-	}
-
-	.panel-header h3 {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-	}
-
-	.panel-body {
-		padding: 0;
-	}
-
-	.form-body {
-		padding: 20px;
 	}
 
 	.assessment-layout {
@@ -618,12 +600,8 @@
 		vertical-align: middle;
 	}
 
-	.period-range {
-		display: none;
-	}
-
 	@media (max-width: 992px) {
-		.stats-row {
+		.guru-penilaian-page .stats-row {
 			grid-template-columns: 1fr;
 		}
 
