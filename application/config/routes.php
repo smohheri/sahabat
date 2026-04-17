@@ -16,6 +16,8 @@ $route['logout'] = 'auth/logout';
 // Guru
 $route['guru'] = 'guru/index';
 $route['guru/anak'] = 'guru/anak';
+$route['guru/profil-pengajar'] = 'guru/profil_pengajar';
+$route['guru/profil-pengajar/edit'] = 'guru/edit_profil_pengajar';
 $route['guru/penilaian-karakter'] = 'guru/penilaian_karakter';
 $route['guru/penilaian-karakter/template'] = 'guru/penilaian_karakter_template';
 $route['guru/penilaian-karakter/import'] = 'guru/penilaian_karakter_import';
@@ -23,9 +25,15 @@ $route['guru/perkembangan-anak'] = 'guru/perkembangan_anak';
 $route['guru/perkembangan-anak/detail/(:num)'] = 'guru/perkembangan_anak_detail/$1';
 $route['guru/perkembangan-anak/detail/(:num)/export-pdf'] = 'guru/perkembangan_anak_detail_export_pdf/$1';
 
+// Anak
+$route['anak'] = 'anak/index';
+$route['anak/profil'] = 'anak/profil';
+$route['anak/asesmen-mandiri'] = 'anak/asesmen_mandiri';
+
 // Admin
 $route['admin'] = 'admin/index';
 $route['admin/anak'] = 'admin/anak';
+$route['admin/anak/activate-account/(:num)'] = 'admin/activate_anak_account/$1';
 $route['admin/anak/tambah'] = 'admin/anak';
 $route['admin/anak/edit/(:num)'] = 'admin/anak/$1';
 $route['admin/anak/delete/(:num)'] = 'admin/anak/$1';

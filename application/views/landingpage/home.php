@@ -660,7 +660,8 @@
 	<nav class="navbar navbar-expand-lg fixed-top landing-navbar" id="navbar">
 		<div class="container">
 			<a class="navbar-brand d-flex align-items-center" href="#">
-				<img src="<?php echo $favicon_url; ?>" alt="Logo <?php echo $settings->nama_lksa ?? 'LKSA'; ?>" style="max-height: 40px; width: auto;">
+				<img src="<?php echo $favicon_url; ?>" alt="Logo <?php echo $settings->nama_lksa ?? 'LKSA'; ?>"
+					style="max-height: 40px; width: auto;">
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
@@ -754,68 +755,68 @@
 		<div class="container">
 			<div class="section-title" data-aos="fade-up">
 				<h2>Fitur Unggulan</h2>
-				<p>Sistem informasi lengkap untuk mengelola program kesejahteraan sosial anak dengan efisien dan
-					terorganisir</p>
+				<p>Fitur SAHABAT dirancang untuk mendukung pengasuhan, penilaian karakter, dan monitoring perkembangan
+					anak secara terstruktur</p>
 			</div>
 			<div class="row g-4">
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-child"></i>
+							<i class="fas fa-user-shield"></i>
 						</div>
-						<h3>Data Anak</h3>
-						<p>Kelola data lengkap anak asuh, riwayat pendidikan, status tinggal, dan perkembangan dengan
-							sistem
-							terintegrasi.</p>
+						<h3>Panel Admin Terpadu</h3>
+						<p>Kelola data anak, pengurus, user, pengaturan LKSA, serta konfigurasi website publik dari satu
+							panel terpusat.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-users"></i>
+							<i class="fas fa-chalkboard-teacher"></i>
 						</div>
-						<h3>Data Pengurus</h3>
-						<p>Kelola informasi pengurus, relawan, dan staf dengan fitur manajemen yang komprehensif.</p>
+						<h3>Panel Guru & Pengajar</h3>
+						<p>Guru dapat mengakses data anak, melakukan penilaian karakter, melihat perkembangan per anak, dan
+							mengelola profil pengajar.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-file-alt"></i>
+							<i class="fas fa-user-graduate"></i>
 						</div>
-						<h3>Manajemen Dokumen</h3>
-						<p>Upload dan kelola dokumen anak (KK, Akta, KTP) serta dokumen pengurus dengan sistem yang
-							aman.</p>
+						<h3>Panel Anak Mandiri</h3>
+						<p>Anak memiliki dashboard pribadi, asesmen mandiri berbasis aspek karakter, dan halaman profil untuk
+							mendukung pembinaan yang berkelanjutan.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-chart-bar"></i>
+							<i class="fas fa-clipboard-check"></i>
 						</div>
-						<h3>Laporan & Statistik</h3>
-						<p>Generate laporan data anak, pengurus, dokumen, dan statistik dengan export PDF/Excel
-							otomatis.</p>
+						<h3>Penilaian Karakter Terstruktur</h3>
+						<p>Mendukung master aspek-indikator, input penilaian rutin, catatan kualitatif, serta ringkasan
+							mingguan dan bulanan untuk pemantauan karakter anak.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-eye"></i>
+							<i class="fas fa-chart-line"></i>
 						</div>
-						<h3>Monitoring & Tracking</h3>
-						<p>Monitor status anak aktif/nonaktif, tracking pendidikan, dan evaluasi program kesejahteraan.
-						</p>
+						<h3>Laporan & Analitik</h3>
+						<p>Tersedia laporan operasional dan karakter dengan visualisasi grafik radar/tren serta ekspor PDF dan
+							Excel untuk kebutuhan evaluasi dan pelaporan.</p>
 					</div>
 				</div>
 				<div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
 					<div class="feature-card">
 						<div class="feature-icon">
-							<i class="fas fa-shield-alt"></i>
+							<i class="fas fa-folder-open"></i>
 						</div>
-						<h3>Backup & Keamanan</h3>
-						<p>Data anak dan program dilindungi dengan backup database otomatis dan sistem keamanan
-							terintegrasi.</p>
+						<h3>Dokumen & Profil Digital</h3>
+						<p>Kelola dokumen penting anak, pengurus, dan pengajar (termasuk foto serta ijazah) dengan alur upload
+							dan penyimpanan terstruktur.</p>
 					</div>
 				</div>
 			</div>
@@ -932,7 +933,7 @@
 			<div class="row">
 				<div class="col-6 col-md-3" data-aos="fade-up">
 					<div class="stat-item">
-						<div class="stat-number"><?php echo $stats['total_anak']; ?></div>
+						<div class="stat-number"><?php echo $stats['anak_aktif']; ?></div>
 						<div class="stat-label">Anak Asuh</div>
 					</div>
 				</div>
@@ -950,8 +951,8 @@
 				</div>
 				<div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
 					<div class="stat-item">
-						<div class="stat-number"><?php echo $stats['anak_aktif']; ?></div>
-						<div class="stat-label">Anak Aktif</div>
+						<div class="stat-number"><?php echo $stats['total_pengajar']; ?></div>
+						<div class="stat-label">Pengajar Aktif</div>
 					</div>
 				</div>
 

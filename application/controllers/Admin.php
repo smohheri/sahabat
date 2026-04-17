@@ -2427,6 +2427,7 @@ class Admin extends CI_Controller
 	public function anak_ajax()
 	{
 		$this->load->model('Anak_model');
+		$this->load->model('User_model');
 		$this->load->helper('tanggal');
 
 		// DataTables parameters
@@ -2462,6 +2463,15 @@ class Admin extends CI_Controller
 		$data = [];
 		$no = $start + 1;
 		foreach ($anak as $a) {
+			$akun_anak = $this->User_model->get_user_by_anak_id($a->id_anak);
+			$akun_badge = $akun_anak
+				? '<br><small class="text-success"><i class="fas fa-check-circle"></i> Akun aktif: ' . html_escape($akun_anak->username) . '</small>'
+				: '<br><small class="text-muted"><i class="fas fa-user-slash"></i> Belum ada akun</small>';
+
+			$button_akun = $akun_anak
+				? '<a class="btn btn-sm btn-success" href="' . site_url('admin/anak/activate-account/' . $a->id_anak) . '" onclick="return confirm(\'Akun sudah ada. Reset password akun anak ini ke format yyyymmdd?\')" title="Reset Password Akun Anak"><i class="fas fa-key"></i></a>'
+				: '<a class="btn btn-sm btn-success" href="' . site_url('admin/anak/activate-account/' . $a->id_anak) . '" onclick="return confirm(\'Aktifkan akun untuk data anak ini? Username dan password awal akan dibuat dengan format yyyymmdd.\')" title="Aktifkan Akun Anak"><i class="fas fa-user-check"></i></a>';
+
 			$data[] = [
 				$no++,
 				'<div class="user-cell">
@@ -2470,7 +2480,7 @@ class Admin extends CI_Controller
 					</div>
 					<div>
 						<span>' . $a->nama_anak . '</span><br>
-						<small>' . ($a->nik ?: '-') . '</small>
+						<small>' . ($a->nik ?: '-') . '</small>' . $akun_badge . '
 					</div>
 				</div>',
 				'<span class="badge-jk badge-' . ($a->jenis_kelamin == 'L' ? 'blue' : 'pink') . '">' .
@@ -2480,6 +2490,7 @@ class Admin extends CI_Controller
 				$a->nama_sekolah ?: '-',
 				$a->biaya_spp ? 'Rp ' . number_format($a->biaya_spp, 0, ',', '.') : '-',
 				'<div class="btn-group">
+					' . $button_akun . '
 					<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalView' . $a->id_anak . '">
 						<i class="fas fa-eye"></i>
 					</button>
@@ -2505,6 +2516,77 @@ class Admin extends CI_Controller
 		];
 
 		echo json_encode($response);
+	}
+
+	public function activate_anak_account($id_anak)
+	{
+		$this->load->model('Anak_model');
+		$this->load->model('User_model');
+
+		$id_anak = (int) $id_anak;
+		$anak = $this->Anak_model->get_anak_by_id($id_anak);
+
+		if (!$anak) {
+			$this->session->set_flashdata('error', 'Data anak tidak ditemukan.');
+			redirect('admin/anak');
+		}
+
+		if (empty($anak->tanggal_lahir)) {
+			$this->session->set_flashdata('error', 'Tanggal lahir anak belum diisi. Username/password format yyyymmdd tidak bisa dibuat.');
+			redirect('admin/anak');
+		}
+
+		if (!$this->db->field_exists('id_anak', 'users')) {
+			$this->session->set_flashdata('error', 'Kolom id_anak pada tabel users belum tersedia. Jalankan SQL alter relasi users-anak terlebih dahulu.');
+			redirect('admin/anak');
+		}
+
+		$credential = date('Ymd', strtotime($anak->tanggal_lahir));
+		$username = $credential;
+		$password_plain = $credential;
+		$password_hash = password_hash($password_plain, PASSWORD_DEFAULT);
+
+		$user_by_child = $this->User_model->get_user_by_anak_id($id_anak);
+
+		if ($user_by_child) {
+			$update_data = array(
+				'username' => $username,
+				'password' => $password_hash,
+				'role' => 'anak'
+			);
+
+			$existing_username_owner = $this->User_model->get_user_by_username($username);
+			if ($existing_username_owner && (int) $existing_username_owner->id_user !== (int) $user_by_child->id_user) {
+				$this->session->set_flashdata('error', 'Username ' . $username . ' sudah dipakai akun lain.');
+				redirect('admin/anak');
+			}
+
+			$this->User_model->update_user($user_by_child->id_user, $update_data);
+
+			log_activity('activate_akun_anak', 'Reset akun anak untuk ' . $anak->nama_anak . ' dengan username ' . $username);
+			$this->session->set_flashdata('success', 'Akun anak berhasil direset. Username: ' . $username . ' | Password awal: ' . $password_plain);
+			redirect('admin/anak');
+		}
+
+		$existing_username = $this->User_model->get_user_by_username($username);
+		if ($existing_username) {
+			$this->session->set_flashdata('error', 'Username ' . $username . ' sudah dipakai akun lain.');
+			redirect('admin/anak');
+		}
+
+		$insert_data = array(
+			'nama' => $anak->nama_anak,
+			'username' => $username,
+			'password' => $password_hash,
+			'role' => 'anak',
+			'id_anak' => $id_anak
+		);
+
+		$this->User_model->insert_user($insert_data);
+
+		log_activity('activate_akun_anak', 'Mengaktifkan akun anak untuk ' . $anak->nama_anak . ' dengan username ' . $username);
+		$this->session->set_flashdata('success', 'Akun anak berhasil diaktifkan. Username: ' . $username . ' | Password awal: ' . $password_plain);
+		redirect('admin/anak');
 	}
 
 	public function backup()

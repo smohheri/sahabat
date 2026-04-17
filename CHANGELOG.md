@@ -5,6 +5,70 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.2] - 2026-04-17
+
+### Added
+- ✨ **Edit Profil Pengajar Mandiri**
+  - Menambahkan halaman edit profil pengajar:
+    - `guru/profil-pengajar/edit`
+  - Menambahkan tombol **Edit Profil** pada halaman profil pengajar.
+  - Menambahkan form edit untuk data profesional pengajar (NIP, jabatan, kontak, pendidikan, keahlian, sertifikasi, pengalaman, status kepegawaian, alamat).
+
+### Changed
+- 🔄 **Sinkronisasi Nama Akun dan Data Guru**
+  - Perubahan nama akun dari form profil pengajar kini memperbarui:
+    - `users.nama`
+    - `guru.nama_guru`
+  - Session nama pengguna juga diperbarui agar tampilan sidebar/navbar langsung sinkron.
+
+- 🔄 **Penyempurnaan Input Pendidikan Terakhir**
+  - Field `pendidikan_terakhir` pada form edit profil pengajar diubah dari input teks menjadi dropdown pilihan.
+
+- 🔄 **Sinkronisasi Konten Landing Page dengan Fitur Aplikasi**
+  - Memperbarui konten section **Fitur Unggulan** agar sesuai dengan kemampuan sistem saat ini (panel admin, panel guru/pengajar, panel anak, penilaian karakter, analitik, dan dokumen profil digital).
+
+- 🔄 **Pembaruan Statistik Ringkas Landing Page**
+  - Kartu **Anak Asuh** kini mengambil data dari jumlah anak aktif.
+  - Kartu terakhir diubah menjadi **Pengajar Aktif** berdasarkan jumlah data pada tabel `guru`.
+
+### Fixed
+- 🐛 **Perbaikan Foto Sidebar Panel Guru**
+  - Foto profil pada sidebar guru kini mengambil sumber dari relasi akun guru dan file upload yang valid.
+  - Menambahkan fallback aman ke avatar default bila file foto tidak tersedia.
+
+- 🐛 **Konsistensi Tampilan Tombol Upload Profil Pengajar**
+  - Menyesuaikan style tombol aksi dan tombol pilih file pada halaman profil pengajar agar konsisten dengan tema panel (light/dark mode).
+
+- 🐛 **Sinkronisasi Pilihan Akses Login dengan Enum Role User**
+  - Opsi dropdown akses pada halaman login kini dibaca dinamis dari enum kolom `users.role`.
+  - Validasi `akses` pada login disesuaikan otomatis berdasarkan nilai enum yang tersedia.
+  - Urutan opsi dropdown akses ditampilkan alfabetis untuk memudahkan pemilihan.
+
+### Removed
+- 🧹 **Pembersihan Fitur Detail Guru Lama**
+  - Menghapus route, method controller, dan view `detail_guru` yang sudah tidak digunakan setelah alur dipusatkan ke profil pengajar.
+
+## [1.12.1] - 2026-04-17
+
+### Added
+- ✨ **Penyempurnaan Panel Anak**
+  - Menambahkan penyempurnaan tampilan halaman panel anak:
+    - Dashboard Anak
+    - Asesmen Mandiri
+    - Profil Anak
+
+### Changed
+- 🔄 **Penyesuaian Tampilan CSS Panel Anak**
+  - Menyesuaikan kembali gaya visual dashboard dan asesmen mandiri agar konsisten dengan tampilan yang sebelumnya digunakan.
+
+### Fixed
+- 🐛 **Perbaikan Keterbacaan Dark Mode Panel Anak**
+  - Memperbaiki warna teks dan kontras elemen di dark mode pada halaman:
+    - Dashboard Anak (insight dan teks pendukung)
+    - Asesmen Mandiri (panduan skor, indikator, label)
+    - Profil Anak (label `text-muted` dan isi data profil)
+  - Memperbaiki area komponen yang masih berlatar terang di dark mode agar teks tetap terbaca.
+
 ## [1.12.0] - 2026-04-15
 
 ### Added

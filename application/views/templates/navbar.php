@@ -2,11 +2,12 @@
 <?php
 $role = $this->session->userdata('role');
 $is_guru = in_array($role, array('guru', 'pengajar'), TRUE);
-$dashboard_link = $is_guru ? site_url('guru') : site_url('admin');
-$secondary_link = $is_guru ? site_url('guru/anak') : site_url('admin/kontak');
-$secondary_icon = $is_guru ? 'fas fa-child' : 'far fa-address-card';
-$secondary_label = $is_guru ? 'Data Anak' : 'Kontak';
-$secondary_title = $is_guru ? 'Lihat data anak' : 'Kontak Pengembang';
+$is_anak = ($role === 'anak');
+$dashboard_link = $is_anak ? site_url('anak') : ($is_guru ? site_url('guru') : site_url('admin'));
+$secondary_link = $is_anak ? site_url('auth/logout') : ($is_guru ? site_url('guru/anak') : site_url('admin/kontak'));
+$secondary_icon = $is_anak ? 'fas fa-sign-out-alt' : ($is_guru ? 'fas fa-child' : 'far fa-address-card');
+$secondary_label = $is_anak ? 'Logout' : ($is_guru ? 'Data Anak' : 'Kontak');
+$secondary_title = $is_anak ? 'Keluar dari sistem' : ($is_guru ? 'Lihat data anak' : 'Kontak Pengembang');
 ?>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light" id="main-navbar">
 	<!-- Left navbar links -->

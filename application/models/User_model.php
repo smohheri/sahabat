@@ -35,7 +35,7 @@ class User_model extends CI_Model
 
 	public function get_user_roles()
 	{
-		$default_roles = array('admin', 'petugas', 'dinas', 'operator', 'pengajar');
+		$default_roles = array('admin', 'petugas', 'dinas', 'operator', 'pengajar', 'anak');
 
 		$query = $this->db->query("SHOW COLUMNS FROM users LIKE 'role'");
 		$column = $query->row_array();
@@ -57,6 +57,38 @@ class User_model extends CI_Model
 	public function get_user_by_id($id)
 	{
 		return $this->db->get_where('users', ['id_user' => $id])->row();
+	}
+
+	public function get_user_by_anak_id($id_anak)
+	{
+		if (!$this->db->field_exists('id_anak', 'users')) {
+			return null;
+		}
+
+		return $this->db->get_where('users', ['id_anak' => (int) $id_anak])->row();
+	}
+
+	public function get_user_by_pengurus_id($id_pengurus)
+	{
+		if (!$this->db->field_exists('id_pengurus', 'users')) {
+			return null;
+		}
+
+		return $this->db->get_where('users', ['id_pengurus' => (int) $id_pengurus])->row();
+	}
+
+	public function get_user_by_guru_id($id_guru)
+	{
+		if (!$this->db->field_exists('id_guru', 'users')) {
+			return null;
+		}
+
+		return $this->db->get_where('users', ['id_guru' => (int) $id_guru])->row();
+	}
+
+	public function get_user_by_username($username)
+	{
+		return $this->db->get_where('users', ['username' => $username])->row();
 	}
 
 	public function insert_user($data)

@@ -13,11 +13,15 @@ class Guru extends CI_Controller
 			redirect('auth/login');
 		}
 
-		if (!in_array($this->session->userdata('role'), array('guru', 'pengajar'), TRUE)) {
+		$session_role = strtolower(trim((string) $this->session->userdata('role')));
+		if (!in_array($session_role, array('guru', 'pengajar'), TRUE)) {
 			redirect('admin');
 		}
 
 		$this->load->model('Anak_model');
+		$this->load->model('Guru_model');
+		$this->load->model('User_model');
+		$this->load->model('Pengurus_model');
 		$this->load->helper('logging');
 	}
 
@@ -87,6 +91,248 @@ class Guru extends CI_Controller
 			'page_title' => 'Data Anak',
 			'sidebar_view' => 'templates/sidebar_guru',
 			'content' => $this->load->view('guru/anak', $data_view, TRUE),
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function profil_pengajar()
+	{
+		$id_user = (int) $this->session->userdata('id_user');
+		$user = $id_user > 0 ? $this->User_model->get_user_by_id($id_user) : null;
+
+		if (!$user) {
+			$this->session->set_flashdata('error', 'Data akun pengajar tidak ditemukan.');
+			redirect('guru');
+		}
+
+		$guru = (object) array(
+			'id_guru' => null,
+			'nip' => null,
+			'jabatan' => null,
+			'pendidikan_terakhir' => null,
+			'bidang_keahlian' => null,
+			'sertifikasi' => null,
+			'pengalaman_tahun' => null,
+			'status_kepegawaian' => null,
+			'no_hp' => null,
+			'email' => null,
+			'alamat' => null,
+			'foto' => null,
+			'file_ijazah_terakhir' => null,
+		);
+		$profile_notice = null;
+		$guru_table_ready = $this->Guru_model->is_guru_table_ready();
+		$has_guru_relation = $this->db->field_exists('id_guru', 'users');
+		if (!$guru_table_ready || !$has_guru_relation) {
+			$profile_notice = 'Relasi tabel guru belum siap. Hubungi admin untuk menjalankan migrasi guru.';
+		} elseif (!empty($user->id_guru)) {
+			$guru_row = $this->Guru_model->get_guru_by_id((int) $user->id_guru);
+			if ($guru_row) {
+				$guru = $guru_row;
+			} else {
+				$profile_notice = 'Data guru dengan relasi akun saat ini tidak ditemukan. Hubungi admin.';
+			}
+		} else {
+			$profile_notice = 'Akun Anda belum terhubung ke data guru. Hubungi admin agar mengisi kolom users.id_guru.';
+		}
+
+		if ($this->input->post('submit_upload_doc')) {
+			if (empty($guru->id_guru)) {
+				$this->session->set_flashdata('error', 'Data guru belum terhubung, upload tidak dapat diproses.');
+				redirect('guru/profil-pengajar');
+			}
+
+			$this->load->library('upload');
+			$update_data = array();
+
+			$photo_upload_path = FCPATH . 'assets/uploads/foto_guru/';
+			if (!is_dir($photo_upload_path)) {
+				mkdir($photo_upload_path, 0755, TRUE);
+			}
+
+			$ijazah_upload_path = FCPATH . 'assets/uploads/ijazah_guru/';
+			if (!is_dir($ijazah_upload_path)) {
+				mkdir($ijazah_upload_path, 0755, TRUE);
+			}
+
+			if (!empty($_FILES['foto']['name'])) {
+				$config_foto = array(
+					'upload_path' => $photo_upload_path,
+					'allowed_types' => 'jpg|jpeg|png|webp',
+					'max_size' => 4096,
+					'encrypt_name' => TRUE,
+				);
+				$this->upload->initialize($config_foto);
+				if (!$this->upload->do_upload('foto')) {
+					$this->session->set_flashdata('error', strip_tags($this->upload->display_errors('', '')));
+					redirect('guru/profil-pengajar');
+				}
+
+				$foto_data = $this->upload->data();
+				$update_data['foto'] = $foto_data['file_name'];
+
+				if (!empty($guru->foto)) {
+					$old_foto = $photo_upload_path . $guru->foto;
+					if (is_file($old_foto)) {
+						@unlink($old_foto);
+					}
+				}
+			}
+
+			if (!empty($_FILES['ijazah_terakhir']['name'])) {
+				$config_ijazah = array(
+					'upload_path' => $ijazah_upload_path,
+					'allowed_types' => 'pdf|jpg|jpeg|png',
+					'max_size' => 5120,
+					'encrypt_name' => TRUE,
+				);
+				$this->upload->initialize($config_ijazah);
+				if (!$this->upload->do_upload('ijazah_terakhir')) {
+					$this->session->set_flashdata('error', strip_tags($this->upload->display_errors('', '')));
+					redirect('guru/profil-pengajar');
+				}
+
+				$ijazah_data = $this->upload->data();
+				$update_data['file_ijazah_terakhir'] = $ijazah_data['file_name'];
+
+				if (!empty($guru->file_ijazah_terakhir)) {
+					$old_ijazah = $ijazah_upload_path . $guru->file_ijazah_terakhir;
+					if (is_file($old_ijazah)) {
+						@unlink($old_ijazah);
+					}
+				}
+			}
+
+			if (empty($update_data)) {
+				$this->session->set_flashdata('error', 'Pilih file foto atau file ijazah terlebih dahulu.');
+				redirect('guru/profil-pengajar');
+			}
+
+			$this->db->where('id_guru', (int) $guru->id_guru);
+			$updated = $this->db->update('guru', $update_data);
+			if (!$updated) {
+				$this->session->set_flashdata('error', 'Gagal menyimpan file. Silakan coba lagi.');
+				redirect('guru/profil-pengajar');
+			}
+
+			$this->session->set_flashdata('success', 'Dokumen profil pengajar berhasil diperbarui.');
+			redirect('guru/profil-pengajar');
+		}
+
+		$view_data = array(
+			'user' => $user,
+			'guru' => $guru,
+			'profile_notice' => $profile_notice,
+		);
+
+		$data = array(
+			'title' => 'Profil Pengajar - Panel Guru',
+			'page_title' => 'Profil Pengajar',
+			'sidebar_view' => 'templates/sidebar_guru',
+			'content' => $this->load->view('guru/profil_pengajar', $view_data, TRUE),
+		);
+
+		$this->load->view('templates/admin_layout', $data);
+	}
+
+	public function edit_profil_pengajar()
+	{
+		$id_user = (int) $this->session->userdata('id_user');
+		$user = $id_user > 0 ? $this->User_model->get_user_by_id($id_user) : null;
+
+		if (!$user) {
+			$this->session->set_flashdata('error', 'Data akun pengajar tidak ditemukan.');
+			redirect('guru');
+		}
+
+		$guru = null;
+		$profile_notice = null;
+		$guru_table_ready = $this->Guru_model->is_guru_table_ready();
+		$has_guru_relation = $this->db->field_exists('id_guru', 'users');
+
+		if (!$guru_table_ready || !$has_guru_relation) {
+			$profile_notice = 'Relasi tabel guru belum siap. Hubungi admin untuk menjalankan migrasi guru.';
+		} elseif (!empty($user->id_guru)) {
+			$guru = $this->Guru_model->get_guru_by_id((int) $user->id_guru);
+			if (!$guru) {
+				$profile_notice = 'Data guru dengan relasi akun saat ini tidak ditemukan. Hubungi admin.';
+			}
+		} else {
+			$profile_notice = 'Akun Anda belum terhubung ke data guru. Hubungi admin agar mengisi kolom users.id_guru.';
+		}
+
+		if (!$guru) {
+			$this->session->set_flashdata('error', $profile_notice ?: 'Data guru belum terhubung.');
+			redirect('guru/profil-pengajar');
+		}
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('nama', 'Nama Akun', 'trim|required|max_length[100]');
+		$this->form_validation->set_rules('nip', 'NIP / NUPTK', 'trim|max_length[50]');
+		$this->form_validation->set_rules('email', 'Email Guru', 'trim|valid_email|max_length[100]');
+		$this->form_validation->set_rules('jabatan', 'Jabatan', 'trim|max_length[100]');
+		$this->form_validation->set_rules('no_hp', 'No HP', 'trim|max_length[30]');
+		$this->form_validation->set_rules('pendidikan_terakhir', 'Pendidikan Terakhir', 'trim|max_length[100]');
+		$this->form_validation->set_rules('bidang_keahlian', 'Bidang Keahlian', 'trim|max_length[150]');
+		$this->form_validation->set_rules('sertifikasi', 'Sertifikasi', 'trim|max_length[150]');
+		$this->form_validation->set_rules('pengalaman_tahun', 'Pengalaman Mengajar', 'trim|integer|greater_than_equal_to[0]|less_than_equal_to[99]');
+		$this->form_validation->set_rules('status_kepegawaian', 'Status Kepegawaian', 'trim|max_length[50]');
+		$this->form_validation->set_rules('alamat', 'Alamat', 'trim|max_length[500]');
+
+		if ($this->input->method(TRUE) === 'POST') {
+			if ($this->form_validation->run() === FALSE) {
+				$this->session->set_flashdata('error', strip_tags(validation_errors()));
+				redirect('guru/profil-pengajar/edit');
+			}
+
+			$nama_akun = trim((string) $this->input->post('nama', TRUE));
+			$pengalaman_tahun = trim((string) $this->input->post('pengalaman_tahun', TRUE));
+			$update_data = array(
+				'nama_guru' => $nama_akun,
+				'nip' => trim((string) $this->input->post('nip', TRUE)),
+				'email' => trim((string) $this->input->post('email', TRUE)),
+				'jabatan' => trim((string) $this->input->post('jabatan', TRUE)),
+				'no_hp' => trim((string) $this->input->post('no_hp', TRUE)),
+				'pendidikan_terakhir' => trim((string) $this->input->post('pendidikan_terakhir', TRUE)),
+				'bidang_keahlian' => trim((string) $this->input->post('bidang_keahlian', TRUE)),
+				'sertifikasi' => trim((string) $this->input->post('sertifikasi', TRUE)),
+				'pengalaman_tahun' => $pengalaman_tahun === '' ? null : (int) $pengalaman_tahun,
+				'status_kepegawaian' => trim((string) $this->input->post('status_kepegawaian', TRUE)),
+				'alamat' => trim((string) $this->input->post('alamat', TRUE)),
+			);
+
+			$this->db->where('id_user', (int) $id_user);
+			$user_updated = $this->db->update('users', array('nama' => $nama_akun));
+			if (!$user_updated) {
+				$this->session->set_flashdata('error', 'Gagal memperbarui nama akun. Silakan coba lagi.');
+				redirect('guru/profil-pengajar/edit');
+			}
+
+			$this->db->where('id_guru', (int) $guru->id_guru);
+			$updated = $this->db->update('guru', $update_data);
+			if (!$updated) {
+				$this->session->set_flashdata('error', 'Gagal memperbarui profil pengajar. Silakan coba lagi.');
+				redirect('guru/profil-pengajar/edit');
+			}
+
+			$this->session->set_userdata('nama', $nama_akun);
+
+			$this->session->set_flashdata('success', 'Profil pengajar berhasil diperbarui.');
+			redirect('guru/profil-pengajar');
+		}
+
+		$view_data = array(
+			'user' => $user,
+			'guru' => $guru,
+			'profile_notice' => $profile_notice,
+		);
+
+		$data = array(
+			'title' => 'Edit Profil Pengajar - Panel Guru',
+			'page_title' => 'Edit Profil Pengajar',
+			'sidebar_view' => 'templates/sidebar_guru',
+			'content' => $this->load->view('guru/edit_profil_pengajar', $view_data, TRUE),
 		);
 
 		$this->load->view('templates/admin_layout', $data);

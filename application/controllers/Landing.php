@@ -31,6 +31,10 @@ class Landing extends CI_Controller
 		// Calculate statistics
 		$total_anak = count($anak);
 		$total_pengurus = count($pengurus);
+		$total_pengajar = 0;
+		if ($this->db->table_exists('guru')) {
+			$total_pengajar = (int) $this->db->count_all('guru');
+		}
 
 		// Count active children
 		$anak_aktif = 0;
@@ -163,6 +167,7 @@ class Landing extends CI_Controller
 			'total_anak' => $total_anak,
 			'anak_aktif' => $anak_aktif,
 			'total_pengurus' => $total_pengurus,
+			'total_pengajar' => $total_pengajar,
 			'tahun_pengabdian' => $tahun_pengabdian,
 			'anak_laki' => $anak_laki,
 			'anak_perempuan' => $anak_perempuan,

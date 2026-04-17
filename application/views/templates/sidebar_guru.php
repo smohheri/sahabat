@@ -18,10 +18,27 @@
     </a>
 
     <div class="sidebar">
+        <?php
+        $ci = get_instance();
+        $sidebar_avatar_url = base_url('assets/img/user2-160x160.jpg');
+        $id_user_session = (int) $ci->session->userdata('id_user');
+
+        if ($id_user_session > 0) {
+            $user_sidebar = $ci->User_model->get_user_by_id($id_user_session);
+            if ($user_sidebar && !empty($user_sidebar->id_guru) && $ci->Guru_model->is_guru_table_ready()) {
+                $guru_sidebar = $ci->Guru_model->get_guru_by_id((int) $user_sidebar->id_guru);
+                if ($guru_sidebar && !empty($guru_sidebar->foto)) {
+                    $foto_sidebar_path = FCPATH . 'assets/uploads/foto_guru/' . $guru_sidebar->foto;
+                    if (is_file($foto_sidebar_path)) {
+                        $sidebar_avatar_url = base_url('assets/uploads/foto_guru/' . $guru_sidebar->foto);
+                    }
+                }
+            }
+        }
+        ?>
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="<?php echo base_url('assets/img/user2-160x160.jpg'); ?>" class="img-circle elevation-2"
-                    alt="User Image">
+                <img src="<?php echo $sidebar_avatar_url; ?>" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block"><?php echo $this->session->userdata('nama'); ?></a>
@@ -66,6 +83,13 @@
                 </li>
 
                 <li class="nav-header">AKUN</li>
+                <li class="nav-item">
+                    <a href="<?php echo site_url('guru/profil-pengajar'); ?>"
+                        class="nav-link <?php echo $this->uri->segment(2) == 'profil-pengajar' ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Profil Pengajar</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="<?php echo site_url('auth/logout'); ?>" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>

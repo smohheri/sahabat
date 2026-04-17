@@ -146,6 +146,58 @@
     color: #fff;
 }
 
+.guru-profile-page .btn-primary {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+}
+
+.guru-profile-page .btn-primary:hover,
+.guru-profile-page .btn-primary:focus {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 12px 24px rgba(29, 78, 216, 0.26);
+}
+
+.guru-profile-page .btn-outline-primary {
+    border-radius: 10px;
+    font-weight: 700;
+    border-color: #2563eb;
+    color: #1d4ed8;
+}
+
+.guru-profile-page .btn-outline-primary:hover,
+.guru-profile-page .btn-outline-primary:focus {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #fff;
+}
+
+.guru-profile-page .form-control-file {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px dashed #93c5fd;
+    border-radius: 12px;
+    background: #eff6ff;
+    font-size: 13px;
+    color: #1e3a8a;
+}
+
+.guru-profile-page .form-control-file::file-selector-button,
+.guru-profile-page .form-control-file::-webkit-file-upload-button {
+    margin-right: 12px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
 /* ============================================================
    3. Shared stats cards
    ============================================================ */
@@ -308,6 +360,7 @@
     border-radius: var(--panel-radius-lg);
     overflow: hidden;
     box-shadow: var(--panel-shadow-md);
+    margin-bottom: 18px;
 }
 
 .panel-header,
@@ -1026,6 +1079,44 @@ body.dark-mode .btn-outline-secondary:hover {
     color: #fff !important;
 }
 
+body.dark-mode .guru-profile-page .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #eff6ff;
+    box-shadow: 0 10px 22px rgba(59, 130, 246, 0.28);
+}
+
+body.dark-mode .guru-profile-page .btn-primary:hover,
+body.dark-mode .guru-profile-page .btn-primary:focus {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #fff;
+}
+
+body.dark-mode .guru-profile-page .btn-outline-primary {
+    border-color: #60a5fa;
+    color: #bfdbfe;
+    background: transparent;
+}
+
+body.dark-mode .guru-profile-page .btn-outline-primary:hover,
+body.dark-mode .guru-profile-page .btn-outline-primary:focus {
+    background: #21406a !important;
+    border-color: #60a5fa;
+    color: #fff !important;
+}
+
+body.dark-mode .guru-profile-page .form-control-file {
+    background: #102845;
+    border-color: #31537e;
+    color: #dbeafe;
+}
+
+body.dark-mode .guru-profile-page .form-control-file::file-selector-button,
+body.dark-mode .guru-profile-page .form-control-file::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: 1px solid #60a5fa;
+    color: #eff6ff;
+}
+
 body.dark-mode .form-select,
 body.dark-mode .form-control,
 body.dark-mode .custom-select,
@@ -1139,5 +1230,212 @@ body.dark-mode .alert-danger {
 
     .header-info {
         flex-direction: column;
+    }
+}
+
+/* ============================================================
+   10. Child panel pages (shared)
+   ============================================================ */
+.anak-dashboard-radar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: center;
+}
+
+.anak-dashboard-radar .data-panel {
+    width: 100%;
+    max-width: 980px;
+    margin-bottom: 0;
+}
+
+.radar-header {
+    display: block;
+}
+
+.radar-header h3,
+.panel-header.radar-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.radar-header p,
+.panel-header.radar-header p {
+    margin: 4px 0 0;
+}
+
+.radar-body {
+    padding-top: 18px;
+}
+
+.radar-canvas-wrap {
+    position: relative;
+    min-height: 420px;
+}
+
+.dynamic-insight {
+    background: var(--panel-bg-soft);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.dynamic-insight h4 {
+    margin: 0 0 6px;
+    font-size: 0.98rem;
+    color: var(--panel-heading);
+}
+
+.dynamic-insight p {
+    margin: 0;
+    color: var(--panel-text-soft);
+    line-height: 1.5;
+}
+
+.dynamic-insight.improvement {
+    background: rgba(246, 194, 62, 0.1);
+    border-color: rgba(246, 194, 62, 0.45);
+}
+
+.asesmen-page .score-guide {
+    margin-bottom: 14px;
+}
+
+.asesmen-page .score-guide h5 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--panel-heading);
+}
+
+.asesmen-page .score-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.asesmen-page .score-guide-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.asesmen-page .score-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #0ea5e9;
+    color: #fff;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.asesmen-page .score-title {
+    font-weight: 700;
+    color: var(--panel-heading);
+    font-size: 0.9rem;
+}
+
+.asesmen-page .score-desc {
+    color: var(--panel-text-soft);
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+.asesmen-page .aspect-card {
+    margin-bottom: 14px;
+}
+
+.asesmen-page .aspect-card h5 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: var(--panel-heading);
+}
+
+.asesmen-page .indicator-item {
+    border-top: 1px dashed var(--panel-border);
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.asesmen-page .indicator-item:first-of-type {
+    border-top: none;
+}
+
+.asesmen-page .indicator-name {
+    color: var(--panel-text-soft);
+}
+
+.asesmen-page .indicator-score {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.asesmen-page .indicator-score label {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: var(--panel-text-soft);
+    cursor: pointer;
+}
+
+body.dark-mode .dynamic-insight {
+    background: #1a2c4d;
+    border-color: #31537e;
+}
+
+body.dark-mode .dynamic-insight.improvement {
+    background: rgba(246, 194, 62, 0.14);
+    border-color: rgba(246, 194, 62, 0.4);
+}
+
+body.dark-mode .asesmen-page .page-header h4,
+body.dark-mode .asesmen-page .score-guide h5,
+body.dark-mode .asesmen-page .aspect-card h5,
+body.dark-mode .asesmen-page .score-title {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .asesmen-page .score-guide-item {
+    background: #1a2c4d;
+    border-color: #31537e;
+}
+
+body.dark-mode .asesmen-page .score-desc,
+body.dark-mode .asesmen-page .indicator-name,
+body.dark-mode .asesmen-page .indicator-score label {
+    color: #dbeafe;
+}
+
+body.dark-mode .asesmen-page .indicator-item {
+    border-top-color: #31537e;
+}
+
+@media (max-width: 992px) {
+    .radar-canvas-wrap {
+        min-height: 320px;
+    }
+
+    .asesmen-page .score-guide-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .asesmen-page .indicator-item {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

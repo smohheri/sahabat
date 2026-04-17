@@ -112,11 +112,156 @@ class Pdf_export
         $CI =& get_instance();
         $CI->load->helper('tanggal');
 
+        $putra = array_values(array_filter($data['anak'], function ($a) {
+            return strtoupper((string) ($a->jenis_kelamin ?? '')) === 'L';
+        }));
+        $putri = array_values(array_filter($data['anak'], function ($a) {
+            return strtoupper((string) ($a->jenis_kelamin ?? '')) === 'P';
+        }));
+
+        usort($putra, function ($a, $b) {
+            return strcasecmp((string) ($a->nama_anak ?? ''), (string) ($b->nama_anak ?? ''));
+        });
+        usort($putri, function ($a, $b) {
+            return strcasecmp((string) ($a->nama_anak ?? ''), (string) ($b->nama_anak ?? ''));
+        });
+
+        $total_anak = count($data['anak']);
+        $total_putra = count($putra);
+        $total_putri = count($putri);
+
+        $total_aktif = 0;
+        $total_nonaktif = 0;
+        $status_tinggal_counts = array();
+        $kategori_counts = array();
+        $pendidikan_counts = array();
+
+        foreach ($data['anak'] as $a) {
+            if (($a->status_anak ?? '') === 'Aktif') {
+                $total_aktif++;
+            } else {
+                $total_nonaktif++;
+            }
+
+            $status_tinggal = trim((string) ($a->status_tinggal ?? ''));
+            $status_tinggal = $status_tinggal !== '' ? $status_tinggal : '-';
+            if (!isset($status_tinggal_counts[$status_tinggal])) {
+                $status_tinggal_counts[$status_tinggal] = 0;
+            }
+            $status_tinggal_counts[$status_tinggal]++;
+
+            $kategori = trim((string) ($a->kategori ?? ''));
+            $kategori = $kategori !== '' ? $kategori : '-';
+            if (!isset($kategori_counts[$kategori])) {
+                $kategori_counts[$kategori] = 0;
+            }
+            $kategori_counts[$kategori]++;
+
+            $pendidikan = trim((string) ($a->pendidikan ?? ''));
+            $pendidikan = $pendidikan !== '' ? $pendidikan : '-';
+            if (!isset($pendidikan_counts[$pendidikan])) {
+                $pendidikan_counts[$pendidikan] = 0;
+            }
+            $pendidikan_counts[$pendidikan]++;
+        }
+
+        arsort($status_tinggal_counts);
+        arsort($kategori_counts);
+        arsort($pendidikan_counts);
+
+        $render_distribution_table = function ($title, $label_col, $items, $base_total) {
+            $table_html = '
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">' . $title . '</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px;">
+            <thead style="background-color: #e0e0e0;">
+                <tr>
+                    <th style="text-align: center; width: 50%;">' . $label_col . '</th>
+                    <th style="text-align: center; width: 25%;">Jumlah</th>
+                    <th style="text-align: center; width: 25%;">Persentase</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+            if (empty($items)) {
+                $table_html .= '<tr><td colspan="3" style="text-align:center;">Tidak ada data.</td></tr>';
+            } else {
+                foreach ($items as $label => $jumlah) {
+                    $persen = $base_total > 0 ? round(((float) $jumlah / (float) $base_total) * 100, 1) : 0;
+                    $table_html .= '<tr>
+                        <td>' . $label . '</td>
+                        <td style="text-align: center;">' . $jumlah . '</td>
+                        <td style="text-align: center;">' . $persen . '%</td>
+                    </tr>';
+                }
+            }
+
+            $table_html .= '</tbody></table>';
+            return $table_html;
+        };
+
         $html = '
         <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN DATA ANAK ASUH</h3>
         <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
+        <h4 style="margin: 10px 0 8px 0;">Rekap Data</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 55%; border-collapse: collapse; font-size: 10px; margin-bottom: 16px;">
+            <tr style="background-color: #f0f0f0;">
+                <th style="text-align: left; width: 70%;">Keterangan</th>
+                <th style="text-align: center; width: 30%;">Jumlah</th>
+            </tr>
+            <tr>
+                <td>Total Anak</td>
+                <td style="text-align: center;">' . $total_anak . '</td>
+            </tr>
+            <tr>
+                <td>Total Putra</td>
+                <td style="text-align: center;">' . $total_putra . '</td>
+            </tr>
+            <tr>
+                <td>Total Putri</td>
+                <td style="text-align: center;">' . $total_putri . '</td>
+            </tr>
+            <tr>
+                <td>Total Aktif</td>
+                <td style="text-align: center;">' . $total_aktif . '</td>
+            </tr>
+            <tr>
+                <td>Total Nonaktif</td>
+                <td style="text-align: center;">' . $total_nonaktif . '</td>
+            </tr>
+        </table>';
 
-        <table border="1" cellpadding="3" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 9px;">
+        $html .= '
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">Statistik Jenis Kelamin</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px;">
+            <thead style="background-color: #e0e0e0;">
+                <tr>
+                    <th style="text-align: center; width: 50%;">Jenis Kelamin</th>
+                    <th style="text-align: center; width: 25%;">Jumlah</th>
+                    <th style="text-align: center; width: 25%;">Persentase</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Putra</td>
+                    <td style="text-align: center;">' . $total_putra . '</td>
+                    <td style="text-align: center;">' . ($total_anak > 0 ? round(($total_putra / $total_anak) * 100, 1) : 0) . '%</td>
+                </tr>
+                <tr>
+                    <td>Putri</td>
+                    <td style="text-align: center;">' . $total_putri . '</td>
+                    <td style="text-align: center;">' . ($total_anak > 0 ? round(($total_putri / $total_anak) * 100, 1) : 0) . '%</td>
+                </tr>
+            </tbody>
+        </table>';
+
+        $html .= $render_distribution_table('Statistik Status Tinggal', 'Status Tinggal', $status_tinggal_counts, $total_anak);
+        $html .= $render_distribution_table('Statistik Kategori', 'Kategori', $kategori_counts, $total_anak);
+        $html .= $render_distribution_table('Statistik Pendidikan', 'Tingkat Pendidikan', $pendidikan_counts, $total_anak);
+
+        $render_anak_table = function ($title, $rows) {
+            $table_html = '
+        <h4 style="margin: 10px 0 8px 0;">' . $title . '</h4>
+        <table border="1" cellpadding="3" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 9px; margin-bottom: 16px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
                     <th style="width: 3%;">No</th>
@@ -140,9 +285,12 @@ class Pdf_export
             </thead>
             <tbody>';
 
-        $no = 1;
-        foreach ($data['anak'] as $a) {
-            $html .= '
+            if (empty($rows)) {
+                $table_html .= '<tr><td colspan="17" style="text-align: center;">Tidak ada data.</td></tr>';
+            } else {
+                $no = 1;
+                foreach ($rows as $a) {
+                    $table_html .= '
                 <tr>
                     <td style="text-align: center;">' . $no++ . '</td>
                     <td>' . ($a->nik ?: '-') . '</td>
@@ -162,11 +310,20 @@ class Pdf_export
                     <td style="text-align: center;">' . (!empty($a->file_pendukung) ? 'Ada' : 'Tidak') . '</td>
                     <td style="text-align: center;">' . (!empty($a->foto) ? 'Ada' : 'Tidak') . '</td>
                 </tr>';
-        }
+                }
+            }
+
+            $table_html .= '
+            </tbody>
+        </table>';
+
+            return $table_html;
+        };
+
+        $html .= $render_anak_table('Kelompok Putra', $putra);
+        $html .= $render_anak_table('Kelompok Putri', $putri);
 
         $html .= '
-            </tbody>
-        </table>
 
         <div style="margin-top: 20px; text-align: right;">
             <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>
@@ -1013,6 +1170,94 @@ class Pdf_export
             return $a_order <=> $b_order;
         });
 
+        $putra = array_values(array_filter($data['anak'], function ($a) {
+            return strtoupper((string) ($a->jenis_kelamin ?? '')) === 'L';
+        }));
+        $putri = array_values(array_filter($data['anak'], function ($a) {
+            return strtoupper((string) ($a->jenis_kelamin ?? '')) === 'P';
+        }));
+
+        usort($putra, function ($a, $b) {
+            return strcasecmp((string) ($a->nama_anak ?? ''), (string) ($b->nama_anak ?? ''));
+        });
+        usort($putri, function ($a, $b) {
+            return strcasecmp((string) ($a->nama_anak ?? ''), (string) ($b->nama_anak ?? ''));
+        });
+
+        $total_anak = count($data['anak']);
+        $total_putra = count($putra);
+        $total_putri = count($putri);
+
+        $status_tinggal_counts = array();
+        $kategori_counts = array();
+        $pendidikan_counts = array();
+        $usia_total = 0;
+        $usia_count = 0;
+
+        foreach ($data['anak'] as $a) {
+            $status_tinggal = trim((string) ($a->status_tinggal ?? ''));
+            $status_tinggal = $status_tinggal !== '' ? $status_tinggal : '-';
+            if (!isset($status_tinggal_counts[$status_tinggal])) {
+                $status_tinggal_counts[$status_tinggal] = 0;
+            }
+            $status_tinggal_counts[$status_tinggal]++;
+
+            $kategori = trim((string) ($a->kategori ?? ''));
+            $kategori = $kategori !== '' ? $kategori : '-';
+            if (!isset($kategori_counts[$kategori])) {
+                $kategori_counts[$kategori] = 0;
+            }
+            $kategori_counts[$kategori]++;
+
+            $pendidikan = trim((string) ($a->pendidikan ?? ''));
+            $pendidikan = $pendidikan !== '' ? $pendidikan : '-';
+            if (!isset($pendidikan_counts[$pendidikan])) {
+                $pendidikan_counts[$pendidikan] = 0;
+            }
+            $pendidikan_counts[$pendidikan]++;
+
+            if (!empty($a->tanggal_lahir)) {
+                $usia_total += (int) umur($a->tanggal_lahir);
+                $usia_count++;
+            }
+        }
+
+        arsort($status_tinggal_counts);
+        arsort($kategori_counts);
+        arsort($pendidikan_counts);
+
+        $render_distribution_table = function ($title, $label_col, $items, $base_total) {
+            $table_html = '
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">' . $title . '</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px;">
+            <thead style="background-color: #e0e0e0;">
+                <tr>
+                    <th style="text-align: center; width: 50%;">' . $label_col . '</th>
+                    <th style="text-align: center; width: 25%;">Jumlah</th>
+                    <th style="text-align: center; width: 25%;">Persentase</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+            if (empty($items)) {
+                $table_html .= '<tr><td colspan="3" style="text-align:center;">Tidak ada data.</td></tr>';
+            } else {
+                foreach ($items as $label => $jumlah) {
+                    $persen = $base_total > 0 ? round(((float) $jumlah / (float) $base_total) * 100, 1) : 0;
+                    $table_html .= '<tr>
+                        <td>' . $label . '</td>
+                        <td style="text-align: center;">' . $jumlah . '</td>
+                        <td style="text-align: center;">' . $persen . '%</td>
+                    </tr>';
+                }
+            }
+
+            $table_html .= '</tbody></table>';
+            return $table_html;
+        };
+
+        $rata_usia = $usia_count > 0 ? number_format($usia_total / $usia_count, 1) : '0.0';
+
         // Create new Mpdf instance with portrait orientation
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
@@ -1049,8 +1294,62 @@ class Pdf_export
         $html = $kop_html . '
         <h3 style="text-align: center; margin-bottom: 20px;">LAPORAN EKSTERNAL DATA ANAK</h3>
         <p style="text-align: center; margin-bottom: 20px;">Periode: ' . bulan_indo(date('n')) . ' ' . date('Y') . '</p>
+        <h4 style="margin: 10px 0 8px 0;">Rekap Data</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 55%; border-collapse: collapse; font-size: 10px; margin-bottom: 16px;">
+            <tr style="background-color: #f0f0f0;">
+                <th style="text-align: left; width: 70%;">Keterangan</th>
+                <th style="text-align: center; width: 30%;">Jumlah</th>
+            </tr>
+            <tr>
+                <td>Total Anak</td>
+                <td style="text-align: center;">' . $total_anak . '</td>
+            </tr>
+            <tr>
+                <td>Total Putra</td>
+                <td style="text-align: center;">' . $total_putra . '</td>
+            </tr>
+            <tr>
+                <td>Total Putri</td>
+                <td style="text-align: center;">' . $total_putri . '</td>
+            </tr>
+            <tr>
+                <td>Rata-rata Usia</td>
+                <td style="text-align: center;">' . $rata_usia . ' tahun</td>
+            </tr>
+        </table>';
 
-        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px;">
+        $html .= '
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">Statistik Jenis Kelamin</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px;">
+            <thead style="background-color: #e0e0e0;">
+                <tr>
+                    <th style="text-align: center; width: 50%;">Jenis Kelamin</th>
+                    <th style="text-align: center; width: 25%;">Jumlah</th>
+                    <th style="text-align: center; width: 25%;">Persentase</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Putra</td>
+                    <td style="text-align: center;">' . $total_putra . '</td>
+                    <td style="text-align: center;">' . ($total_anak > 0 ? round(($total_putra / $total_anak) * 100, 1) : 0) . '%</td>
+                </tr>
+                <tr>
+                    <td>Putri</td>
+                    <td style="text-align: center;">' . $total_putri . '</td>
+                    <td style="text-align: center;">' . ($total_anak > 0 ? round(($total_putri / $total_anak) * 100, 1) : 0) . '%</td>
+                </tr>
+            </tbody>
+        </table>';
+
+        $html .= $render_distribution_table('Statistik Status Tinggal', 'Status Tinggal', $status_tinggal_counts, $total_anak);
+        $html .= $render_distribution_table('Statistik Kategori', 'Kategori', $kategori_counts, $total_anak);
+        $html .= $render_distribution_table('Statistik Pendidikan', 'Tingkat Pendidikan', $pendidikan_counts, $total_anak);
+
+        $render_eksternal_table = function ($title, $rows) {
+            $table_html = '
+        <h4 style="margin: 10px 0 8px 0;">' . $title . '</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 16px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
                     <th style="width: 4%; text-align: center;">No</th>
@@ -1065,9 +1364,12 @@ class Pdf_export
             </thead>
             <tbody>';
 
-        $no = 1;
-        foreach ($data['anak'] as $a) {
-            $html .= '
+            if (empty($rows)) {
+                $table_html .= '<tr><td colspan="8" style="text-align: center;">Tidak ada data.</td></tr>';
+            } else {
+                $no = 1;
+                foreach ($rows as $a) {
+                    $table_html .= '
                 <tr>
                     <td style="text-align: center;">' . $no++ . '</td>
                     <td>' . $a->nama_anak . '</td>
@@ -1078,11 +1380,20 @@ class Pdf_export
                     <td>' . ($a->status_tinggal ?: '-') . '</td>
                     <td>' . ($a->kategori ?: '-') . '</td>
                 </tr>';
-        }
+                }
+            }
+
+            $table_html .= '
+            </tbody>
+        </table>';
+
+            return $table_html;
+        };
+
+        $html .= $render_eksternal_table('Kelompok Putra', $putra);
+        $html .= $render_eksternal_table('Kelompok Putri', $putri);
 
         $html .= '
-            </tbody>
-        </table>
 
         <div style="margin-top: 30px; text-align: right;">
             <p>' . ($data['settings']->kota ?? '............') . ', ' . tanggal_indo(date('Y-m-d')) . '</p>

@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.12.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.12.2-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -49,9 +49,25 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
    - tabel nilai per aspek per anak + tautan detail
 - Halaman perkembangan anak di panel guru dengan detail grafik dan histori
 
+### 👦 Panel Anak (Dashboard, Asesmen, Profil)
+- Dashboard anak dengan ringkasan asesmen mandiri bulanan dan grafik radar perkembangan
+- Halaman asesmen mandiri dengan panduan skor dan input indikator per aspek
+- Halaman profil anak dengan ringkasan data pribadi dan pendidikan
+- Penyesuaian dark mode untuk meningkatkan keterbacaan teks pada komponen panel anak
+
+### 👨‍🏫 Profil Pengajar (Panel Guru)
+- Halaman profil pengajar terpusat untuk melihat data akun dan detail profesional
+- Upload dokumen profil pengajar:
+   - foto pengajar
+   - ijazah terakhir
+- Halaman edit profil pengajar mandiri untuk memperbarui data profesional
+- Sinkronisasi nama akun dengan data guru (`users.nama` dan `guru.nama_guru`)
+- Foto sidebar guru otomatis mengikuti foto profil pengajar (dengan fallback aman)
+
 ### ⚙️ Pengaturan Sistem
 - Profile LKSA (nama, alamat, kontak, logo)
 - Manajemen user dan hak akses
+- Opsi akses login dinamis mengikuti enum role pada tabel user (urut alfabetis)
 - Upload dokumen legal
 - Kop surat untuk laporan
 
@@ -74,6 +90,8 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 - Fallback otomatis ke gambar Unsplash jika belum ada upload
 - Interface admin untuk manajemen gambar landing page
 - Optimasi gambar untuk performa website
+- Section fitur unggulan diselaraskan dengan fitur aktual aplikasi (admin, guru/pengajar, anak, penilaian, analitik)
+- Statistik ringkas landing mendukung jumlah anak aktif dan jumlah pengajar aktif
 
 ### 🏢 Manajemen Fasilitas Landing Page
 - Halaman admin untuk mengelola fasilitas yang ditampilkan di landing page

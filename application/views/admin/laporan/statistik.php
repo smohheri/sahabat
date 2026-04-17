@@ -320,66 +320,14 @@
 	});
 
 	$('#exportPdfBtn').on('click', function () {
-		// Show loading indicator
-		$('#exportPdfBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Generating...');
+		$('#exportPdfBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyiapkan PDF...');
+
+		var exportUrl = '<?php echo site_url('admin/export_pdf_statistik'); ?>';
+		window.open(exportUrl, '_blank');
 
 		setTimeout(function () {
-			var genderImg = document.getElementById('genderChart').toDataURL('image/png');
-			var ageImg = document.getElementById('ageChart').toDataURL('image/png');
-			var educationImg = document.getElementById('educationChart').toDataURL('image/png');
-
-			$.ajax({
-				url: '<?php echo site_url('admin/generate_pdf_statistik'); ?>',
-				method: 'POST',
-				data: {
-					genderChart: genderImg,
-					ageChart: ageImg,
-					educationChart: educationImg,
-					total: <?php echo $total; ?>,
-					laki: <?php echo $laki; ?>,
-					perempuan: <?php echo $perempuan; ?>,
-					aktif: <?php echo $aktif; ?>,
-					usia_dibawah5: <?php echo $usia_dibawah5; ?>,
-					usia_5_12: <?php echo $usia_5_12; ?>,
-					usia_13_17: <?php echo $usia_13_17; ?>,
-					usia_diatas17: <?php echo $usia_diatas17; ?>,
-					pendidikan: JSON.stringify(<?php echo json_encode($pendidikan); ?>)
-				},
-				success: function (response) {
-					var result = JSON.parse(response);
-					if (result.success) {
-						var pdfUrl = '<?php echo base_url('assets/temp/'); ?>' + result.filename;
-
-						// Open PDF in new tab
-						var pdfWindow = window.open(pdfUrl, '_blank');
-
-						// Delete temp file after download (delayed)
-						setTimeout(function () {
-							$.ajax({
-								url: '<?php echo site_url('admin/delete_temp_file'); ?>',
-								method: 'POST',
-								data: {
-									filename: result.filename
-								},
-								success: function (deleteResponse) {
-									console.log('Temp file deleted');
-								},
-								error: function () {
-									console.log('Failed to delete temp file');
-								}
-							});
-						}, 3000); // Wait 3 seconds before deleting
-					} else {
-						alert('Gagal generate PDF. Silakan coba lagi.');
-					}
-					$('#exportPdfBtn').prop('disabled', false).html('<i class="fas fa-file-pdf"></i> Export PDF');
-				},
-				error: function () {
-					alert('Gagal generate PDF. Silakan coba lagi.');
-					$('#exportPdfBtn').prop('disabled', false).html('<i class="fas fa-file-pdf"></i> Export PDF');
-				}
-			});
-		}, 500);
+			$('#exportPdfBtn').prop('disabled', false).html('<i class="fas fa-file-pdf"></i> Export PDF');
+		}, 1000);
 	});
 </script>
 
