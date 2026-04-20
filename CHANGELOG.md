@@ -5,6 +5,25 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.3] - 2026-04-20
+
+### Added
+- ✨ **Penambahan Data No KK pada Modul Data Anak (Admin)**
+  - Menambahkan kolom **No KK** pada tabel daftar anak di panel admin.
+  - Menambahkan input **No KK** pada form tambah dan edit data anak.
+  - Menambahkan tampilan **No KK** pada modal detail data anak.
+  - Menambahkan file SQL migrasi baru:
+    - `database/alter_table_add_no_kk.sql`
+
+### Changed
+- 🔄 **Pembaruan CRUD Data Anak untuk No KK**
+  - Menyesuaikan proses simpan/update di `Admin::anak()` agar memproses field `no_kk`.
+  - Menyesuaikan endpoint DataTable `admin/anak_ajax` untuk menampilkan dan mengurutkan kolom `no_kk`.
+  - Menyesuaikan query model `Anak_model` agar pencarian DataTable mendukung `no_kk`.
+
+- 🔄 **Sinkronisasi Skema Database Awal**
+  - Menambahkan kolom `no_kk` ke definisi tabel `anak` pada `database/db_lksa.sql` agar instalasi baru langsung kompatibel.
+
 ## [1.12.2] - 2026-04-17
 
 ### Added

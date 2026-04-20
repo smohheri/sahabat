@@ -1518,6 +1518,7 @@ class Admin extends CI_Controller
 				$data = array(
 					'nama_anak' => $this->input->post('nama_anak'),
 					'nik' => $this->input->post('nik'),
+					'no_kk' => $this->input->post('no_kk'),
 					'no_registrasi' => $this->input->post('no_registrasi'),
 					'jenis_kelamin' => $this->input->post('jenis_kelamin'),
 					'tempat_lahir' => $this->input->post('tempat_lahir'),
@@ -2439,7 +2440,7 @@ class Admin extends CI_Controller
 		// Ordering
 		$order_column_index = $this->input->post('order')[0]['column'];
 		$order_dir = $this->input->post('order')[0]['dir'];
-		$columns = ['nama_anak', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
+		$columns = ['nama_anak', 'no_kk', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
 		$order_column = $columns[$order_column_index] ?? 'created_at';
 
 		// Additional filters
@@ -2483,6 +2484,7 @@ class Admin extends CI_Controller
 						<small>' . ($a->nik ?: '-') . '</small>' . $akun_badge . '
 					</div>
 				</div>',
+				html_escape($a->no_kk ?: '-'),
 				'<span class="badge-jk badge-' . ($a->jenis_kelamin == 'L' ? 'blue' : 'pink') . '">' .
 				($a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</span>',
 				$a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir),

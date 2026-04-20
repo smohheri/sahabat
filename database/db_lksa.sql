@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `anak` (
   `id_anak` int NOT NULL AUTO_INCREMENT,
   `nama_anak` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
   `nik` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `no_kk` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `jenis_kelamin` enum('L','P') COLLATE utf8mb4_general_ci NOT NULL,
   `tempat_lahir` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `tanggal_lahir` date DEFAULT NULL,

@@ -141,6 +141,7 @@
 						<tr>
 							<th>No</th>
 							<th>Nama Anak</th>
+							<th>No KK</th>
 							<th>Jenis Kelamin</th>
 							<th>Tempat/Tgl Lahir</th>
 							<th>Kategori</th>
@@ -200,6 +201,15 @@
 										value="<?php echo $a->no_registrasi; ?>" placeholder="Nomor registrasi unik">
 								</div>
 							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-3">
+									<label class="font-weight-bold text-muted mb-2">No KK</label>
+									<input type="text" class="form-control" name="no_kk" value="<?php echo $a->no_kk; ?>"
+										placeholder="Nomor Kartu Keluarga">
+								</div>
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group mb-3">
 									<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
@@ -737,6 +747,14 @@
 								</div>
 								<div class="col-md-3">
 									<div class="form-group mb-3">
+										<label class="font-weight-bold text-muted mb-2">No KK</label>
+										<p class="form-control-plaintext">
+											<?php echo $a->no_kk ?: '<span class="text-muted">Tidak tersedia</span>'; ?>
+										</p>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
 										<p class="form-control-plaintext">
 											<span
@@ -748,13 +766,13 @@
 										</p>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Tempat Lahir</label>
 										<p class="form-control-plaintext"><?php echo $a->tempat_lahir; ?></p>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<div class="form-group mb-3">
 										<label class="font-weight-bold text-muted mb-2">Tanggal Lahir</label>
 										<p class="form-control-plaintext"><?php echo tanggal_indo($a->tanggal_lahir); ?>
@@ -1122,6 +1140,15 @@
 									placeholder="Nomor registrasi unik">
 							</div>
 						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-3">
+								<label class="font-weight-bold text-muted mb-2">No KK</label>
+								<input type="text" class="form-control" name="no_kk"
+									placeholder="Nomor Kartu Keluarga">
+							</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group mb-3">
 								<label class="font-weight-bold text-muted mb-2">Jenis Kelamin</label>
@@ -1720,13 +1747,14 @@
 			},
 			"columns": [
 				{ "data": 0, "orderable": false, "width": "5%" },  // No
-				{ "data": 1, "orderable": true, "width": "20%" }, // Nama Anak
-				{ "data": 2, "orderable": false, "width": "10%" }, // Jenis Kelamin
-				{ "data": 3, "orderable": false, "width": "15%" }, // Tempat/Tgl Lahir
-				{ "data": 4, "orderable": false, "width": "15%" }, // Kategori
-				{ "data": 5, "orderable": false, "width": "15%" }, // Nama Sekolah
-				{ "data": 6, "orderable": true, "width": "10%" }, // Biaya SPP
-				{ "data": 7, "orderable": false, "width": "10%" }  // Aksi
+				{ "data": 1, "orderable": true, "width": "18%" }, // Nama Anak
+				{ "data": 2, "orderable": true, "width": "12%" }, // No KK
+				{ "data": 3, "orderable": false, "width": "10%" }, // Jenis Kelamin
+				{ "data": 4, "orderable": false, "width": "14%" }, // Tempat/Tgl Lahir
+				{ "data": 5, "orderable": false, "width": "12%" }, // Kategori
+				{ "data": 6, "orderable": false, "width": "14%" }, // Nama Sekolah
+				{ "data": 7, "orderable": true, "width": "10%" }, // Biaya SPP
+				{ "data": 8, "orderable": false, "width": "10%" }  // Aksi
 			],
 			"pageLength": 10,
 			"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],

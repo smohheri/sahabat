@@ -88,6 +88,7 @@ class Anak_model extends CI_Model
 			$this->db->group_start();
 			$this->db->like('anak.nama_anak', $search);
 			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.no_kk', $search);
 			$this->db->or_like('anak.no_registrasi', $search);
 			$this->db->or_like('anak.tempat_lahir', $search);
 			$this->db->or_like('anak.kategori', $search);
@@ -101,7 +102,7 @@ class Anak_model extends CI_Model
 		}
 
 		// Ordering
-		$valid_columns = ['nama_anak', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
+		$valid_columns = ['nama_anak', 'no_kk', 'jenis_kelamin', 'tempat_lahir', 'kategori', 'nama_sekolah', 'biaya_spp', 'created_at'];
 		if (in_array($order_column, $valid_columns)) {
 			$this->db->order_by('anak.' . $order_column, $order_dir);
 		} else {
@@ -143,6 +144,7 @@ class Anak_model extends CI_Model
 			$this->db->group_start();
 			$this->db->like('anak.nama_anak', $search);
 			$this->db->or_like('anak.nik', $search);
+			$this->db->or_like('anak.no_kk', $search);
 			$this->db->or_like('anak.no_registrasi', $search);
 			$this->db->or_like('anak.tempat_lahir', $search);
 			$this->db->or_like('anak.kategori', $search);

@@ -1,6 +1,6 @@
 # SAHABAT - Sistem Anak Hebat Berbasis Administrasi Terpadu
 
-![Version](https://img.shields.io/badge/version-1.12.2-blue.svg)
+![Version](https://img.shields.io/badge/version-1.12.3-blue.svg)
 ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.x-orange.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -17,6 +17,7 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
 
 ### 👶 Manajemen Data Anak
 - Data lengkap anak (profil, pendidikan, status)
+- Dukungan data identitas **No KK** pada tabel dan form admin
 - Upload dan manajemen dokumen (KK, Akta, Pendukung)
 - Monitoring status tinggal (Sekolah, Asrama, Perawatan)
 - Tracking tanggal masuk dan status aktif/nonaktif
@@ -179,6 +180,11 @@ SAHABAT adalah sistem informasi berbasis web yang dirancang khusus untuk mengelo
    ```bash
    mysql -u username -p database_name < database/db_lksa.sql
    mysql -u username -p database_name < database/create_table_ci_sessions.sql
+   ```
+
+   Jika Anda melakukan upgrade dari versi sebelumnya, jalankan juga migrasi berikut:
+   ```bash
+   mysql -u username -p database_name < database/alter_table_add_no_kk.sql
    ```
 
 3. **Konfigurasi database**
