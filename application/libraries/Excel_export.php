@@ -38,9 +38,9 @@ class Excel_export
 		$this->sheet->setCellValue('A3', 'Periode: ' . date('F Y'));
 
 		// Merge title cells
-		$this->sheet->mergeCells('A1:R1');
-		$this->sheet->mergeCells('A2:R2');
-		$this->sheet->mergeCells('A3:R3');
+		$this->sheet->mergeCells('A1:S1');
+		$this->sheet->mergeCells('A2:S2');
+		$this->sheet->mergeCells('A3:S3');
 
 		// Style title
 		$this->sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
@@ -49,7 +49,7 @@ class Excel_export
 		$this->sheet->getStyle('A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 		// Headers
-		$headers = ['No', 'NIK', 'Nama Anak', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Usia', 'Pendidikan', 'Kategori', 'Status', 'Status Tinggal', 'Tgl Masuk', 'Nama Sekolah', 'Biaya SPP', 'KK', 'Akta', 'Dok Pendukung', 'Foto'];
+		$headers = ['No', 'NIK', 'No KK', 'Nama Anak', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Usia', 'Pendidikan', 'Kategori', 'Status', 'Status Tinggal', 'Tgl Masuk', 'Nama Sekolah', 'Biaya SPP', 'KK', 'Akta', 'Dok Pendukung', 'Foto'];
 		$row = 5;
 		$col = 'A';
 
@@ -70,25 +70,26 @@ class Excel_export
 
 			$this->sheet->setCellValue('A' . $row, $no++);
 			$this->sheet->setCellValue('B' . $row, $a->nik ?: '-');
-			$this->sheet->setCellValue('C' . $row, $a->nama_anak);
-			$this->sheet->setCellValue('D' . $row, $a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan');
-			$this->sheet->setCellValue('E' . $row, $a->tempat_lahir);
-			$this->sheet->setCellValue('F' . $row, date('d-m-Y', strtotime($a->tanggal_lahir)));
-			$this->sheet->setCellValue('G' . $row, $usia . ' tahun');
-			$this->sheet->setCellValue('H' . $row, $a->pendidikan);
-			$this->sheet->setCellValue('I' . $row, $a->kategori ?: '-');
-			$this->sheet->setCellValue('J' . $row, $a->status_anak);
-			$this->sheet->setCellValue('K' . $row, $a->status_tinggal ?: '-');
-			$this->sheet->setCellValue('L' . $row, date('d-m-Y', strtotime($a->tanggal_masuk)));
-			$this->sheet->setCellValue('M' . $row, $a->nama_sekolah ?: '-');
-			$this->sheet->setCellValue('N' . $row, $a->biaya_spp ?: '-');
-			$this->sheet->setCellValue('O' . $row, !empty($a->file_kk) ? 'Ada' : 'Tidak');
-			$this->sheet->setCellValue('P' . $row, !empty($a->file_akta) ? 'Ada' : 'Tidak');
-			$this->sheet->setCellValue('Q' . $row, !empty($a->file_pendukung) ? 'Ada' : 'Tidak');
-			$this->sheet->setCellValue('R' . $row, !empty($a->foto) ? 'Ada' : 'Tidak');
+			$this->sheet->setCellValue('C' . $row, $a->no_kk ?: '-');
+			$this->sheet->setCellValue('D' . $row, $a->nama_anak);
+			$this->sheet->setCellValue('E' . $row, $a->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan');
+			$this->sheet->setCellValue('F' . $row, $a->tempat_lahir);
+			$this->sheet->setCellValue('G' . $row, date('d-m-Y', strtotime($a->tanggal_lahir)));
+			$this->sheet->setCellValue('H' . $row, $usia . ' tahun');
+			$this->sheet->setCellValue('I' . $row, $a->pendidikan);
+			$this->sheet->setCellValue('J' . $row, $a->kategori ?: '-');
+			$this->sheet->setCellValue('K' . $row, $a->status_anak);
+			$this->sheet->setCellValue('L' . $row, $a->status_tinggal ?: '-');
+			$this->sheet->setCellValue('M' . $row, date('d-m-Y', strtotime($a->tanggal_masuk)));
+			$this->sheet->setCellValue('N' . $row, $a->nama_sekolah ?: '-');
+			$this->sheet->setCellValue('O' . $row, $a->biaya_spp ?: '-');
+			$this->sheet->setCellValue('P' . $row, !empty($a->file_kk) ? 'Ada' : 'Tidak');
+			$this->sheet->setCellValue('Q' . $row, !empty($a->file_akta) ? 'Ada' : 'Tidak');
+			$this->sheet->setCellValue('R' . $row, !empty($a->file_pendukung) ? 'Ada' : 'Tidak');
+			$this->sheet->setCellValue('S' . $row, !empty($a->foto) ? 'Ada' : 'Tidak');
 
 			// Add borders
-			for ($c = 'A'; $c <= 'R'; $c++) {
+			for ($c = 'A'; $c <= 'S'; $c++) {
 				$this->sheet->getStyle($c . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 			}
 
@@ -96,7 +97,7 @@ class Excel_export
 		}
 
 		// Auto width
-		foreach (range('A', 'R') as $col) {
+		foreach (range('A', 'S') as $col) {
 			$this->sheet->getColumnDimension($col)->setAutoSize(true);
 		}
 

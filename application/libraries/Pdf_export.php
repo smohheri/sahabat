@@ -266,6 +266,7 @@ class Pdf_export
                 <tr>
                     <th style="width: 3%;">No</th>
                     <th style="width: 8%;">NIK</th>
+                    <th style="width: 8%;">No KK</th>
                     <th style="width: 12%;">Nama Anak</th>
                     <th style="width: 5%;">JK</th>
                     <th style="width: 10%;">Tempat/Tgl Lahir</th>
@@ -286,7 +287,7 @@ class Pdf_export
             <tbody>';
 
             if (empty($rows)) {
-                $table_html .= '<tr><td colspan="17" style="text-align: center;">Tidak ada data.</td></tr>';
+                $table_html .= '<tr><td colspan="18" style="text-align: center;">Tidak ada data.</td></tr>';
             } else {
                 $no = 1;
                 foreach ($rows as $a) {
@@ -294,6 +295,7 @@ class Pdf_export
                 <tr>
                     <td style="text-align: center;">' . $no++ . '</td>
                     <td>' . ($a->nik ?: '-') . '</td>
+                    <td>' . ($a->no_kk ?: '-') . '</td>
                     <td>' . $a->nama_anak . '</td>
                     <td style="text-align: center;">' . ($a->jenis_kelamin == 'L' ? 'L' : 'P') . '</td>
                     <td>' . $a->tempat_lahir . ', ' . tanggal_indo($a->tanggal_lahir) . '</td>
