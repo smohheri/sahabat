@@ -30,6 +30,7 @@
 
 	<!-- Shared panel CSS -->
 	<link rel="stylesheet" href="<?php echo base_url('assets/css/panel-global.css'); ?>">
+	<link rel="stylesheet" href="<?php echo base_url('assets/css/theme-dark-mode.css'); ?>">
 
 	<!-- Custom CSS -->
 	<?php if (isset($custom_css)): ?>

@@ -47,14 +47,34 @@
 				</div>
 
 				<div class="form-item">
-					<label for="nama_kepala">
-						<i class="fas fa-user-tie mr-1"></i>Nama Kepala
+					<label for="nama_kepala_putra">
+						<i class="fas fa-user-tie mr-1"></i>Nama Kepala LKSA Putra
 					</label>
-					<input type="text" class="form-control" id="nama_kepala" name="nama_kepala"
-						value="<?php echo set_value('nama_kepala', $pengaturan->nama_kepala ?? ''); ?>"
-						placeholder="Masukkan nama kepala" required>
-					<?php echo form_error('nama_kepala', '<small class="text-danger">', '</small>'); ?>
+					<input type="text" class="form-control" id="nama_kepala_putra" name="nama_kepala_putra"
+						value="<?php echo set_value('nama_kepala_putra', $nama_kepala_putra ?? ''); ?>"
+						placeholder="Masukkan nama kepala LKSA Putra" required>
+					<?php echo form_error('nama_kepala_putra', '<small class="text-danger">', '</small>'); ?>
 				</div>
+
+				<div class="form-item">
+					<label for="nama_kepala_putri">
+						<i class="fas fa-user-tie mr-1"></i>Nama Kepala LKSA Putri
+					</label>
+					<input type="text" class="form-control" id="nama_kepala_putri" name="nama_kepala_putri"
+						value="<?php echo set_value('nama_kepala_putri', $nama_kepala_putri ?? ''); ?>"
+						placeholder="Masukkan nama kepala LKSA Putri" required>
+					<?php echo form_error('nama_kepala_putri', '<small class="text-danger">', '</small>'); ?>
+				</div>
+
+				<?php if (isset($support_split_kepala) && !$support_split_kepala): ?>
+					<div class="form-item full-width">
+						<small class="text-warning">
+							<i class="fas fa-exclamation-triangle mr-1"></i>
+							Kolom khusus Putra/Putri belum dimigrasi di database. Data tetap tersimpan melalui fallback
+							sementara.
+						</small>
+					</div>
+				<?php endif; ?>
 
 				<div class="form-item full-width">
 					<label for="alamat">

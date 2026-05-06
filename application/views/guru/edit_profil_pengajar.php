@@ -128,7 +128,7 @@
                 </div>
             </div>
 
-            <div class="mt-4 d-flex flex-wrap" style="gap: 10px;">
+            <div class="mt-4 d-flex flex-wrap pg-form-actions-gap">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Simpan Perubahan
                 </button>

@@ -18,6 +18,42 @@ class Admin extends CI_Controller
 		$this->load->helper('logging');
 	}
 
+	private function parse_kepala_lksa_names($settings)
+	{
+		$nama_kepala_putra = '';
+		$nama_kepala_putri = '';
+
+		if (!$settings) {
+			return array($nama_kepala_putra, $nama_kepala_putri);
+		}
+
+		if (property_exists($settings, 'nama_kepala_putra') && !empty($settings->nama_kepala_putra)) {
+			$nama_kepala_putra = trim((string) $settings->nama_kepala_putra);
+		}
+
+		if (property_exists($settings, 'nama_kepala_putri') && !empty($settings->nama_kepala_putri)) {
+			$nama_kepala_putri = trim((string) $settings->nama_kepala_putri);
+		}
+
+		$legacy_nama_kepala = isset($settings->nama_kepala) ? trim((string) $settings->nama_kepala) : '';
+		if ($legacy_nama_kepala === '') {
+			return array($nama_kepala_putra, $nama_kepala_putri);
+		}
+
+		if ($nama_kepala_putra === '' && $nama_kepala_putri === '') {
+			if (preg_match('/Putra\s*:\s*(.*?)\s*\|\s*Putri\s*:\s*(.*)$/iu', $legacy_nama_kepala, $matches)) {
+				$nama_kepala_putra = trim((string) $matches[1]);
+				$nama_kepala_putri = trim((string) $matches[2]);
+			} else {
+				$nama_kepala_putra = $legacy_nama_kepala;
+			}
+		} elseif ($nama_kepala_putra === '') {
+			$nama_kepala_putra = $legacy_nama_kepala;
+		}
+
+		return array($nama_kepala_putra, $nama_kepala_putri);
+	}
+
 	public function index()
 	{
 		$this->load->model('Anak_model');
@@ -182,24 +218,29 @@ class Admin extends CI_Controller
 	{
 		$this->load->model('User_model');
 		$this->load->library('form_validation');
+		$support_split_kepala = $this->db->field_exists('nama_kepala_putra', 'pengaturan') && $this->db->field_exists('nama_kepala_putri', 'pengaturan');
 
 		if ($this->input->post()) {
 			$this->form_validation->set_rules('nama_lksa', 'Nama LKSA', 'required');
 			$this->form_validation->set_rules('alamat', 'Alamat', 'required');
 			$this->form_validation->set_rules('no_telp', 'No Telepon', 'required');
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-			$this->form_validation->set_rules('nama_kepala', 'Nama Kepala', 'required');
+			$this->form_validation->set_rules('nama_kepala_putra', 'Nama Kepala LKSA Putra', 'required');
+			$this->form_validation->set_rules('nama_kepala_putri', 'Nama Kepala LKSA Putri', 'required');
 			$this->form_validation->set_rules('tahun_berdiri', 'Tahun Berdiri', 'required|numeric');
 
 			if ($this->form_validation->run() == FALSE) {
 				$data['pengaturan'] = $this->config->item('settings');
 			} else {
+				$nama_kepala_putra = trim((string) $this->input->post('nama_kepala_putra'));
+				$nama_kepala_putri = trim((string) $this->input->post('nama_kepala_putri'));
+
 				$data_update = array(
 					'nama_lksa' => $this->input->post('nama_lksa'),
 					'alamat' => $this->input->post('alamat'),
 					'no_telp' => $this->input->post('no_telp'),
 					'email' => $this->input->post('email'),
-					'nama_kepala' => $this->input->post('nama_kepala'),
+					'nama_kepala' => $nama_kepala_putra,
 					'tahun_berdiri' => $this->input->post('tahun_berdiri'),
 					'facebook' => $this->input->post('facebook'),
 					'twitter' => $this->input->post('twitter'),
@@ -208,6 +249,14 @@ class Admin extends CI_Controller
 					'linkedin' => $this->input->post('linkedin'),
 					'whatsapp' => $this->input->post('whatsapp')
 				);
+
+				if ($support_split_kepala) {
+					$data_update['nama_kepala_putra'] = $nama_kepala_putra;
+					$data_update['nama_kepala_putri'] = $nama_kepala_putri;
+				} else {
+					// Fallback saat kolom baru belum dimigrasi: tetap simpan keduanya dalam field legacy.
+					$data_update['nama_kepala'] = 'Putra: ' . $nama_kepala_putra . ' | Putri: ' . $nama_kepala_putri;
+				}
 
 				$old_settings = $this->User_model->get_pengaturan();
 				$this->User_model->update_pengaturan($data_update);
@@ -225,6 +274,11 @@ class Admin extends CI_Controller
 		} else {
 			$data['pengaturan'] = $this->config->item('settings');
 		}
+
+		list($nama_kepala_putra, $nama_kepala_putri) = $this->parse_kepala_lksa_names($data['pengaturan']);
+		$data['nama_kepala_putra'] = $nama_kepala_putra;
+		$data['nama_kepala_putri'] = $nama_kepala_putri;
+		$data['support_split_kepala'] = $support_split_kepala;
 
 		$data['title'] = 'Pengaturan Profile LKSA - ' . ($data['pengaturan']->nama_lksa ?? 'LKSA Harapan Bangsa');
 		$data['page_title'] = 'Profile LKSA';

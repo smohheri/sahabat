@@ -55,11 +55,10 @@
                 <div class="col-md-4 text-center mb-3 mb-md-0">
                     <?php if (!empty($guru->foto)): ?>
                         <img src="<?php echo base_url('assets/uploads/foto_guru/' . $guru->foto); ?>" alt="Foto Guru"
-                            class="img-circle elevation-2" style="width: 140px; height: 140px; object-fit: cover;">
+                            class="img-circle elevation-2 pg-profile-avatar-photo">
                     <?php else: ?>
-                        <div
-                            style="width:140px;height:140px;border-radius:50%;background:#f1f5f9;display:inline-flex;align-items:center;justify-content:center;color:#64748b;">
-                            <i class="fas fa-user" style="font-size:42px;"></i>
+                        <div class="pg-profile-avatar-fallback">
+                            <i class="fas fa-user pg-profile-avatar-fallback-icon"></i>
                         </div>
                     <?php endif; ?>
                 </div>

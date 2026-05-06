@@ -92,6 +92,8 @@ CREATE TABLE IF NOT EXISTS `pengaturan` (
   `no_telp` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `nama_kepala` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama_kepala_putra` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama_kepala_putri` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `logo` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `tahun_berdiri` year DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -102,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `pengaturan` (
 -- Dumping data for table `pengaturan`
 --
 
-INSERT INTO `pengaturan` (`id_pengaturan`, `nama_lksa`, `alamat`, `no_telp`, `email`, `nama_kepala`, `logo`, `tahun_berdiri`, `created_at`) VALUES
-(1, 'LKSA Harapan Bangsa', 'Jl. Contoh No. 123', '08123456789', 'info@lksa.id', 'Budi Santoso', NULL, '2010', '2026-02-20 09:08:31');
+INSERT INTO `pengaturan` (`id_pengaturan`, `nama_lksa`, `alamat`, `no_telp`, `email`, `nama_kepala`, `nama_kepala_putra`, `nama_kepala_putri`, `logo`, `tahun_berdiri`, `created_at`) VALUES
+(1, 'LKSA Harapan Bangsa', 'Jl. Contoh No. 123', '08123456789', 'info@lksa.id', 'Budi Santoso', 'Budi Santoso', 'Siti Aminah', NULL, '2010', '2026-02-20 09:08:31');
 
 -- --------------------------------------------------------
 

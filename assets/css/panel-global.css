@@ -951,6 +951,146 @@
 }
 
 /* ============================================================
+   7c. Fase 1 inline migration helpers
+   ============================================================ */
+.pg-login-space-bottom {
+    margin-bottom: 1.5rem;
+}
+
+.left-side .info-content .pg-login-app-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(122, 198, 77, 0.15);
+    background: #fff;
+    object-fit: contain;
+}
+
+.left-side .info-content .pg-login-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.left-side .info-content .pg-login-subtitle {
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 1.2rem;
+    color: #fff;
+    text-shadow: none;
+}
+
+.left-side .info-content .pg-login-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    color: #fff;
+}
+
+.left-side .info-content .pg-login-version-chip {
+    display: inline-block;
+    background: #8ed45e;
+    color: #2c3e50;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.left-side .info-content .pg-login-feature-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.left-side .info-content .pg-login-feature-item {
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.left-side .info-content .pg-login-feature-item:last-child {
+    margin-bottom: 0;
+}
+
+.left-side .info-content .pg-login-feature-icon {
+    margin-right: 0.7rem;
+    color: #fff;
+}
+
+.login-logo.pg-login-logo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-logo .pg-login-org-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+
+.login-logo .pg-login-org-link {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.login-logo .pg-login-org-link .pg-login-org-title {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #2c3e50;
+    margin: 0;
+    text-shadow: none;
+}
+
+.pg-sidebar-brand-image {
+    opacity: 0.8;
+}
+
+.pg-sidebar-brand-text {
+    text-shadow: 1px 1px 0 #666, 2px 2px 0 #555, 3px 3px 0 #444, 4px 4px 0 #333, 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+.nav-treeview.pg-nav-treeview-open {
+    display: block;
+}
+
+.guru-profile-page .pg-profile-avatar-photo {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.guru-profile-page .pg-profile-avatar-fallback {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+.guru-profile-page .pg-profile-avatar-fallback-icon {
+    font-size: 42px;
+}
+
+.pg-form-actions-gap {
+    gap: 10px;
+}
+
+/* ============================================================
    8. Shared dark mode support
    ============================================================ */
 body.dark-mode .page-header,
@@ -1115,6 +1255,11 @@ body.dark-mode .guru-profile-page .form-control-file::-webkit-file-upload-button
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     border: 1px solid #60a5fa;
     color: #eff6ff;
+}
+
+body.dark-mode .guru-profile-page .pg-profile-avatar-fallback {
+    background: #1a2c4d;
+    color: #9fb3c8;
 }
 
 body.dark-mode .form-select,

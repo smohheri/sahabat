@@ -10,10 +10,9 @@
 			? base_url('assets/uploads/logos/' . $logo_file)
 			: base_url('assets/img/AdminLTELogo.png');
 		?>
-		<img src="<?php echo $brand_logo_url; ?>" alt="Logo LKSA" class="brand-image img-circle elevation-3"
-			style="opacity: .8">
-		<span class="brand-text font-weight-light"
-			style="text-shadow: 1px 1px 0px #666, 2px 2px 0px #555, 3px 3px 0px #444, 4px 4px 0px #333, 5px 5px 5px rgba(0,0,0,0.5);">PANEL
+		<img src="<?php echo $brand_logo_url; ?>" alt="Logo LKSA"
+			class="brand-image img-circle elevation-3 pg-sidebar-brand-image">
+		<span class="brand-text font-weight-light pg-sidebar-brand-text">PANEL
 			ANAK</span>
 	</a>
 

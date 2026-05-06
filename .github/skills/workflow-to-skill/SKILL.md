@@ -1,34 +1,41 @@
 ---
 name: workflow-to-skill
-description: "Create a reusable SKILL.md from an existing workflow in conversation history. Use when: extracting steps, decision points, and completion criteria into a practical skill."
+description: "Create a reusable SKILL.md from conversation workflows. Use when extracting repeated steps, decision branches, and completion checks into an on-demand skill."
+argument-hint: "What workflow should this skill capture?"
 ---
 
 # Workflow To Skill
 
-## Purpose
+## Outcome
 
-Turn a repeated process into a reusable skill file that can be invoked later.
+Produce a finalized SKILL.md plus optional support files (references, assets, scripts) that capture a reusable workflow with clear steps, decision points, and quality checks.
 
 ## Inputs
 
-- Conversation history or notes that show how work is done.
-- Target outcome the skill should produce.
-- Scope choice: workspace or personal.
-- Format choice: quick checklist or full workflow.
+- Conversation history or notes showing how work is done.
+- Target artifact the skill should produce.
+- Scope preference (default: workspace scope).
+- Depth choice: quick checklist or full multi-step workflow.
 
 ## Process
 
-### 1. Extract Workflow
+### 1. Review Conversation And Extract Workflow
 
-Identify the process pattern from conversation context:
+Identify the process pattern from chat context:
 
 - Ordered steps that are repeated.
 - Decision points with branching logic.
 - Quality checks that define done.
 
-If no clear pattern exists, collect missing requirements before finalizing.
+### 2. Clarify Missing Requirements If Needed
 
-### 2. Define Skill Contract
+If no clear workflow is visible, ask for:
+
+- What outcome the skill should produce.
+- Whether the skill is workspace-scoped or personal.
+- Whether they want a quick checklist or full workflow.
+
+### 3. Define Skill Contract
 
 State what the skill produces:
 
@@ -36,12 +43,12 @@ State what the skill produces:
 - Expected quality bar.
 - Typical trigger phrases in description.
 
-### 3. Choose Scope and Location
+### 4. Choose Scope And Location
 
-- Workspace scope: place under .github/skills/<skill-name>/SKILL.md.
-- Personal scope: use user-level customizations location.
+- Default workspace scope: place under .github/skills/<skill-name>/SKILL.md.
+- If personal scope is explicitly requested: use user-level customizations location.
 
-### 4. Draft The Skill File
+### 5. Draft And Save SKILL.md
 
 Include:
 
@@ -51,7 +58,13 @@ Include:
 - Decision branches and edge cases.
 - Completion checklist.
 
-### 5. Validate
+Optionally scaffold support folders when useful:
+
+- references/ for longer docs and domain rules.
+- assets/ for templates and boilerplate.
+- scripts/ for executable workflow helpers.
+
+### 6. Validate Quality
 
 Check:
 
@@ -60,19 +73,28 @@ Check:
 - Description includes clear trigger phrases.
 - Steps are actionable and testable.
 
-### 6. Iterate
+### 7. Iterate On Ambiguity
 
-After first draft:
+After saving the first draft:
 
 - Identify ambiguous steps.
 - Ask focused follow-up questions.
 - Update the file to remove ambiguity.
 
+### 8. Finalize
+
+Deliver:
+
+- A short summary of what the skill produces.
+- Example prompts to invoke the skill.
+- Suggested related customizations to create next.
+
 ## Decision Logic
 
-- If workflow is obvious and repeated: draft immediately, then refine.
-- If workflow is unclear: ask for outcome, scope, and depth.
-- If task is simple and one-off: prefer a prompt over a skill.
+- If workflow is obvious and repeated: draft first, then refine.
+- If workflow is unclear: clarify outcome, scope, and depth before finalizing.
+- If the task is one-off and simple: prefer a prompt instead of a skill.
+- If behavior should always apply: prefer instructions instead of a skill.
 
 ## Completion Criteria
 
@@ -82,9 +104,17 @@ A finished skill must:
 - Produce consistent outputs from similar prompts.
 - Include at least one decision branch.
 - Define explicit done checks.
+- Include at least two example prompts.
+- Include optional support-file guidance when the workflow needs extra resources.
 
 ## Example Prompts
 
-- Create a skill from this bug triage workflow.
-- Package our code review checklist as a reusable skill.
-- Convert this implementation pattern into a team skill.
+- Turn this deployment review process into a workspace SKILL.md with decision branches.
+- Convert our bug triage checklist into a full multi-step workflow skill under .github/skills/.
+- Build a workflow-to-skill package from this implementation pattern, including optional references.
+
+## Related Customizations To Consider
+
+- A prompt file for one-off skill scaffolding.
+- File instructions for naming and frontmatter conventions.
+- A custom agent for multi-stage skill authoring with validation.

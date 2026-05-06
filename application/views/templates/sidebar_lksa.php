@@ -11,10 +11,9 @@
 			? base_url('assets/uploads/logos/' . $logo_file)
 			: base_url('assets/img/AdminLTELogo.png');
 		?>
-		<img src="<?php echo $brand_logo_url; ?>" alt="Logo LKSA" class="brand-image img-circle elevation-3"
-			style="opacity: .8">
-		<span class="brand-text font-weight-light"
-			style="text-shadow: 1px 1px 0px #666, 2px 2px 0px #555, 3px 3px 0px #444, 4px 4px 0px #333, 5px 5px 5px rgba(0,0,0,0.5);">SAHABAT</span>
+		<img src="<?php echo $brand_logo_url; ?>" alt="Logo LKSA"
+			class="brand-image img-circle elevation-3 pg-sidebar-brand-image">
+		<span class="brand-text font-weight-light pg-sidebar-brand-text">SAHABAT</span>
 	</a>
 
 	<!-- Sidebar -->
@@ -83,7 +82,7 @@
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview" style="<?php echo $group_master_input ? 'display: block;' : ''; ?>">
+					<ul class="nav nav-treeview <?php echo $group_master_input ? 'pg-nav-treeview-open' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/master'); ?>"
 								class="nav-link <?php echo $penilaian_segment && (empty($penilaian_sub) || $penilaian_sub == 'master') ? 'active' : ''; ?>">
@@ -123,8 +122,7 @@
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo $group_ringkasan_laporan ? 'display: block;' : ''; ?>">
+					<ul class="nav nav-treeview <?php echo $group_ringkasan_laporan ? 'pg-nav-treeview-open' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/penilaian-karakter/ringkasan-mingguan'); ?>"
 								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'ringkasan-mingguan' ? 'active' : ''; ?>">
@@ -162,8 +160,8 @@
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo $this->uri->segment(2) == 'laporan' ? 'display: block;' : ''; ?>">
+					<ul
+						class="nav nav-treeview <?php echo $this->uri->segment(2) == 'laporan' ? 'pg-nav-treeview-open' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/laporan/data_anak'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'laporan' && $this->uri->segment(3) == 'data_anak' ? 'active' : ''; ?>">
@@ -222,8 +220,8 @@
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'display: block;' : ''; ?>">
+					<ul
+						class="nav nav-treeview <?php echo in_array($this->uri->segment(2), array('landing', 'carousel', 'facilities', 'kontak', 'dukung_kami', 'changelog')) ? 'pg-nav-treeview-open' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/carousel'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'carousel' ? 'active' : ''; ?>">
@@ -282,8 +280,8 @@
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview"
-						style="<?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'logs', 'backup')) ? 'display: block;' : ''; ?>">
+					<ul
+						class="nav nav-treeview <?php echo in_array($this->uri->segment(2), array('pengaturan', 'user', 'logs', 'backup')) ? 'pg-nav-treeview-open' : ''; ?>">
 						<li class="nav-item">
 							<a href="<?php echo site_url('admin/pengaturan'); ?>"
 								class="nav-link <?php echo $this->uri->segment(2) == 'pengaturan' ? 'active' : ''; ?>">
