@@ -491,6 +491,11 @@ class Guru extends CI_Controller
 		$this->load->model('Character_assessment_model');
 		$this->load->library('excel_export');
 
+		$format = strtolower(trim((string) $this->input->get('format', TRUE)));
+		if (!in_array($format, array('standard', 'per_child_sheet'), TRUE)) {
+			$format = 'standard';
+		}
+
 		if (!$this->Character_assessment_model->is_assessment_schema_ready()) {
 			$this->session->set_flashdata('error', 'Template import belum bisa dibuat karena tabel penilaian karakter belum lengkap.');
 			redirect('guru/penilaian-karakter');
@@ -512,9 +517,12 @@ class Guru extends CI_Controller
 			redirect('guru/penilaian-karakter');
 		}
 
+		$format_suffix = $format === 'per_child_sheet' ? 'per_anak' : 'standar';
+
 		$this->excel_export->export_template_penilaian_karakter(
 			$template_data,
-			'template_import_penilaian_karakter_' . date('Ymd_His') . '.xlsx'
+			'template_import_penilaian_karakter_' . $format_suffix . '_' . date('Ymd_His') . '.xlsx',
+			array('format' => $format)
 		);
 	}
 
@@ -572,31 +580,47 @@ class Guru extends CI_Controller
 			redirect('guru/penilaian-karakter');
 		}
 
-		$sheet = $spreadsheet->getSheetByName('Template Import');
-		if ($sheet === NULL) {
-			$sheet = $spreadsheet->getActiveSheet();
-		}
-
 		$header_row = 5;
 		$data_start_row = 6;
-		$highest_row = (int) $sheet->getHighestDataRow();
-		$highest_column_index = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($sheet->getHighestDataColumn($header_row));
 
-		$indicator_columns = array();
-		for ($column = 9; $column <= $highest_column_index; $column++) {
-			$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
-			$header_value = trim((string) $sheet->getCell($column_letter . $header_row)->getValue());
-			if (preg_match('/\[ID:\s*(\d+)\]/', $header_value, $matches)) {
-				$indicator_columns[$column] = (int) $matches[1];
+		$import_sheets = array();
+		foreach ($spreadsheet->getAllSheets() as $candidate_sheet) {
+			$header_id_anak = trim((string) $candidate_sheet->getCell('A' . $header_row)->getFormattedValue());
+			$header_nama_anak = trim((string) $candidate_sheet->getCell('B' . $header_row)->getFormattedValue());
+
+			if (stripos($header_id_anak, 'ID Anak') === FALSE || stripos($header_nama_anak, 'Nama Anak') === FALSE) {
+				continue;
 			}
+
+			$highest_column_index = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($candidate_sheet->getHighestDataColumn($header_row));
+			$indicator_columns = array();
+
+			for ($column = 9; $column <= $highest_column_index; $column++) {
+				$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
+				$header_value = trim((string) $candidate_sheet->getCell($column_letter . $header_row)->getValue());
+				if (preg_match('/\[ID:\s*(\d+)\]/', $header_value, $matches)) {
+					$indicator_columns[$column] = (int) $matches[1];
+				}
+			}
+
+			if (empty($indicator_columns)) {
+				continue;
+			}
+
+			$import_sheets[] = array(
+				'sheet' => $candidate_sheet,
+				'title' => (string) $candidate_sheet->getTitle(),
+				'highest_row' => (int) $candidate_sheet->getHighestDataRow(),
+				'indicator_columns' => $indicator_columns,
+			);
 		}
 
-		if (empty($indicator_columns)) {
+		if (empty($import_sheets)) {
 			if (is_file($file_path)) {
 				@unlink($file_path);
 			}
 
-			$this->session->set_flashdata('error', 'Kolom indikator pada file import tidak ditemukan. Unduh ulang template terbaru.');
+			$this->session->set_flashdata('error', 'Sheet template import tidak ditemukan. Unduh ulang template terbaru (standar atau 1 sheet 1 anak).');
 			redirect('guru/penilaian-karakter');
 		}
 
@@ -629,111 +653,119 @@ class Guru extends CI_Controller
 		$imported_count = 0;
 		$skipped_errors = array();
 
-		for ($row = $data_start_row; $row <= $highest_row; $row++) {
-			$id_anak = (int) trim((string) $sheet->getCell('A' . $row)->getFormattedValue());
-			$nama_anak = trim((string) $sheet->getCell('B' . $row)->getFormattedValue());
-			$assessment_date = $this->parse_import_assessment_date($sheet->getCell('C' . $row));
-			$notes = trim((string) $sheet->getCell('D' . $row)->getFormattedValue());
-			$strengths = trim((string) $sheet->getCell('E' . $row)->getFormattedValue());
-			$development_observed = trim((string) $sheet->getCell('F' . $row)->getFormattedValue());
-			$areas_to_support = trim((string) $sheet->getCell('G' . $row)->getFormattedValue());
-			$support_strategy = trim((string) $sheet->getCell('H' . $row)->getFormattedValue());
+		foreach ($import_sheets as $sheet_context) {
+			$sheet = $sheet_context['sheet'];
+			$sheet_title = $sheet_context['title'];
+			$highest_row = max($data_start_row, (int) $sheet_context['highest_row']);
+			$indicator_columns = (array) $sheet_context['indicator_columns'];
 
-			$scores = array();
-			foreach ($indicator_columns as $column => $id_indicator) {
-				$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
-				$raw_score = trim((string) $sheet->getCell($column_letter . $row)->getFormattedValue());
+			for ($row = $data_start_row; $row <= $highest_row; $row++) {
+				$row_label = 'Sheet "' . $sheet_title . '" baris ' . $row;
+				$id_anak = (int) trim((string) $sheet->getCell('A' . $row)->getFormattedValue());
+				$nama_anak = trim((string) $sheet->getCell('B' . $row)->getFormattedValue());
+				$assessment_date = $this->parse_import_assessment_date($sheet->getCell('C' . $row));
+				$notes = trim((string) $sheet->getCell('D' . $row)->getFormattedValue());
+				$strengths = trim((string) $sheet->getCell('E' . $row)->getFormattedValue());
+				$development_observed = trim((string) $sheet->getCell('F' . $row)->getFormattedValue());
+				$areas_to_support = trim((string) $sheet->getCell('G' . $row)->getFormattedValue());
+				$support_strategy = trim((string) $sheet->getCell('H' . $row)->getFormattedValue());
 
-				if ($raw_score === '') {
+				$scores = array();
+				foreach ($indicator_columns as $column => $id_indicator) {
+					$column_letter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($column);
+					$raw_score = trim((string) $sheet->getCell($column_letter . $row)->getFormattedValue());
+
+					if ($raw_score === '') {
+						continue;
+					}
+
+					if (!preg_match('/^\d+(?:\.0+)?$/', $raw_score)) {
+						$skipped_errors[] = $row_label . ': skor harus berupa angka bulat sesuai skala penilaian.';
+						$scores = NULL;
+						break;
+					}
+
+					$score = (int) $raw_score;
+					if (!isset($valid_scores[$score])) {
+						$skipped_errors[] = $row_label . ': skor harus berupa angka yang tersedia pada skala penilaian.';
+						$scores = NULL;
+						break;
+					}
+
+					if (!isset($valid_indicator_ids[$id_indicator])) {
+						$skipped_errors[] = $row_label . ': indikator pada template tidak lagi valid. Unduh ulang template terbaru.';
+						$scores = NULL;
+						break;
+					}
+
+					$scores[$id_indicator] = $score;
+				}
+
+				if ($scores === NULL) {
 					continue;
 				}
 
-				if (!preg_match('/^\d+(?:\.0+)?$/', $raw_score)) {
-					$skipped_errors[] = 'Baris ' . $row . ': skor harus berupa angka bulat sesuai skala penilaian.';
-					$scores = NULL;
-					break;
+				$has_text_content = ($assessment_date !== '') || $notes !== '' || $strengths !== '' || $development_observed !== '' || $areas_to_support !== '' || $support_strategy !== '';
+				$has_scores = !empty($scores);
+
+				if (!$has_text_content && !$has_scores) {
+					continue;
 				}
 
-				$score = (int) $raw_score;
-				if (!isset($valid_scores[$score])) {
-					$skipped_errors[] = 'Baris ' . $row . ': skor harus berupa angka yang tersedia pada skala penilaian.';
-					$scores = NULL;
-					break;
+				if ($id_anak <= 0 || !isset($children_map[$id_anak])) {
+					$skipped_errors[] = $row_label . ': ID anak tidak ditemukan.';
+					continue;
 				}
 
-				if (!isset($valid_indicator_ids[$id_indicator])) {
-					$skipped_errors[] = 'Baris ' . $row . ': indikator pada template tidak lagi valid. Unduh ulang template terbaru.';
-					$scores = NULL;
-					break;
+				if ($nama_anak !== '' && strcasecmp($nama_anak, (string) $children_map[$id_anak]->nama_anak) !== 0) {
+					$skipped_errors[] = $row_label . ': nama anak tidak sesuai dengan ID anak pada sistem.';
+					continue;
 				}
 
-				$scores[$id_indicator] = $score;
+				if ($assessment_date === '') {
+					$skipped_errors[] = $row_label . ': tanggal penilaian wajib diisi dengan format YYYY-MM-DD.';
+					continue;
+				}
+
+				if (!$has_scores) {
+					$skipped_errors[] = $row_label . ': minimal isi satu skor indikator.';
+					continue;
+				}
+
+				$timestamp = strtotime($assessment_date);
+				if (!$timestamp) {
+					$skipped_errors[] = $row_label . ': tanggal penilaian tidak valid.';
+					continue;
+				}
+
+				$assessment_data = array(
+					'id_anak' => $id_anak,
+					'id_assessor' => (int) $this->session->userdata('id_user'),
+					'assessor_type' => 'guru',
+					'assessment_date' => date('Y-m-d', $timestamp),
+					'week_number' => (int) date('W', $timestamp),
+					'month' => (int) date('n', $timestamp),
+					'year' => (int) date('Y', $timestamp),
+					'notes' => $notes,
+					'status' => 'completed'
+				);
+
+				$qualitative_note = array(
+					'strengths' => $strengths,
+					'development_observed' => $development_observed,
+					'areas_to_support' => $areas_to_support,
+					'support_strategy' => $support_strategy
+				);
+
+				$result = $this->Character_assessment_model->create_assessment_with_details($assessment_data, $scores, $qualitative_note);
+
+				if (!$result['success']) {
+					$skipped_errors[] = $row_label . ': ' . $result['message'];
+					continue;
+				}
+
+				$imported_count++;
 			}
-
-			if ($scores === NULL) {
-				continue;
-			}
-
-			$has_text_content = ($assessment_date !== '') || $notes !== '' || $strengths !== '' || $development_observed !== '' || $areas_to_support !== '' || $support_strategy !== '';
-			$has_scores = !empty($scores);
-
-			if (!$has_text_content && !$has_scores) {
-				continue;
-			}
-
-			if ($id_anak <= 0 || !isset($children_map[$id_anak])) {
-				$skipped_errors[] = 'Baris ' . $row . ': ID anak tidak ditemukan.';
-				continue;
-			}
-
-			if ($nama_anak !== '' && strcasecmp($nama_anak, (string) $children_map[$id_anak]->nama_anak) !== 0) {
-				$skipped_errors[] = 'Baris ' . $row . ': nama anak tidak sesuai dengan ID anak pada sistem.';
-				continue;
-			}
-
-			if ($assessment_date === '') {
-				$skipped_errors[] = 'Baris ' . $row . ': tanggal penilaian wajib diisi dengan format YYYY-MM-DD.';
-				continue;
-			}
-
-			if (!$has_scores) {
-				$skipped_errors[] = 'Baris ' . $row . ': minimal isi satu skor indikator.';
-				continue;
-			}
-
-			$timestamp = strtotime($assessment_date);
-			if (!$timestamp) {
-				$skipped_errors[] = 'Baris ' . $row . ': tanggal penilaian tidak valid.';
-				continue;
-			}
-
-			$assessment_data = array(
-				'id_anak' => $id_anak,
-				'id_assessor' => (int) $this->session->userdata('id_user'),
-				'assessor_type' => 'guru',
-				'assessment_date' => date('Y-m-d', $timestamp),
-				'week_number' => (int) date('W', $timestamp),
-				'month' => (int) date('n', $timestamp),
-				'year' => (int) date('Y', $timestamp),
-				'notes' => $notes,
-				'status' => 'completed'
-			);
-
-			$qualitative_note = array(
-				'strengths' => $strengths,
-				'development_observed' => $development_observed,
-				'areas_to_support' => $areas_to_support,
-				'support_strategy' => $support_strategy
-			);
-
-			$result = $this->Character_assessment_model->create_assessment_with_details($assessment_data, $scores, $qualitative_note);
-
-			if (!$result['success']) {
-				$skipped_errors[] = 'Baris ' . $row . ': ' . $result['message'];
-				continue;
-			}
-
-			$imported_count++;
 		}
 
 		if (is_file($file_path)) {

@@ -342,7 +342,7 @@ class Excel_export
 		exit;
 	}
 
-	public function export_template_penilaian_karakter($data, $filename = 'template_import_penilaian_karakter.xlsx')
+	public function export_template_penilaian_karakter($data, $filename = 'template_import_penilaian_karakter.xlsx', $options = array())
 	{
 		$settings = get_instance()->config->item('settings');
 		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
@@ -350,6 +350,32 @@ class Excel_export
 		$aspects = (array) ($data['aspects'] ?? array());
 		$scales = (array) ($data['scales'] ?? array());
 
+		$indicator_columns = $this->build_character_indicator_columns($aspects);
+		$format = strtolower(trim((string) ($options['format'] ?? 'standard')));
+		if (!in_array($format, array('standard', 'per_child_sheet'), TRUE)) {
+			$format = 'standard';
+		}
+
+		if ($format === 'per_child_sheet') {
+			$this->build_character_template_per_child_sheet($nama_lksa, $children, $indicator_columns, $scales);
+		} else {
+			$this->build_character_template_standard_sheet($nama_lksa, $children, $indicator_columns, $scales);
+		}
+
+		$this->append_character_template_reference_sheet($children, $scales, $indicator_columns);
+		$this->spreadsheet->setActiveSheetIndex(0);
+
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+
+		$writer = new Xlsx($this->spreadsheet);
+		$writer->save('php://output');
+		exit;
+	}
+
+	private function build_character_indicator_columns($aspects)
+	{
 		$indicator_columns = array();
 		foreach ($aspects as $aspect) {
 			foreach ((array) ($aspect->indicators ?? array()) as $indicator) {
@@ -364,12 +390,33 @@ class Excel_export
 			}
 		}
 
+		return $indicator_columns;
+	}
+
+	private function resolve_character_score_range($scales)
+	{
+		$min_score = 1;
+		$max_score = 4;
+
+		if (!empty($scales)) {
+			$min_score = (int) min(array_map(function ($scale) {
+				return (int) $scale->score;
+			}, $scales));
+
+			$max_score = (int) max(array_map(function ($scale) {
+				return (int) $scale->score;
+			}, $scales));
+		}
+
+		return array($min_score, $max_score);
+	}
+
+	private function setup_character_template_sheet(Worksheet $sheet, $nama_lksa, $indicator_columns, $subtitle, $instruction)
+	{
 		$total_columns = 8 + count($indicator_columns);
 		$last_column = Coordinate::stringFromColumnIndex(max(1, $total_columns));
-		$sheet = $this->sheet;
-		$sheet->setTitle('Template Import');
-		$sheet->freezePane('A6');
 
+		$sheet->freezePane('A6');
 		$sheet->mergeCells('A1:' . $last_column . '1');
 		$sheet->mergeCells('A2:' . $last_column . '2');
 		$sheet->mergeCells('A3:' . $last_column . '3');
@@ -377,8 +424,8 @@ class Excel_export
 
 		$sheet->setCellValue('A1', 'TEMPLATE IMPORT PENILAIAN KARAKTER GURU');
 		$sheet->setCellValue('A2', $nama_lksa);
-		$sheet->setCellValue('A3', 'Gunakan file ini untuk mengisi penilaian karakter massal per anak.');
-		$sheet->setCellValue('A4', 'Isi kolom tanggal dan skor indikator yang diperlukan. Jangan ubah kolom ID Anak, Nama Anak, serta header indikator.');
+		$sheet->setCellValue('A3', $subtitle);
+		$sheet->setCellValue('A4', $instruction);
 
 		$sheet->getStyle('A1:' . $last_column . '4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 		$sheet->getStyle('A1:' . $last_column . '4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
@@ -420,47 +467,14 @@ class Excel_export
 		$sheet->getRowDimension($header_row)->setRowHeight(42);
 		$sheet->setAutoFilter('A' . $header_row . ':' . $last_column . $header_row);
 
-		$min_score = !empty($scales) ? (int) min(array_map(function ($scale) {
-			return (int) $scale->score;
-		}, $scales)) : 1;
-		$max_score = !empty($scales) ? (int) max(array_map(function ($scale) {
-			return (int) $scale->score;
-		}, $scales)) : 4;
+		return array(
+			'total_columns' => $total_columns,
+			'last_column' => $last_column,
+		);
+	}
 
-		$row = 6;
-		foreach ($children as $child) {
-			$sheet->setCellValueExplicit('A' . $row, (string) $child->id_anak, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-			$sheet->setCellValue('B' . $row, $child->nama_anak);
-			$sheet->setCellValue('C' . $row, '');
-			$sheet->setCellValue('D' . $row, '');
-			$sheet->setCellValue('E' . $row, '');
-			$sheet->setCellValue('F' . $row, '');
-			$sheet->setCellValue('G' . $row, '');
-			$sheet->setCellValue('H' . $row, '');
-
-			for ($column_index = 9; $column_index <= $total_columns; $column_index++) {
-				$column_letter = Coordinate::stringFromColumnIndex($column_index);
-				$validation = $sheet->getCell($column_letter . $row)->getDataValidation();
-				$validation->setType(DataValidation::TYPE_WHOLE);
-				$validation->setErrorStyle(DataValidation::STYLE_STOP);
-				$validation->setAllowBlank(TRUE);
-				$validation->setShowInputMessage(TRUE);
-				$validation->setShowErrorMessage(TRUE);
-				$validation->setPromptTitle('Isi skor indikator');
-				$validation->setPrompt('Masukkan skor ' . $min_score . ' sampai ' . $max_score . ' sesuai skala.');
-				$validation->setErrorTitle('Skor tidak valid');
-				$validation->setError('Skor harus berupa angka ' . $min_score . ' sampai ' . $max_score . '.');
-				$validation->setFormula1((string) $min_score);
-				$validation->setFormula2((string) $max_score);
-			}
-
-			$sheet->getStyle('A' . $row . ':' . $last_column . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-			$row++;
-		}
-
-		$last_data_row = max(6, $row - 1);
-		$sheet->getStyle('A6:H' . $last_data_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
-
+	private function setup_character_template_columns_width(Worksheet $sheet, $total_columns)
+	{
 		$sheet->getColumnDimension('A')->setWidth(12);
 		$sheet->getColumnDimension('B')->setWidth(28);
 		$sheet->getColumnDimension('C')->setWidth(22);
@@ -474,11 +488,152 @@ class Excel_export
 			$column_letter = Coordinate::stringFromColumnIndex($column_index);
 			$sheet->getColumnDimension($column_letter)->setWidth(18);
 		}
+	}
 
-		$sheet->getStyle('A1:' . $last_column . $last_data_row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+	private function apply_character_score_validation(Worksheet $sheet, $row, $total_columns, $min_score, $max_score)
+	{
+		for ($column_index = 9; $column_index <= $total_columns; $column_index++) {
+			$column_letter = Coordinate::stringFromColumnIndex($column_index);
+			$validation = $sheet->getCell($column_letter . $row)->getDataValidation();
+			$validation->setType(DataValidation::TYPE_WHOLE);
+			$validation->setErrorStyle(DataValidation::STYLE_STOP);
+			$validation->setAllowBlank(TRUE);
+			$validation->setShowInputMessage(TRUE);
+			$validation->setShowErrorMessage(TRUE);
+			$validation->setPromptTitle('Isi skor indikator');
+			$validation->setPrompt('Masukkan skor ' . $min_score . ' sampai ' . $max_score . ' sesuai skala.');
+			$validation->setErrorTitle('Skor tidak valid');
+			$validation->setError('Skor harus berupa angka ' . $min_score . ' sampai ' . $max_score . '.');
+			$validation->setFormula1((string) $min_score);
+			$validation->setFormula2((string) $max_score);
+		}
+	}
+
+	private function build_character_template_standard_sheet($nama_lksa, $children, $indicator_columns, $scales)
+	{
+		$sheet = $this->sheet;
+		$sheet->setTitle('Template Import');
+
+		$meta = $this->setup_character_template_sheet(
+			$sheet,
+			$nama_lksa,
+			$indicator_columns,
+			'Gunakan file ini untuk mengisi penilaian karakter massal per anak.',
+			'Isi kolom tanggal dan skor indikator yang diperlukan. Jangan ubah kolom ID Anak, Nama Anak, serta header indikator.'
+		);
+
+		list($min_score, $max_score) = $this->resolve_character_score_range($scales);
+
+		$row = 6;
+		foreach ($children as $child) {
+			$sheet->setCellValueExplicit('A' . $row, (string) $child->id_anak, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('B' . $row, $child->nama_anak);
+			$sheet->setCellValue('C' . $row, '');
+			$sheet->setCellValue('D' . $row, '');
+			$sheet->setCellValue('E' . $row, '');
+			$sheet->setCellValue('F' . $row, '');
+			$sheet->setCellValue('G' . $row, '');
+			$sheet->setCellValue('H' . $row, '');
+
+			$this->apply_character_score_validation($sheet, $row, $meta['total_columns'], $min_score, $max_score);
+			$sheet->getStyle('A' . $row . ':' . $meta['last_column'] . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$row++;
+		}
+
+		if ($row === 6) {
+			$sheet->setCellValue('A6', '');
+			$sheet->setCellValue('B6', '');
+			$sheet->setCellValue('C6', '');
+			$sheet->setCellValue('D6', '');
+			$sheet->setCellValue('E6', '');
+			$sheet->setCellValue('F6', '');
+			$sheet->setCellValue('G6', '');
+			$sheet->setCellValue('H6', '');
+			$this->apply_character_score_validation($sheet, 6, $meta['total_columns'], $min_score, $max_score);
+			$sheet->getStyle('A6:' . $meta['last_column'] . '6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$row++;
+		}
+
+		$last_data_row = max(6, $row - 1);
+		$sheet->getStyle('A6:H' . $last_data_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+		$sheet->getStyle('A1:' . $meta['last_column'] . $last_data_row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 		$sheet->getStyle('A6:C' . $last_data_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-		$sheet->getStyle('I6:' . $last_column . $last_data_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
+		if ($meta['total_columns'] >= 9) {
+			$sheet->getStyle('I6:' . $meta['last_column'] . $last_data_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+		}
+
+		$this->setup_character_template_columns_width($sheet, $meta['total_columns']);
+	}
+
+	private function build_character_template_per_child_sheet($nama_lksa, $children, $indicator_columns, $scales)
+	{
+		$used_sheet_titles = array('referensi');
+		$children_to_render = !empty($children)
+			? $children
+			: array((object) array('id_anak' => '', 'nama_anak' => 'Anak 1'));
+
+		list($min_score, $max_score) = $this->resolve_character_score_range($scales);
+
+		foreach ($children_to_render as $index => $child) {
+			$sheet = $index === 0
+				? $this->sheet
+				: new Worksheet($this->spreadsheet);
+
+			if ($index > 0) {
+				$this->spreadsheet->addSheet($sheet);
+			}
+
+			$sheet_title_seed = trim((string) ($child->nama_anak ?? ''));
+			if ($sheet_title_seed === '') {
+				$sheet_title_seed = 'Anak ' . ($index + 1);
+			}
+
+			if (isset($child->id_anak) && (string) $child->id_anak !== '') {
+				$sheet_title_seed = (string) $child->id_anak . ' ' . $sheet_title_seed;
+			}
+
+			$sheet_title = $this->build_unique_sheet_title($sheet_title_seed, $used_sheet_titles);
+			$sheet->setTitle($sheet_title);
+
+			$child_name = trim((string) ($child->nama_anak ?? '-'));
+			$child_id = trim((string) ($child->id_anak ?? ''));
+			$subtitle = 'Sheet ini khusus untuk anak: ' . ($child_name !== '' ? $child_name : '-') . ($child_id !== '' ? ' (ID: ' . $child_id . ')' : '') . '.';
+			$instruction = 'Isi kolom tanggal dan skor indikator pada baris data. Jangan ubah kolom ID Anak, Nama Anak, serta header indikator.';
+
+			$meta = $this->setup_character_template_sheet(
+				$sheet,
+				$nama_lksa,
+				$indicator_columns,
+				$subtitle,
+				$instruction
+			);
+
+			$sheet->setCellValueExplicit('A6', (string) ($child->id_anak ?? ''), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('B6', (string) ($child->nama_anak ?? ''));
+			$sheet->setCellValue('C6', '');
+			$sheet->setCellValue('D6', '');
+			$sheet->setCellValue('E6', '');
+			$sheet->setCellValue('F6', '');
+			$sheet->setCellValue('G6', '');
+			$sheet->setCellValue('H6', '');
+
+			$this->apply_character_score_validation($sheet, 6, $meta['total_columns'], $min_score, $max_score);
+			$sheet->getStyle('A6:' . $meta['last_column'] . '6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$sheet->getStyle('A6:H6')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+			$sheet->getStyle('A1:' . $meta['last_column'] . '6')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+			$sheet->getStyle('A6:C6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+			if ($meta['total_columns'] >= 9) {
+				$sheet->getStyle('I6:' . $meta['last_column'] . '6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			}
+
+			$this->setup_character_template_columns_width($sheet, $meta['total_columns']);
+		}
+	}
+
+	private function append_character_template_reference_sheet($children, $scales, $indicator_columns)
+	{
 		$reference_sheet = new Worksheet($this->spreadsheet, 'Referensi');
 		$this->spreadsheet->addSheet($reference_sheet);
 		$reference_sheet->setCellValue('A1', 'Referensi Import Penilaian Karakter');
@@ -535,15 +690,37 @@ class Excel_export
 			$reference_sheet->getColumnDimension($column_letter)->setAutoSize(TRUE);
 		}
 
-		$reference_sheet->getStyle('A4:N' . max($scale_row, $indicator_row, $child_row))->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-		$this->spreadsheet->setActiveSheetIndex(0);
+		$last_reference_row = max(5, $scale_row, $indicator_row, $child_row);
+		$reference_sheet->getStyle('A4:N' . $last_reference_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+	}
 
-		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment;filename="' . $filename . '"');
-		header('Cache-Control: max-age=0');
+	private function build_unique_sheet_title($raw_title, &$used_sheet_titles)
+	{
+		$title = trim((string) $raw_title);
+		$title = preg_replace('/[\\x00-\\x1F\\x7F]/', '', $title);
+		$title = preg_replace('/[\\\\\/\?\*\[\]:]/', ' ', $title);
+		$title = preg_replace('/\s+/', ' ', $title);
+		$title = trim($title);
 
-		$writer = new Xlsx($this->spreadsheet);
-		$writer->save('php://output');
-		exit;
+		if ($title === '') {
+			$title = 'Anak';
+		}
+
+		$base = substr($title, 0, 31);
+		if ($base === '') {
+			$base = 'Anak';
+		}
+
+		$candidate = $base;
+		$counter = 2;
+		while (in_array(strtolower($candidate), $used_sheet_titles, TRUE)) {
+			$suffix = '-' . $counter;
+			$max_base_length = max(1, 31 - strlen($suffix));
+			$candidate = substr($base, 0, $max_base_length) . $suffix;
+			$counter++;
+		}
+
+		$used_sheet_titles[] = strtolower($candidate);
+		return $candidate;
 	}
 }

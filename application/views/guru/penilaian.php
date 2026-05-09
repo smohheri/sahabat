@@ -59,6 +59,9 @@
 						<p class="import-lead mb-2">Unduh template, isi skor penilaian per anak, lalu import kembali file
 							Excel/spreadsheet.</p>
 						<ul class="import-help-list mb-0">
+							<li>Tersedia 2 format template: <strong>standar (1 sheet semua anak)</strong> dan
+								<strong>1 sheet 1 anak</strong>.
+							</li>
 							<li>Template sudah berisi <strong>ID anak</strong>, <strong>nama anak</strong>, dan <strong>ID
 									indikator</strong> pada header kolom skor.</li>
 							<li>Isi <strong>tanggal penilaian</strong> dan minimal satu <strong>skor indikator</strong> pada
@@ -79,9 +82,13 @@
 								</div>
 							</div>
 						</div>
-						<a href="<?php echo site_url('guru/penilaian-karakter/template'); ?>"
-							class="btn btn-success btn-block mb-3 import-btn import-btn-success">
-							<i class="fas fa-download mr-1"></i> Unduh Template Import
+						<a href="<?php echo site_url('guru/penilaian-karakter/template?format=standard'); ?>"
+							class="btn btn-success btn-block mb-2 import-btn import-btn-success">
+							<i class="fas fa-download mr-1"></i> Unduh Template Standar
+						</a>
+						<a href="<?php echo site_url('guru/penilaian-karakter/template?format=per_child_sheet'); ?>"
+							class="btn btn-outline-success btn-block mb-3 import-btn">
+							<i class="fas fa-clone mr-1"></i> Unduh Template 1 Sheet 1 Anak
 						</a>
 						<form method="post" action="<?php echo site_url('guru/penilaian-karakter/import'); ?>"
 							enctype="multipart/form-data">
