@@ -1143,8 +1143,7 @@
 						<div class="col-md-6">
 							<div class="form-group mb-3">
 								<label class="font-weight-bold text-muted mb-2">No KK</label>
-								<input type="text" class="form-control" name="no_kk"
-									placeholder="Nomor Kartu Keluarga">
+								<input type="text" class="form-control" name="no_kk" placeholder="Nomor Kartu Keluarga">
 							</div>
 						</div>
 					</div>
