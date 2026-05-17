@@ -1,3 +1,28 @@
+<style>
+    #tableInputAbsensi .status-radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.75rem;
+    }
+
+    #tableInputAbsensi .status-radio-group .custom-control {
+        min-height: 1.4rem;
+        margin-right: 0.5rem;
+    }
+
+    #tableInputAbsensi .status-radio-group .custom-control-label {
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    #tableInputAbsensi .status-radio-group.is-invalid {
+        border: 1px solid #dc3545;
+        border-radius: 0.25rem;
+        padding: 0.3rem 0.4rem 0.1rem;
+    }
+</style>
+
 <div class="laporan-page">
     <div class="page-header">
         <div class="header-info">
@@ -123,7 +148,8 @@
                 <span class="data-count">Mengikuti filter saat ini</span>
             </div>
             <div class="panel-body p-3">
-                <p class="text-muted mb-3">Export Excel berisi daftar siswa, jumlah Hadir/Izin/Sakit/Alpha, dan persentase kehadiran.</p>
+                <p class="text-muted mb-3">Export Excel berisi daftar siswa, jumlah Hadir/Izin/Sakit/Alpha, dan persentase
+                    kehadiran.</p>
                 <a href="<?php echo $export_excel_url; ?>" class="btn btn-success">
                     <i class="fas fa-file-excel mr-1"></i> Export Excel Rekap Per Anak
                 </a>
@@ -302,7 +328,7 @@
                             <tr>
                                 <th style="width: 50px;">No</th>
                                 <th>Nama Anak</th>
-                                <th style="width: 170px;">Status Kehadiran</th>
+                                <th>Status Kehadiran</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
@@ -314,22 +340,26 @@
                                 $detail = $detail_map[$id_anak] ?? null;
                                 $current_status = $detail ? $detail->status_kehadiran : 'Hadir';
                                 $current_keterangan = $detail ? $detail->keterangan : '';
+                                $status_options = array('Hadir', 'Izin', 'Sakit', 'Alpha');
                                 ?>
                                 <tr class="attendance-row" data-anak-id="<?php echo $id_anak; ?>">
                                     <td><?php echo $no++; ?></td>
                                     <td><?php echo $child->nama_anak; ?></td>
                                     <td>
-                                        <select class="form-control status-kehadiran-select"
-                                            name="status_kehadiran[<?php echo $id_anak; ?>]" required>
-                                            <option value="Hadir" <?php echo $current_status === 'Hadir' ? 'selected' : ''; ?>>
-                                                Hadir</option>
-                                            <option value="Izin" <?php echo $current_status === 'Izin' ? 'selected' : ''; ?>>Izin
-                                            </option>
-                                            <option value="Sakit" <?php echo $current_status === 'Sakit' ? 'selected' : ''; ?>>
-                                                Sakit</option>
-                                            <option value="Alpha" <?php echo $current_status === 'Alpha' ? 'selected' : ''; ?>>
-                                                Alpha</option>
-                                        </select>
+                                        <div class="status-radio-group" role="radiogroup">
+                                            <?php foreach ($status_options as $status_option): ?>
+                                                <?php $radio_id = 'status_' . $id_anak . '_' . strtolower($status_option); ?>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <input type="radio" class="custom-control-input status-kehadiran-radio"
+                                                        id="<?php echo $radio_id; ?>"
+                                                        name="status_kehadiran[<?php echo $id_anak; ?>]"
+                                                        value="<?php echo $status_option; ?>" <?php echo $current_status === $status_option ? 'checked' : ''; ?>             <?php echo $status_option === 'Hadir' ? 'required' : ''; ?>>
+                                                    <label class="custom-control-label" for="<?php echo $radio_id; ?>">
+                                                        <?php echo $status_option; ?>
+                                                    </label>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control keterangan-input"
@@ -578,14 +608,23 @@
         var $absensiForm = $('#formAbsensiMapel');
         if ($absensiForm.length > 0) {
             var $bulkStatus = $('#bulkStatus');
-            var $statusSelects = $absensiForm.find('.status-kehadiran-select');
+            var $attendanceRows = $absensiForm.find('.attendance-row');
             var $keteranganInputs = $absensiForm.find('.keterangan-input');
             var $catatanInput = $absensiForm.find('textarea[name="catatan"]');
             var isDirty = false;
+            var allowedStatusMap = {
+                'Hadir': true,
+                'Izin': true,
+                'Sakit': true,
+                'Alpha': true
+            };
 
-            function updateRowStyle($select) {
-                var status = $select.val();
-                var $row = $select.closest('tr');
+            function getRowStatus($row) {
+                return ($row.find('.status-kehadiran-radio:checked').val() || '');
+            }
+
+            function updateRowStyle($row) {
+                var status = getRowStatus($row);
                 $row.removeClass('table-success table-info table-warning table-danger');
 
                 if (status === 'Hadir') {
@@ -607,8 +646,8 @@
                     'Alpha': 0
                 };
 
-                $statusSelects.each(function () {
-                    var currentValue = $(this).val();
+                $attendanceRows.each(function () {
+                    var currentValue = getRowStatus($(this));
                     if (Object.prototype.hasOwnProperty.call(summary, currentValue)) {
                         summary[currentValue] += 1;
                     }
@@ -624,17 +663,18 @@
                 isDirty = true;
             }
 
-            $statusSelects.each(function () {
+            $attendanceRows.each(function () {
                 updateRowStyle($(this));
             });
 
             updateLiveSummary();
 
-   $statusSelects.on('change', function () {
-       updateRowStyle($(this));
+            $absensiForm.on('change', '.status-kehadiran-radio', function () {
+                var $row = $(this).closest('tr');
+                updateRowStyle($row);
                 updateLiveSummary();
                 markDirty();
-                $(this).removeClass('is-invalid');
+                $row.find('.status-radio-group').removeClass('is-invalid');
             });
 
             $keteranganInputs.on('input', function () {
@@ -657,15 +697,31 @@
                     return;
                 }
 
-                $statusSelects.val(statusTerpilih).trigger('change');
+                if (!Object.prototype.hasOwnProperty.call(allowedStatusMap, statusTerpilih)) {
+                    $bulkStatus.addClass('is-invalid');
+                    return;
+                }
+
+                $attendanceRows.each(function () {
+                    var $row = $(this);
+                    $row.find('.status-kehadiran-radio[value="' + statusTerpilih + '"]').prop('checked', true);
+                    $row.find('.status-radio-group').removeClass('is-invalid');
+                    updateRowStyle($row);
+                });
+
+                updateLiveSummary();
+                markDirty();
             });
 
             $absensiForm.on('submit', function (event) {
                 var statusValid = true;
-                $statusSelects.each(function () {
-                    var currentValue = $(this).val();
-                    var isCurrentValid = currentValue === 'Hadir' || currentValue === 'Izin' || currentValue === 'Sakit' || currentValue === 'Alpha';
-                    $(this).toggleClass('is-invalid', !isCurrentValid);
+
+                $attendanceRows.each(function () {
+                    var $row = $(this);
+                    var currentValue = getRowStatus($row);
+                    var isCurrentValid = Object.prototype.hasOwnProperty.call(allowedStatusMap, currentValue);
+                    $row.find('.status-radio-group').toggleClass('is-invalid', !isCurrentValid);
+
                     if (!isCurrentValid) {
                         statusValid = false;
                     }
