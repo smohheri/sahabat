@@ -1412,4 +1412,202 @@ class Pdf_export
         $mpdf->Output('laporan_eksternal_' . date('Ymd') . '.pdf', 'D');
         exit;
     }
+
+    public function generate_akademik_mapel($data)
+    {
+        $rows = (array) ($data['mapel_rows'] ?? array());
+
+        $html = '
+        <h3 style="text-align:center; margin-bottom: 16px;">LAPORAN MASTER MATA PELAJARAN</h3>
+        <p style="text-align:center; margin-bottom: 16px;">Periode Cetak: ' . date('d-m-Y H:i') . '</p>
+        <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse; font-size:11px;">
+            <thead style="background-color:#f0f0f0;">
+                <tr>
+                    <th style="width:6%; text-align:center;">No</th>
+                    <th style="width:15%; text-align:center;">Kode Mapel</th>
+                    <th style="width:34%;">Nama Mata Pelajaran</th>
+                    <th style="width:30%;">Guru Pengampu</th>
+                    <th style="width:15%; text-align:center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        if (empty($rows)) {
+            $html .= '<tr><td colspan="5" style="text-align:center;">Belum ada data mata pelajaran.</td></tr>';
+        } else {
+            $no = 1;
+            foreach ($rows as $row) {
+                $html .= '<tr>
+                    <td style="text-align:center;">' . $no++ . '</td>
+                    <td style="text-align:center;">' . ($row->kode_mapel ?? '-') . '</td>
+                    <td>' . ($row->nama_mapel ?? '-') . '</td>
+                    <td>' . ($row->nama_pengampu ?? '-') . '</td>
+                    <td style="text-align:center;">' . ((int) ($row->is_active ?? 0) === 1 ? 'Aktif' : 'Non Aktif') . '</td>
+                </tr>';
+            }
+        }
+
+        $html .= '
+            </tbody>
+        </table>';
+
+        return $html;
+    }
+
+    public function generate_akademik_rombel($data)
+    {
+        $rows = (array) ($data['rows'] ?? array());
+
+        $html = '
+        <h3 style="text-align:center; margin-bottom: 16px;">LAPORAN ROMBEL DAN RELASI AKADEMIK</h3>
+        <p style="text-align:center; margin-bottom: 16px;">Periode Cetak: ' . date('d-m-Y H:i') . '</p>
+        <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse; font-size:10px;">
+            <thead style="background-color:#f0f0f0;">
+                <tr>
+                    <th style="width:4%; text-align:center;">No</th>
+                    <th style="width:10%; text-align:center;">Kode</th>
+                    <th style="width:13%;">Rombel</th>
+                    <th style="width:10%; text-align:center;">Tahun Ajaran</th>
+                    <th style="width:6%; text-align:center;">Sem</th>
+                    <th style="width:7%; text-align:center;">Status</th>
+                    <th style="width:7%; text-align:center;">Anak</th>
+                    <th style="width:7%; text-align:center;">Mapel</th>
+                    <th style="width:18%;">Daftar Anak</th>
+                    <th style="width:18%;">Daftar Mapel</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        if (empty($rows)) {
+            $html .= '<tr><td colspan="10" style="text-align:center;">Belum ada data rombel.</td></tr>';
+        } else {
+            $no = 1;
+            foreach ($rows as $row) {
+                $html .= '<tr>
+                    <td style="text-align:center;">' . $no++ . '</td>
+                    <td style="text-align:center;">' . ($row->kode_rombel ?? '-') . '</td>
+                    <td>' . ($row->nama_rombel ?? '-') . '</td>
+                    <td style="text-align:center;">' . ($row->tahun_ajaran ?? '-') . '</td>
+                    <td style="text-align:center;">' . ($row->semester ?? '-') . '</td>
+                    <td style="text-align:center;">' . ((int) ($row->is_active ?? 0) === 1 ? 'Aktif' : 'Non Aktif') . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_anak ?? 0) . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_mapel ?? 0) . '</td>
+                    <td>' . ($row->daftar_anak ?: '-') . '</td>
+                    <td>' . ($row->daftar_mapel ?: '-') . '</td>
+                </tr>';
+            }
+        }
+
+        $html .= '
+            </tbody>
+        </table>';
+
+        return $html;
+    }
+
+    public function generate_akademik_absensi($data)
+    {
+        $filters = (array) ($data['filters'] ?? array());
+        $summary_rows = (array) ($data['summary_rows'] ?? array());
+        $detail_rows = (array) ($data['detail_rows'] ?? array());
+        $status_summary = (array) ($data['status_summary'] ?? array());
+
+        $html = '
+        <h3 style="text-align:center; margin-bottom: 8px;">LAPORAN ABSENSI MATA PELAJARAN</h3>
+        <p style="text-align:center; margin: 0 0 12px 0;">
+            Tahun Ajaran: ' . ($filters['tahun_ajaran'] ?? '-') . ' | Semester: ' . ($filters['semester'] ?? '-') . '
+        </p>
+        <table border="1" cellpadding="4" cellspacing="0" style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:12px;">
+            <tr style="background-color:#f7f7f7;">
+                <th style="text-align:left;">Ringkasan Status</th>
+                <th style="text-align:center;">Hadir</th>
+                <th style="text-align:center;">Izin</th>
+                <th style="text-align:center;">Sakit</th>
+                <th style="text-align:center;">Alpha</th>
+                <th style="text-align:center;">Total</th>
+            </tr>
+            <tr>
+                <td>Total Kehadiran</td>
+                <td style="text-align:center;">' . (int) ($status_summary['Hadir'] ?? 0) . '</td>
+                <td style="text-align:center;">' . (int) ($status_summary['Izin'] ?? 0) . '</td>
+                <td style="text-align:center;">' . (int) ($status_summary['Sakit'] ?? 0) . '</td>
+                <td style="text-align:center;">' . (int) ($status_summary['Alpha'] ?? 0) . '</td>
+                <td style="text-align:center;">' . (int) ($status_summary['total'] ?? 0) . '</td>
+            </tr>
+        </table>
+
+        <h4 style="margin: 12px 0 6px 0;">Rekap Sesi Absensi</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:12px;">
+            <thead style="background-color:#f0f0f0;">
+                <tr>
+                    <th style="text-align:center;">Tanggal</th>
+                    <th style="text-align:center;">Tahun/Sem</th>
+                    <th>Rombel</th>
+                    <th>Mapel</th>
+                    <th style="text-align:center;">Hadir</th>
+                    <th style="text-align:center;">Izin</th>
+                    <th style="text-align:center;">Sakit</th>
+                    <th style="text-align:center;">Alpha</th>
+                    <th style="text-align:center;">Total</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        if (empty($summary_rows)) {
+            $html .= '<tr><td colspan="9" style="text-align:center;">Belum ada data rekap absensi.</td></tr>';
+        } else {
+            foreach ($summary_rows as $row) {
+                $html .= '<tr>
+                    <td style="text-align:center;">' . ($row->tanggal_absensi ?? '-') . '</td>
+                    <td style="text-align:center;">' . ($row->tahun_ajaran ?? '-') . ' / ' . ($row->semester ?? '-') . '</td>
+                    <td>' . ($row->nama_rombel ?? '-') . '</td>
+                    <td>' . ($row->nama_mapel ?? '-') . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_hadir ?? 0) . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_izin ?? 0) . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_sakit ?? 0) . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_alpha ?? 0) . '</td>
+                    <td style="text-align:center;">' . (int) ($row->total_siswa ?? 0) . '</td>
+                </tr>';
+            }
+        }
+
+        $html .= '
+            </tbody>
+        </table>
+
+        <h4 style="margin: 12px 0 6px 0;">Detail Kehadiran Anak</h4>
+        <table border="1" cellpadding="4" cellspacing="0" style="width:100%; border-collapse:collapse; font-size:9px;">
+            <thead style="background-color:#f0f0f0;">
+                <tr>
+                    <th style="text-align:center;">Tanggal</th>
+                    <th>Rombel</th>
+                    <th>Mapel</th>
+                    <th>Nama Anak</th>
+                    <th style="text-align:center;">Status</th>
+                    <th>Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        if (empty($detail_rows)) {
+            $html .= '<tr><td colspan="6" style="text-align:center;">Belum ada detail absensi.</td></tr>';
+        } else {
+            foreach ($detail_rows as $row) {
+                $html .= '<tr>
+                    <td style="text-align:center;">' . ($row->tanggal_absensi ?? '-') . '</td>
+                    <td>' . ($row->nama_rombel ?? '-') . '</td>
+                    <td>' . ($row->nama_mapel ?? '-') . '</td>
+                    <td>' . ($row->nama_anak ?? '-') . '</td>
+                    <td style="text-align:center;">' . ($row->status_kehadiran ?? '-') . '</td>
+                    <td>' . ($row->keterangan ?: '-') . '</td>
+                </tr>';
+            }
+        }
+
+        $html .= '
+            </tbody>
+        </table>';
+
+        return $html;
+    }
 }

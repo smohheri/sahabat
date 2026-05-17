@@ -723,4 +723,485 @@ class Excel_export
 		$used_sheet_titles[] = strtolower($candidate);
 		return $candidate;
 	}
+
+	private function reset_workbook($sheet_title = 'Sheet1')
+	{
+		$this->spreadsheet = new Spreadsheet();
+		$this->sheet = $this->spreadsheet->getActiveSheet();
+		$this->sheet->setTitle($sheet_title);
+	}
+
+	private function output_workbook($filename)
+	{
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+
+		$writer = new Xlsx($this->spreadsheet);
+		$writer->save('php://output');
+		exit;
+	}
+
+	public function export_akademik_mapel($data, $filename = 'laporan_mata_pelajaran.xlsx')
+	{
+		$settings = get_instance()->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+		$rows = (array) ($data['mapel_rows'] ?? array());
+
+		$this->reset_workbook('Master Mapel');
+
+		$this->sheet->setCellValue('A1', 'LAPORAN MASTER MATA PELAJARAN');
+		$this->sheet->setCellValue('A2', $nama_lksa);
+		$this->sheet->setCellValue('A3', 'Dicetak: ' . date('d-m-Y H:i'));
+		$this->sheet->mergeCells('A1:E1');
+		$this->sheet->mergeCells('A2:E2');
+		$this->sheet->mergeCells('A3:E3');
+		$this->sheet->getStyle('A1:A3')->getFont()->setBold(TRUE);
+		$this->sheet->getStyle('A1:E3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$headers = array('No', 'Kode Mapel', 'Nama Mata Pelajaran', 'Guru Pengampu', 'Status');
+		$row = 5;
+		$col = 'A';
+		foreach ($headers as $header) {
+			$this->sheet->setCellValue($col . $row, $header);
+			$this->sheet->getStyle($col . $row)->getFont()->setBold(TRUE);
+			$this->sheet->getStyle($col . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$this->sheet->getStyle($col . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle($col . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$col++;
+		}
+
+		$row = 6;
+		$no = 1;
+		foreach ($rows as $item) {
+			$this->sheet->setCellValue('A' . $row, $no++);
+			$this->sheet->setCellValue('B' . $row, $item->kode_mapel ?? '-');
+			$this->sheet->setCellValue('C' . $row, $item->nama_mapel ?? '-');
+			$this->sheet->setCellValue('D' . $row, $item->nama_pengampu ?? '-');
+			$this->sheet->setCellValue('E' . $row, ((int) ($item->is_active ?? 0) === 1) ? 'Aktif' : 'Non Aktif');
+
+			for ($c = 'A'; $c <= 'E'; $c++) {
+				$this->sheet->getStyle($c . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+			$row++;
+		}
+
+		if ($row === 6) {
+			$this->sheet->setCellValue('A6', 'Belum ada data mata pelajaran');
+			$this->sheet->mergeCells('A6:E6');
+			$this->sheet->getStyle('A6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle('A6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		foreach (range('A', 'E') as $col) {
+			$this->sheet->getColumnDimension($col)->setAutoSize(TRUE);
+		}
+
+		$this->output_workbook($filename);
+	}
+
+	public function export_akademik_rombel($data, $filename = 'laporan_rombel.xlsx')
+	{
+		$settings = get_instance()->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+		$rows = (array) ($data['rows'] ?? array());
+
+		$this->reset_workbook('Rombel');
+
+		$this->sheet->setCellValue('A1', 'LAPORAN ROMBEL DAN RELASI AKADEMIK');
+		$this->sheet->setCellValue('A2', $nama_lksa);
+		$this->sheet->setCellValue('A3', 'Dicetak: ' . date('d-m-Y H:i'));
+		$this->sheet->mergeCells('A1:J1');
+		$this->sheet->mergeCells('A2:J2');
+		$this->sheet->mergeCells('A3:J3');
+		$this->sheet->getStyle('A1:A3')->getFont()->setBold(TRUE);
+		$this->sheet->getStyle('A1:J3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$headers = array('No', 'Kode Rombel', 'Nama Rombel', 'Tahun Ajaran', 'Semester', 'Status', 'Total Anak', 'Total Mapel', 'Daftar Anak', 'Daftar Mapel');
+		$row = 5;
+		$col = 'A';
+		foreach ($headers as $header) {
+			$this->sheet->setCellValue($col . $row, $header);
+			$this->sheet->getStyle($col . $row)->getFont()->setBold(TRUE);
+			$this->sheet->getStyle($col . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$this->sheet->getStyle($col . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle($col . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$col++;
+		}
+
+		$row = 6;
+		$no = 1;
+		foreach ($rows as $item) {
+			$this->sheet->setCellValue('A' . $row, $no++);
+			$this->sheet->setCellValue('B' . $row, $item->kode_rombel ?? '-');
+			$this->sheet->setCellValue('C' . $row, $item->nama_rombel ?? '-');
+			$this->sheet->setCellValue('D' . $row, $item->tahun_ajaran ?? '-');
+			$this->sheet->setCellValue('E' . $row, $item->semester ?? '-');
+			$this->sheet->setCellValue('F' . $row, ((int) ($item->is_active ?? 0) === 1) ? 'Aktif' : 'Non Aktif');
+			$this->sheet->setCellValue('G' . $row, (int) ($item->total_anak ?? 0));
+			$this->sheet->setCellValue('H' . $row, (int) ($item->total_mapel ?? 0));
+			$this->sheet->setCellValue('I' . $row, $item->daftar_anak ?? '-');
+			$this->sheet->setCellValue('J' . $row, $item->daftar_mapel ?? '-');
+
+			for ($c = 'A'; $c <= 'J'; $c++) {
+				$this->sheet->getStyle($c . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+			$row++;
+		}
+
+		if ($row === 6) {
+			$this->sheet->setCellValue('A6', 'Belum ada data rombel');
+			$this->sheet->mergeCells('A6:J6');
+			$this->sheet->getStyle('A6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle('A6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		foreach (range('A', 'J') as $col) {
+			$this->sheet->getColumnDimension($col)->setAutoSize(TRUE);
+		}
+
+		$this->output_workbook($filename);
+	}
+
+	public function export_akademik_absensi($data, $filename = 'laporan_absensi_mapel.xlsx')
+	{
+		$settings = get_instance()->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+		$filters = (array) ($data['filters'] ?? array());
+		$summary_rows = (array) ($data['summary_rows'] ?? array());
+		$detail_rows = (array) ($data['detail_rows'] ?? array());
+		$status_summary = (array) ($data['status_summary'] ?? array());
+
+		$rekap_per_anak = array();
+		foreach ($detail_rows as $item) {
+			$nama_anak = trim((string) ($item->nama_anak ?? ''));
+			$id_anak = (int) ($item->id_anak ?? 0);
+			if ($nama_anak === '') {
+				continue;
+			}
+
+			$key = $id_anak > 0 ? 'id_' . $id_anak : 'nama_' . strtolower($nama_anak);
+			if (!isset($rekap_per_anak[$key])) {
+				$rekap_per_anak[$key] = array(
+					'nama_anak' => $nama_anak,
+					'Hadir' => 0,
+					'Izin' => 0,
+					'Sakit' => 0,
+					'Alpha' => 0,
+					'total' => 0
+				);
+			}
+
+			$status = ucfirst(strtolower(trim((string) ($item->status_kehadiran ?? ''))));
+			if (!in_array($status, array('Hadir', 'Izin', 'Sakit', 'Alpha'), TRUE)) {
+				continue;
+			}
+
+			$rekap_per_anak[$key][$status]++;
+			$rekap_per_anak[$key]['total']++;
+		}
+
+		if (!empty($rekap_per_anak)) {
+			uasort($rekap_per_anak, function ($a, $b) {
+				return strcmp((string) ($a['nama_anak'] ?? ''), (string) ($b['nama_anak'] ?? ''));
+			});
+		}
+
+		$this->reset_workbook('Rekap Per Anak');
+
+		$this->sheet->setCellValue('A1', 'LAPORAN REKAP ABSENSI PER ANAK');
+		$this->sheet->setCellValue('A2', $nama_lksa);
+		$this->sheet->setCellValue('A3', 'Filter: TA ' . ($filters['tahun_ajaran'] ?? '-') . ' | Semester ' . ($filters['semester'] ?? '-') . ' | Dicetak: ' . date('d-m-Y H:i'));
+		$this->sheet->mergeCells('A1:G1');
+		$this->sheet->mergeCells('A2:G2');
+		$this->sheet->mergeCells('A3:G3');
+		$this->sheet->getStyle('A1:A3')->getFont()->setBold(TRUE);
+		$this->sheet->getStyle('A1:G3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$this->sheet->setCellValue('A4', 'Hadir: ' . (int) ($status_summary['Hadir'] ?? 0));
+		$this->sheet->setCellValue('C4', 'Izin: ' . (int) ($status_summary['Izin'] ?? 0));
+		$this->sheet->setCellValue('D4', 'Sakit: ' . (int) ($status_summary['Sakit'] ?? 0));
+		$this->sheet->setCellValue('E4', 'Alpha: ' . (int) ($status_summary['Alpha'] ?? 0));
+		$this->sheet->setCellValue('F4', 'Total: ' . (int) ($status_summary['total'] ?? 0));
+
+		$this->sheet->setCellValue('A5', 'Persentase kehadiran = (Hadir / (Hadir + Izin + Sakit + Alpha)) x 100%');
+		$this->sheet->mergeCells('A5:G5');
+		$this->sheet->getStyle('A5')->getFont()->setItalic(TRUE);
+
+		$headers = array('No', 'Nama Siswa', 'Hadir', 'Izin', 'Sakit', 'Alpha', 'Persentase Kehadiran');
+		$row = 7;
+		$col = 'A';
+		foreach ($headers as $header) {
+			$this->sheet->setCellValue($col . $row, $header);
+			$this->sheet->getStyle($col . $row)->getFont()->setBold(TRUE);
+			$this->sheet->getStyle($col . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$this->sheet->getStyle($col . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle($col . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$col++;
+		}
+
+		$row = 8;
+		$no = 1;
+		foreach ($rekap_per_anak as $item) {
+			$hadir = (int) ($item['Hadir'] ?? 0);
+			$izin = (int) ($item['Izin'] ?? 0);
+			$sakit = (int) ($item['Sakit'] ?? 0);
+			$alpha = (int) ($item['Alpha'] ?? 0);
+			$total_status = (int) ($item['total'] ?? 0);
+			$persentase = $total_status > 0 ? ($hadir / $total_status) : 0;
+
+			$this->sheet->setCellValue('A' . $row, $no++);
+			$this->sheet->setCellValue('B' . $row, $item['nama_anak'] ?? '-');
+			$this->sheet->setCellValue('C' . $row, $hadir);
+			$this->sheet->setCellValue('D' . $row, $izin);
+			$this->sheet->setCellValue('E' . $row, $sakit);
+			$this->sheet->setCellValue('F' . $row, $alpha);
+			$this->sheet->setCellValue('G' . $row, $persentase);
+			$this->sheet->getStyle('G' . $row)->getNumberFormat()->setFormatCode('0.00%');
+
+			for ($c = 'A'; $c <= 'G'; $c++) {
+				$this->sheet->getStyle($c . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+			$row++;
+		}
+
+		if ($row === 8) {
+			$this->sheet->setCellValue('A8', 'Belum ada data rekap per anak');
+			$this->sheet->mergeCells('A8:G8');
+			$this->sheet->getStyle('A8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle('A8')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		foreach (range('A', 'G') as $column_letter) {
+			$this->sheet->getColumnDimension($column_letter)->setAutoSize(TRUE);
+		}
+
+		$summary_sheet = new Worksheet($this->spreadsheet, 'Rekap Sesi');
+		$this->spreadsheet->addSheet($summary_sheet);
+		$summary_sheet->setCellValue('A1', 'REKAP ABSENSI PER SESI');
+		$summary_sheet->mergeCells('A1:J1');
+		$summary_sheet->getStyle('A1')->getFont()->setBold(TRUE)->setSize(12);
+		$summary_sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$summary_headers = array('Tanggal', 'Tahun Ajaran', 'Semester', 'Rombel', 'Mapel', 'Hadir', 'Izin', 'Sakit', 'Alpha', 'Total');
+		$summary_header_row = 3;
+		$col = 'A';
+		foreach ($summary_headers as $header) {
+			$summary_sheet->setCellValue($col . $summary_header_row, $header);
+			$summary_sheet->getStyle($col . $summary_header_row)->getFont()->setBold(TRUE);
+			$summary_sheet->getStyle($col . $summary_header_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$summary_sheet->getStyle($col . $summary_header_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$summary_sheet->getStyle($col . $summary_header_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$col++;
+		}
+
+		$summary_row = 4;
+		foreach ($summary_rows as $item) {
+			$summary_sheet->setCellValue('A' . $summary_row, $item->tanggal_absensi ?? '-');
+			$summary_sheet->setCellValue('B' . $summary_row, $item->tahun_ajaran ?? '-');
+			$summary_sheet->setCellValue('C' . $summary_row, (int) ($item->semester ?? 0));
+			$summary_sheet->setCellValue('D' . $summary_row, $item->nama_rombel ?? '-');
+			$summary_sheet->setCellValue('E' . $summary_row, $item->nama_mapel ?? '-');
+			$summary_sheet->setCellValue('F' . $summary_row, (int) ($item->total_hadir ?? 0));
+			$summary_sheet->setCellValue('G' . $summary_row, (int) ($item->total_izin ?? 0));
+			$summary_sheet->setCellValue('H' . $summary_row, (int) ($item->total_sakit ?? 0));
+			$summary_sheet->setCellValue('I' . $summary_row, (int) ($item->total_alpha ?? 0));
+			$summary_sheet->setCellValue('J' . $summary_row, (int) ($item->total_siswa ?? 0));
+
+			for ($c = 'A'; $c <= 'J'; $c++) {
+				$summary_sheet->getStyle($c . $summary_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+			$summary_row++;
+		}
+
+		if ($summary_row === 4) {
+			$summary_sheet->setCellValue('A4', 'Belum ada data rekap sesi');
+			$summary_sheet->mergeCells('A4:J4');
+			$summary_sheet->getStyle('A4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$summary_sheet->getStyle('A4')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		foreach (range('A', 'J') as $column_letter) {
+			$summary_sheet->getColumnDimension($column_letter)->setAutoSize(TRUE);
+		}
+
+		$detail_sheet = new Worksheet($this->spreadsheet, 'Detail Absensi');
+		$this->spreadsheet->addSheet($detail_sheet);
+		$detail_sheet->setCellValue('A1', 'DETAIL ABSENSI MATA PELAJARAN');
+		$detail_sheet->mergeCells('A1:H1');
+		$detail_sheet->getStyle('A1')->getFont()->setBold(TRUE)->setSize(12);
+		$detail_sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$detail_headers = array('Tanggal', 'Tahun Ajaran', 'Semester', 'Rombel', 'Mapel', 'Nama Anak', 'Status', 'Keterangan');
+		$detail_header_row = 3;
+		$col = 'A';
+		foreach ($detail_headers as $header) {
+			$detail_sheet->setCellValue($col . $detail_header_row, $header);
+			$detail_sheet->getStyle($col . $detail_header_row)->getFont()->setBold(TRUE);
+			$detail_sheet->getStyle($col . $detail_header_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$detail_sheet->getStyle($col . $detail_header_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$detail_sheet->getStyle($col . $detail_header_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$col++;
+		}
+
+		$detail_row = 4;
+		foreach ($detail_rows as $item) {
+			$detail_sheet->setCellValue('A' . $detail_row, $item->tanggal_absensi ?? '-');
+			$detail_sheet->setCellValue('B' . $detail_row, $item->tahun_ajaran ?? '-');
+			$detail_sheet->setCellValue('C' . $detail_row, (int) ($item->semester ?? 0));
+			$detail_sheet->setCellValue('D' . $detail_row, $item->nama_rombel ?? '-');
+			$detail_sheet->setCellValue('E' . $detail_row, $item->nama_mapel ?? '-');
+			$detail_sheet->setCellValue('F' . $detail_row, $item->nama_anak ?? '-');
+			$detail_sheet->setCellValue('G' . $detail_row, $item->status_kehadiran ?? '-');
+			$detail_sheet->setCellValue('H' . $detail_row, $item->keterangan ?? '-');
+
+			for ($c = 'A'; $c <= 'H'; $c++) {
+				$detail_sheet->getStyle($c . $detail_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+			$detail_row++;
+		}
+
+		if ($detail_row === 4) {
+			$detail_sheet->setCellValue('A4', 'Belum ada detail absensi');
+			$detail_sheet->mergeCells('A4:H4');
+			$detail_sheet->getStyle('A4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$detail_sheet->getStyle('A4')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		foreach (range('A', 'H') as $column_letter) {
+			$detail_sheet->getColumnDimension($column_letter)->setAutoSize(TRUE);
+		}
+
+		$this->spreadsheet->setActiveSheetIndex(0);
+		$this->output_workbook($filename);
+	}
+
+	public function export_format_absensi_rombel($data, $filename = 'format_absensi_rombel.xlsx')
+	{
+		$settings = get_instance()->config->item('settings');
+		$nama_lksa = $settings->nama_lksa ?? 'LKSA Harapan Bangsa';
+		$rombel = (object) ($data['rombel'] ?? array());
+		$children = (array) ($data['children'] ?? array());
+		$periode_bulan = (int) ($data['periode_bulan'] ?? 0);
+		$periode_tahun = (int) ($data['periode_tahun'] ?? 0);
+
+		if ($periode_bulan < 1 || $periode_bulan > 12 || $periode_tahun < 2000 || $periode_tahun > 3000) {
+			$last_month_ts = strtotime('first day of last month');
+			$periode_bulan = (int) date('n', $last_month_ts);
+			$periode_tahun = (int) date('Y', $last_month_ts);
+		}
+
+		$period_start = $periode_tahun . '-' . str_pad((string) $periode_bulan, 2, '0', STR_PAD_LEFT) . '-01';
+		$total_hari = (int) date('t', strtotime($period_start));
+		$nama_bulan = array(
+			1 => 'Januari',
+			2 => 'Februari',
+			3 => 'Maret',
+			4 => 'April',
+			5 => 'Mei',
+			6 => 'Juni',
+			7 => 'Juli',
+			8 => 'Agustus',
+			9 => 'September',
+			10 => 'Oktober',
+			11 => 'November',
+			12 => 'Desember'
+		);
+		$label_periode = ($nama_bulan[$periode_bulan] ?? (string) $periode_bulan) . ' ' . $periode_tahun;
+
+		$this->reset_workbook('Format Absensi');
+		$last_col = Coordinate::stringFromColumnIndex(33); // AG
+
+		$this->sheet->setCellValue('A1', 'FORMAT ABSENSI BULANAN ROMBEL');
+		$this->sheet->setCellValue('A2', $nama_lksa);
+		$this->sheet->setCellValue(
+			'A3',
+			'Rombel: ' . ($rombel->nama_rombel ?? '-') . ' (' . ($rombel->kode_rombel ?? '-') . ') | TA ' . ($rombel->tahun_ajaran ?? '-') . ' | Semester ' . ($rombel->semester ?? '-')
+		);
+		$this->sheet->setCellValue('A4', 'Periode: ' . $label_periode . ' (Bulan Lalu) | Dicetak: ' . date('d-m-Y H:i'));
+
+		$this->sheet->mergeCells('A1:' . $last_col . '1');
+		$this->sheet->mergeCells('A2:' . $last_col . '2');
+		$this->sheet->mergeCells('A3:' . $last_col . '3');
+		$this->sheet->mergeCells('A4:' . $last_col . '4');
+		$this->sheet->getStyle('A1:A4')->getFont()->setBold(TRUE);
+		$this->sheet->getStyle('A1:' . $last_col . '4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+		$header_row = 6;
+		$this->sheet->setCellValue('A' . $header_row, 'No');
+		$this->sheet->setCellValue('B' . $header_row, 'Nama Peserta Didik');
+
+		for ($tanggal = 1; $tanggal <= 31; $tanggal++) {
+			$col_index = $tanggal + 2;
+			$col_letter = Coordinate::stringFromColumnIndex($col_index);
+			$this->sheet->setCellValue($col_letter . $header_row, $tanggal);
+		}
+
+		for ($col_index = 1; $col_index <= 33; $col_index++) {
+			$col_letter = Coordinate::stringFromColumnIndex($col_index);
+			$this->sheet->getStyle($col_letter . $header_row)->getFont()->setBold(TRUE);
+			$this->sheet->getStyle($col_letter . $header_row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+			$this->sheet->getStyle($col_letter . $header_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle($col_letter . $header_row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		$row = 7;
+		$no = 1;
+		foreach ($children as $child) {
+			$this->sheet->setCellValue('A' . $row, $no++);
+			$this->sheet->setCellValue('B' . $row, $child->nama_anak ?? '-');
+
+			for ($tanggal = 1; $tanggal <= 31; $tanggal++) {
+				$col_index = $tanggal + 2;
+				$col_letter = Coordinate::stringFromColumnIndex($col_index);
+
+				if ($tanggal > $total_hari) {
+					$this->sheet->setCellValue($col_letter . $row, '-');
+					$this->sheet->getStyle($col_letter . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F2F2F2');
+				} else {
+					$this->sheet->setCellValue($col_letter . $row, '');
+					$validation = $this->sheet->getCell($col_letter . $row)->getDataValidation();
+					$validation->setType(DataValidation::TYPE_LIST);
+					$validation->setErrorStyle(DataValidation::STYLE_STOP);
+					$validation->setAllowBlank(TRUE);
+					$validation->setShowDropDown(TRUE);
+					$validation->setShowInputMessage(TRUE);
+					$validation->setPromptTitle('Kode Kehadiran');
+					$validation->setPrompt('Isi dengan H, I, S, atau A');
+					$validation->setShowErrorMessage(TRUE);
+					$validation->setErrorTitle('Input Tidak Valid');
+					$validation->setError('Kode hanya boleh H, I, S, atau A.');
+					$validation->setFormula1('"H,I,S,A"');
+				}
+
+				$this->sheet->getStyle($col_letter . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			}
+
+			$this->sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle('A' . $row . ':B' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			$row++;
+		}
+
+		if ($row === 7) {
+			$this->sheet->setCellValue('A7', 'Belum ada peserta didik pada rombel ini');
+			$this->sheet->mergeCells('A7:' . $last_col . '7');
+			$this->sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$this->sheet->getStyle('A7:' . $last_col . '7')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+		}
+
+		$note_row = max($row, 8) + 1;
+		$this->sheet->setCellValue('A' . $note_row, 'Keterangan kode: H = Hadir, I = Izin, S = Sakit, A = Alpha');
+		$this->sheet->mergeCells('A' . $note_row . ':' . $last_col . $note_row);
+		$this->sheet->getStyle('A' . $note_row)->getFont()->setItalic(TRUE);
+
+		$this->sheet->freezePane('C7');
+
+		$this->sheet->getColumnDimension('A')->setWidth(6);
+		$this->sheet->getColumnDimension('B')->setWidth(35);
+		for ($col_index = 3; $col_index <= 33; $col_index++) {
+			$this->sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col_index))->setWidth(4);
+		}
+
+		$this->output_workbook($filename);
+	}
 }

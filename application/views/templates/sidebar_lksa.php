@@ -72,6 +72,9 @@
 				$penilaian_sub = $this->uri->segment(3);
 				$group_master_input = $penilaian_segment && in_array($penilaian_sub, array('', 'master', 'data-penilaian', 'detail-penilaian', 'catatan-kualitatif'), true);
 				$group_ringkasan_laporan = $penilaian_segment && in_array($penilaian_sub, array('ringkasan-mingguan', 'ringkasan-bulanan', 'laporan'), true);
+				$akademik_segment = $this->uri->segment(2) == 'akademik';
+				$akademik_sub = $this->uri->segment(3);
+				$group_akademik = $akademik_segment && in_array($akademik_sub, array('', 'mapel', 'rombel', 'absensi'), true);
 				?>
 
 				<li class="nav-item <?php echo $group_master_input ? 'menu-open' : ''; ?>">
@@ -142,6 +145,39 @@
 								class="nav-link <?php echo $penilaian_segment && $penilaian_sub == 'laporan' ? 'active' : ''; ?>">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Laporan Karakter</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="nav-item <?php echo $group_akademik ? 'menu-open' : ''; ?>">
+					<a href="#" class="nav-link <?php echo $group_akademik ? 'active' : ''; ?>">
+						<i class="nav-icon fas fa-book-open"></i>
+						<p>
+							Akademik
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview <?php echo $group_akademik ? 'pg-nav-treeview-open' : ''; ?>">
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/akademik/mapel'); ?>"
+								class="nav-link <?php echo $akademik_segment && (empty($akademik_sub) || $akademik_sub == 'mapel') ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Mata Pelajaran</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/akademik/rombel'); ?>"
+								class="nav-link <?php echo $akademik_segment && $akademik_sub == 'rombel' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Rombel</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?php echo site_url('admin/akademik/absensi'); ?>"
+								class="nav-link <?php echo $akademik_segment && $akademik_sub == 'absensi' ? 'active' : ''; ?>">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Absensi Mapel</p>
 							</a>
 						</li>
 					</ul>

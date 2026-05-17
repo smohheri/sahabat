@@ -5,6 +5,26 @@ Semua perubahan penting pada aplikasi SAHABAT akan didokumentasikan di file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-05-17
+
+### Added
+- **Panel Laporan Rekap Absensi untuk Guru**
+  - Menambahkan panel khusus guru di halaman input absensi untuk ekspor laporan rekap per anak.
+
+### Changed
+- **Akses Akademik Guru Difokuskan ke Input Absensi**
+  - Menu akademik guru disederhanakan menjadi **Input Absensi** saja.
+  - Route `guru/akademik` dan turunannya diarahkan ke halaman absensi sesuai hak akses guru.
+  - Validasi backend absensi guru kini dibatasi hanya untuk mapel yang diampu dan sudah disetting admin pada rombel.
+
+- **Format Ekspor Laporan Absensi Per Anak**
+  - Sheet utama ekspor absensi diubah menjadi rekap per anak dengan kolom:
+    - Hadir, Izin, Sakit, Alpha, dan Persentase Kehadiran.
+  - Sheet rekap per sesi dan detail absensi mapel tetap dipertahankan untuk audit.
+
+- **Pembaruan Cache PWA untuk Rilis 1.13.0**
+  - Versi cache service worker dinaikkan ke `sahabat-pwa-v6` agar aset terbaru langsung termuat setelah deploy.
+
 ## [1.12.3] - 2026-04-20
 
 ### Added

@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Current version of the SAHABAT application
 |
 */
-defined('APP_VERSION') OR define('APP_VERSION', '1.12.2');
+defined('APP_VERSION') OR define('APP_VERSION', '1.13.0');
 
 /*
 |--------------------------------------------------------------------------

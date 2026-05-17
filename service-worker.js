@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'sahabat-pwa-v5';
+const CACHE_VERSION = 'sahabat-pwa-v6';
 const APP_SHELL = [
   './',
   './manifest.webmanifest',

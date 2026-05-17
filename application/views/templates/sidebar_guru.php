@@ -47,6 +47,11 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-compact nav-child-indent" data-widget="treeview"
                 role="menu" data-accordion="false">
+                <?php
+                $akademik_segment = $this->uri->segment(2) == 'akademik';
+                $akademik_sub = $this->uri->segment(3);
+                $akademik_absensi_active = $akademik_segment && in_array($akademik_sub, array('', 'mapel', 'rombel', 'absensi'), true);
+                ?>
                 <li class="nav-item">
                     <a href="<?php echo site_url('guru'); ?>"
                         class="nav-link <?php echo $this->uri->segment(1) == 'guru' && $this->uri->segment(2) == '' ? 'active' : ''; ?>">
@@ -78,6 +83,14 @@
                         class="nav-link <?php echo $this->uri->segment(2) == 'perkembangan-anak' ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>Perkembangan Anak</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="<?php echo site_url('guru/akademik/absensi'); ?>"
+                        class="nav-link <?php echo $akademik_absensi_active ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-clipboard-check"></i>
+                        <p>Input Absensi</p>
                     </a>
                 </li>
 

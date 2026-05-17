@@ -24,6 +24,16 @@ $route['guru/penilaian-karakter/import'] = 'guru/penilaian_karakter_import';
 $route['guru/perkembangan-anak'] = 'guru/perkembangan_anak';
 $route['guru/perkembangan-anak/detail/(:num)'] = 'guru/perkembangan_anak_detail/$1';
 $route['guru/perkembangan-anak/detail/(:num)/export-pdf'] = 'guru/perkembangan_anak_detail_export_pdf/$1';
+$route['guru/akademik'] = 'akademik/absensi';
+$route['guru/akademik/mapel'] = 'akademik/absensi';
+$route['guru/akademik/rombel'] = 'akademik/absensi';
+$route['guru/akademik/absensi'] = 'akademik/absensi';
+$route['guru/akademik/export/mapel/pdf'] = 'akademik/export_mapel_pdf';
+$route['guru/akademik/export/mapel/excel'] = 'akademik/export_mapel_excel';
+$route['guru/akademik/export/rombel/pdf'] = 'akademik/export_rombel_pdf';
+$route['guru/akademik/export/rombel/excel'] = 'akademik/export_rombel_excel';
+$route['guru/akademik/export/absensi/pdf'] = 'akademik/export_absensi_pdf';
+$route['guru/akademik/export/absensi/excel'] = 'akademik/export_absensi_excel';
 
 // Anak
 $route['anak'] = 'anak/index';
@@ -100,6 +110,17 @@ $route['admin/facilities'] = 'admin/facilities';
 $route['admin/facilities/upload'] = 'admin/facilities_upload';
 $route['admin/facilities/update'] = 'admin/facilities_update';
 $route['admin/facilities/delete/(:num)'] = 'admin/facilities_delete/$1';
+
+$route['admin/akademik'] = 'akademik/mapel';
+$route['admin/akademik/mapel'] = 'akademik/mapel';
+$route['admin/akademik/rombel'] = 'akademik/rombel';
+$route['admin/akademik/absensi'] = 'akademik/absensi';
+$route['admin/akademik/export/mapel/pdf'] = 'akademik/export_mapel_pdf';
+$route['admin/akademik/export/mapel/excel'] = 'akademik/export_mapel_excel';
+$route['admin/akademik/export/rombel/pdf'] = 'akademik/export_rombel_pdf';
+$route['admin/akademik/export/rombel/excel'] = 'akademik/export_rombel_excel';
+$route['admin/akademik/export/absensi/pdf'] = 'akademik/export_absensi_pdf';
+$route['admin/akademik/export/absensi/excel'] = 'akademik/export_absensi_excel';
 
 $route['admin/penilaian-karakter'] = 'admin/penilaian_karakter_master';
 $route['admin/penilaian-karakter/master'] = 'admin/penilaian_karakter_master';
